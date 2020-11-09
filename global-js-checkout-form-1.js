@@ -1,6 +1,5 @@
 
 document.addEventListener('DOMContentLoaded', (event) => {
-  return;
   // console.log('global-js-checkout-form-1 DOMContentLoaded');
   let form = document.getElementsByTagName('form')[0];
   console.log(form);
@@ -9,6 +8,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
   // V2 -----------------------
   // Go through the fields in the form and group each occurence of a hiddend _header field as a section
   // Then repopulate the fields div with each section being a fieldset & legend
+
+  // TODO replace `return` w/ being able to handle forms that do not have `_form_section_header` inputs
+  return;
+
   let fieldsDiv = form.getElementsByClassName('fields')[0];
   if (!fieldsDiv) return;
 
