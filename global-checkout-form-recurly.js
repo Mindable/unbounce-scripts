@@ -11,14 +11,28 @@ window.addEventListener('load', (event) => {
   var ccElement = Array.from(fieldsDiv.getElementsByTagName('input')).filter(e => e.id == 'cc_number')[0];
   console.log('ccElement');
   console.log(ccElement);
+  var ccElementStyle = window.getComputedStyle(ccElement);
   if (!ccElement) return;
 
   var recurlyCardDiv = document.createElement('div');
   recurlyCardDiv.id = 'cc_number';
+  console.log('ccElement computed style');
+  console.log(ccElementStyle.cssText);
+  recurlyCardDiv.style.position = ccElementStyle.getPropertyValue('position');
+  recurlyCardDiv.style.top = ccElementStyle.getPropertyValue('top');
+  recurlyCardDiv.style.left = ccElementStyle.getPropertyValue('left');
+  recurlyCardDiv.style.width = ccElementStyle.getPropertyValue('width');
+  recurlyCardDiv.style.height = ccElementStyle.getPropertyValue('height');
+  recurlyCardDiv.style.lineHeight = ccElementStyle.getPropertyValue('lineHeight');
+  
   ccElement.replaceWith(recurlyCardDiv);
 
-  const recurlyCardElement = recurly.Elements().CardElement();
+  let recurlyElements = recurly.Elements();
+  const recurlyCardElement = recurlyElements.CardElement();
   recurlyCardElement.attach('#cc_number');
+
+  // TODO Block form submit to get Recurly token
+  // https://developers.recurly.com/reference/recurly-js/#getting-a-token
 });
 
 document.addEventListener('DOMContentLoaded', (event) => {
