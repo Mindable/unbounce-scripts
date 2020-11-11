@@ -1,5 +1,5 @@
 const FORM_HTML = `
-<form id="my-form" autocomplete="on" method="POST">
+<form id="my-form" autocomplete="on" method="POST" action="/fsg?pageId=b1405e3b-a689-4315-94f3-46d802e0bab9&variant=a">
   <label>first_name</label>
   <input type="text" data-recurly="first_name"><br>
   <label>last_name</label>
@@ -48,6 +48,7 @@ window.addEventListener('load', (event) => {
       } else {
         console.log('token: ' + JSON.stringify(token));
         // todo Create transaction w/ token
+        form.submit();
       }
     });
   });
