@@ -6,20 +6,14 @@ window.addEventListener('load', (event) => {
   console.log('Recurly configured!');
 
   const form = document.getElementsByTagName('form')[0];
-  let fieldsDiv = form.getElementsByClassName('fields')[0];
+  const fieldsDiv = form.getElementsByClassName('fields')[0];
   if (!fieldsDiv) return;
-  
-  // Configure CC validity element to be readonly
-  let ccValidityElement = fieldsDiv.querySelector('#cc_input_validity');
-  if (!ccValidityElement) throw 'Missing form element cc_input_validity';
-  // ccValidityElement.setAttribute('readonly', 'true');
-  ccValidityElement.value = 'Credit Card info is invalid';
 
   // Generate & swap placeholder input with Recurly CardElement container div
-  let ccElement = Array.from(fieldsDiv.getElementsByTagName('input')).filter(e => e.id == 'cc_number')[0];
+  const ccElement = Array.from(fieldsDiv.getElementsByTagName('input')).filter(e => e.id == 'cc_number')[0];
   if (!ccElement) return;
-  let ccElementStyle = window.getComputedStyle(ccElement);
-  let recurlyCardDiv = document.createElement('div');
+  const ccElementStyle = window.getComputedStyle(ccElement);
+  const recurlyCardDiv = document.createElement('div');
   recurlyCardDiv.id = 'cc_number';
   recurlyCardDiv.style.position = ccElementStyle.getPropertyValue('position');
   recurlyCardDiv.style.top = ccElementStyle.getPropertyValue('top');
@@ -29,42 +23,29 @@ window.addEventListener('load', (event) => {
   recurlyCardDiv.style.lineHeight = ccElementStyle.getPropertyValue('lineHeight');
   ccElement.replaceWith(recurlyCardDiv);
 
-  // Create CardElement to 
-  console.log('recurly');
-  console.log(recurly);
-  let recurlyElements = recurly.Elements();
+  // Create CardElement & attach to recurly cc container
+  const recurlyElements = recurly.Elements();
   const recurlyCardElement = recurlyElements.CardElement();
   console.log('recurlyCardElement');
   console.log(recurlyCardElement);
   recurlyCardElement.attach('#cc_number');
-  
-  // Testing 
-  recurly.on('change' , state => {
-    console.log('recurly.change');
-    console.log(state);
-  });
-  recurly.on('submit' , state => {
-    console.log('recurly.submit');
-    console.log(state);
-  });
 
-  // TODO How to prevent submit if Recurly fails validation?
-  // https://community.unbounce.com/t/adding-custom-validation-to-form-fields/3205
-  // Need a 
-  window.ub.form.customValidators.recurlyCcInput = {
-    isValid: function(value) {
-      return cc_input_validity == '';
-    },
-    message: 'Credit Card info is invalid',
-  };
-  window.ub.form.validationRules.cc_input_validity.recurlyCcInput = true;
+  // Set the submit button's enabled state to whether the CC element is valid
+  const submitButton = Array.from(form.getElementsByTagName('button')).filter(e => e.getAttribute('type') == 'submit')[0];
+  if (!submitButton) throw 'Cannot find submit button within form';
+  recurlyCardElement.addEventListener('change', state => {
+    console.log('recurlyCardElement change');
+    console.log(state);
+    if (!state.valid) submitButton.setAttribute('disabled', 'true');
+    else submitButton.removeAttribute('disabled');
+  });
 
   // Get Recurly token & add to form payload
   // https://community.unbounce.com/t/how-to-run-custom-code-scripts-on-form-submission/5079
   // https://developers.recurly.com/reference/recurly-js/#getting-a-token
   console.log('window.ub');
   console.log(window.ub);
-  window.ub.hooks.beforeFormSubmit.push(function(args) {
+  window.ub.hooks.beforeFormSubmit.push(function (args) {
     // TODO Convert callback to Promise
     console.log('window.ub.hooks.beforeFormSubmit');
     recurly.token(recurlyElements, form, (err, token) => {
