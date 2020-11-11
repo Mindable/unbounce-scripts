@@ -8,31 +8,42 @@ window.addEventListener('load', (event) => {
   const form = document.getElementsByTagName('form')[0];
   let fieldsDiv = form.getElementsByClassName('fields')[0];
   if (!fieldsDiv) return;
+  
+  // Generate & attach credit card
   var ccElement = Array.from(fieldsDiv.getElementsByTagName('input')).filter(e => e.id == 'cc_number')[0];
-  console.log('ccElement');
-  console.log(ccElement);
-  var ccElementStyle = window.getComputedStyle(ccElement);
   if (!ccElement) return;
-
+  var ccElementStyle = window.getComputedStyle(ccElement);
   var recurlyCardDiv = document.createElement('div');
   recurlyCardDiv.id = 'cc_number';
-  console.log('ccElement computed style');
-  console.log(ccElementStyle.cssText);
   recurlyCardDiv.style.position = ccElementStyle.getPropertyValue('position');
   recurlyCardDiv.style.top = ccElementStyle.getPropertyValue('top');
   recurlyCardDiv.style.left = ccElementStyle.getPropertyValue('left');
   recurlyCardDiv.style.width = ccElementStyle.getPropertyValue('width');
   recurlyCardDiv.style.height = ccElementStyle.getPropertyValue('height');
   recurlyCardDiv.style.lineHeight = ccElementStyle.getPropertyValue('lineHeight');
-  
   ccElement.replaceWith(recurlyCardDiv);
 
   let recurlyElements = recurly.Elements();
   const recurlyCardElement = recurlyElements.CardElement();
+  console.log('recurlyCardElement.style');
+  console.log(recurlyCardElement.style);
   recurlyCardElement.attach('#cc_number');
 
-  // TODO Block form submit to get Recurly token
+  // TODO How to prevent submit if Recurly fails validation?
+  // preventDefault() doesn't work 
+
+  // Get Recurly token & add to form payload
+  // https://community.unbounce.com/t/how-to-run-custom-code-scripts-on-form-submission/5079
   // https://developers.recurly.com/reference/recurly-js/#getting-a-token
+  window.ub.hooks.beforeFormSubmit.push(function(args) {
+    // TODO Convert callback to Promise
+    console.log('window.ub.hooks.beforeFormSubmit');
+    recurly.token(recurlyElements, form, (err, token) => {
+      console.log(err);
+      console.log(token);
+    });
+    console.log('window.ub.hooks.beforeFormSubmit DONE');
+  });
 });
 
 document.addEventListener('DOMContentLoaded', (event) => {
