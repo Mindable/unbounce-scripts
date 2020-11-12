@@ -19,21 +19,28 @@ let loadRecurlyPromise = new Promise((resolve, reject) => {
 });
 let domContentLoadedPromise = new Promise((resolve, reject) => {
   document.addEventListener('DOMContentLoaded', event => {
-    addCardElementPlaceholder();
+    prepareRecurlyContainers();
     resolve();
   });
 });
 Promise.all([loadRecurlyPromise, domContentLoadedPromise]).then(() => {
-  addRecurlyFormElements();
+  addRecurlyElements();
+  addRecurlyDataAttributes();
 });
 
-function addCardElementPlaceholder()
-{
-  // Run IFF the form has hidden field `_use_recurly`
+// Return form  IFF has hidden field `_use_recurly`
+function getRecurlyTargetForm() {
   const form = document.getElementsByTagName('form')[0];
   if (!form) return;
   const useRecurly = form.querySelector('#_use_recurly');
   if (!useRecurly) return;
+  return form;
+}
+
+function prepareRecurlyContainers() {
+  const form = getRecurlyTargetForm();
+  if (!form) return;
+
   // Generate & swap placeholder input with Recurly CardElement container div
   const fieldsDiv = form.getElementsByClassName('fields')[0];
   if (!fieldsDiv) return;
@@ -51,12 +58,9 @@ function addCardElementPlaceholder()
   ccElement.replaceWith(recurlyCardDiv);
 }
 
-function addRecurlyFormElements() {
-  // Run IFF the form has hidden field `_use_recurly`
-  const form = document.getElementsByTagName('form')[0];
+function addRecurlyElements() {
+  const form = getRecurlyTargetForm();
   if (!form) return;
-  const useRecurly = form.querySelector('#_use_recurly');
-  if (!useRecurly) return;
 
   // Set PUBLIC key
   recurly.configure('ewr1-TvB1JrfZgxptu9u8AtXhk8');
@@ -86,5 +90,26 @@ function addRecurlyFormElements() {
       console.log(token);
     });
     console.log('window.ub.hooks.beforeFormSubmit DONE');
+  });
+}
+
+function addRecurlyDataAttributes() {
+  const form = getRecurlyTargetForm();
+  if (!form) return;
+  const recurlyDataIds = [
+    'first_name',
+    'last_name',
+    'address1',
+    'city',
+    'state',
+    'country',
+    'postal_code'
+  ];
+  const fields = Array.from(form.getElementsByTagName('input'))
+    .concat(Array.from(form.getElementsByTagName('select')));
+  fields.forEach(field => {
+    if (recurlyDataIds.includes(field.id)) {
+      field.setAttribute('data-recurly', field.id);
+    }
   });
 }
