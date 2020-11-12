@@ -19,38 +19,24 @@ let loadRecurlyPromise = new Promise((resolve, reject) => {
 });
 let domContentLoadedPromise = new Promise((resolve, reject) => {
   document.addEventListener('DOMContentLoaded', event => {
+    addCardElementPlaceholder();
     resolve();
   });
 });
 Promise.all([loadRecurlyPromise, domContentLoadedPromise]).then(() => {
-  decorate_form_with_recurly();
+  addRecurlyFormElements();
 });
 
-// If `_use_recurly` is enabled, immediately set form to invisible until DOM manipulation is done
-// document.addEventListener('DOMContentLoaded', event => {
-//   // Run IFF the form has hidden field `_use_recurly`
-//   const form = document.getElementsByTagName('form')[0];
-//   if (!form) return;
-//   const useRecurly = form.querySelector('#_use_recurly');
-//   if (!useRecurly) return;
-//   form.style.visibility = 'hidden';
-// });
-
-function decorate_form_with_recurly() {
+function addCardElementPlaceholder()
+{
   // Run IFF the form has hidden field `_use_recurly`
   const form = document.getElementsByTagName('form')[0];
   if (!form) return;
   const useRecurly = form.querySelector('#_use_recurly');
   if (!useRecurly) return;
-
-  // Set PUBLIC key
-  recurly.configure('ewr1-TvB1JrfZgxptu9u8AtXhk8');
-  console.log('Recurly configured!');
-
+  // Generate & swap placeholder input with Recurly CardElement container div
   const fieldsDiv = form.getElementsByClassName('fields')[0];
   if (!fieldsDiv) return;
-
-  // Generate & swap placeholder input with Recurly CardElement container div
   const ccElement = Array.from(fieldsDiv.getElementsByTagName('input')).filter(e => e.id == 'cc_number')[0];
   if (!ccElement) return;
   const ccElementStyle = window.getComputedStyle(ccElement);
@@ -63,20 +49,28 @@ function decorate_form_with_recurly() {
   recurlyCardDiv.style.height = ccElementStyle.getPropertyValue('height');
   recurlyCardDiv.style.lineHeight = ccElementStyle.getPropertyValue('lineHeight');
   ccElement.replaceWith(recurlyCardDiv);
+}
+
+function addRecurlyFormElements() {
+  // Run IFF the form has hidden field `_use_recurly`
+  const form = document.getElementsByTagName('form')[0];
+  if (!form) return;
+  const useRecurly = form.querySelector('#_use_recurly');
+  if (!useRecurly) return;
+
+  // Set PUBLIC key
+  recurly.configure('ewr1-TvB1JrfZgxptu9u8AtXhk8');
+  console.log('Recurly configured!');
 
   // Create CardElement & attach to recurly cc container
   const recurlyElements = recurly.Elements();
   const recurlyCardElement = recurlyElements.CardElement();
-  console.log('recurlyCardElement');
-  console.log(recurlyCardElement);
   recurlyCardElement.attach('#cc_number');
 
-  // Set the submit button's enabled state to whether the CC element is valid
+  // Update submit button enabled state based on CardElement state validity
   const submitButton = Array.from(form.getElementsByTagName('button')).filter(e => e.getAttribute('type') == 'submit')[0];
   if (!submitButton) throw 'Cannot find submit button within form';
   recurlyCardElement.addEventListener('change', state => {
-    console.log('recurlyCardElement change');
-    console.log(state);
     if (!state.valid) submitButton.setAttribute('disabled', 'true');
     else submitButton.removeAttribute('disabled');
   });
@@ -84,8 +78,6 @@ function decorate_form_with_recurly() {
   // Get Recurly token & add to form payload
   // https://community.unbounce.com/t/how-to-run-custom-code-scripts-on-form-submission/5079
   // https://developers.recurly.com/reference/recurly-js/#getting-a-token
-  console.log('window.ub');
-  console.log(window.ub);
   window.ub.hooks.beforeFormSubmit.push(function (args) {
     // TODO Convert callback to Promise
     console.log('window.ub.hooks.beforeFormSubmit');
