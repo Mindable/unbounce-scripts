@@ -1,16 +1,6 @@
-// test -----------
-// window.addEventListener('DOMContentLoaded', event => {
-//   console.log('window.DOMContentLoaded');
-// });
-// document.addEventListener('DOMContentLoaded', event => {
-//   console.log('document.DOMContentLoaded');
-// });
-// end test -------
-
+// Use Promises to begin the recurly DOM manupliation as soon as the document DOM & recurl assets are loaded
 let loadRecurlyPromise = new Promise((resolve, reject) => {
-  console.log('loadRecurlyPromise start');
   const finishedLoading = function () {
-    console.log('finishedLoading');
     resolve();
   };
   // Reference recurly.js CDN assets
@@ -26,41 +16,37 @@ let loadRecurlyPromise = new Promise((resolve, reject) => {
   scriptRef.onreadystatechange = finishedLoading;
   scriptRef.onload = finishedLoading;
   document.head.appendChild(scriptRef);
-  console.log('loadRecurlyPromise end');
 });
-
 let domContentLoadedPromise = new Promise((resolve, reject) => {
-  console.log('domContentLoadedPromise start');
   document.addEventListener('DOMContentLoaded', event => {
-    console.log('document.DOMContentLoaded');
     resolve();
   });
-  console.log('domContentLoadedPromise end');
 });
-
-console.log('begin await all');
 Promise.all([loadRecurlyPromise, domContentLoadedPromise]).then(() => {
-  console.log('finish await all');
   decorate_form_with_recurly();
 });
 
-function useRecurly() {
-  // Continue IFF the form has hidden field `_use_recurly`
-  const form = document.getElementsByTagName('form')[0];
-  if (!form) return false;
-  const useRecurly = Array.from(form.getElementsByTagName('input')).filter(e => e.id == '_use_recurly')[0];
-  if (!useRecurly) return false;
-  return true;
-}
+// If `_use_recurly` is enabled, immediately set form to invisible until DOM manipulation is done
+// document.addEventListener('DOMContentLoaded', event => {
+//   // Run IFF the form has hidden field `_use_recurly`
+//   const form = document.getElementsByTagName('form')[0];
+//   if (!form) return;
+//   const useRecurly = form.querySelector('#_use_recurly');
+//   if (!useRecurly) return;
+//   form.style.visibility = 'hidden';
+// });
 
 function decorate_form_with_recurly() {
-  if (!useRecurly()) return;
+  // Run IFF the form has hidden field `_use_recurly`
+  const form = document.getElementsByTagName('form')[0];
+  if (!form) return;
+  const useRecurly = form.querySelector('#_use_recurly');
+  if (!useRecurly) return;
 
   // Set PUBLIC key
   recurly.configure('ewr1-TvB1JrfZgxptu9u8AtXhk8');
   console.log('Recurly configured!');
 
-  const form = document.getElementsByTagName('form')[0];
   const fieldsDiv = form.getElementsByClassName('fields')[0];
   if (!fieldsDiv) return;
 
