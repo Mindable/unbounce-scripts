@@ -1,4 +1,59 @@
-window.addEventListener('load', (event) => {
+// test -----------
+// window.addEventListener('DOMContentLoaded', event => {
+//   console.log('window.DOMContentLoaded');
+// });
+// document.addEventListener('DOMContentLoaded', event => {
+//   console.log('document.DOMContentLoaded');
+// });
+// end test -------
+
+let loadRecurlyPromise = new Promise((resolve, reject) => {
+  console.log('loadRecurlyPromise start');
+  const finishedLoading = function () {
+    console.log('finishedLoading');
+    resolve();
+  };
+  // Reference recurly.js CDN assets
+  // https://developers.recurly.com/reference/recurly-js/#getting-started
+  // https://stackoverflow.com/a/950146
+  const cssRef = document.createElement('link');
+  cssRef.href = 'https://js.recurly.com/v4/recurly.css';
+  cssRef.type = 'text/css';
+  cssRef.rel = 'stylesheet';
+  document.head.appendChild(cssRef);
+  const scriptRef = document.createElement('script');
+  scriptRef.src = 'https://js.recurly.com/v4/recurly.js';
+  scriptRef.onreadystatechange = finishedLoading;
+  scriptRef.onload = finishedLoading;
+  document.head.appendChild(scriptRef);
+  console.log('loadRecurlyPromise end');
+});
+
+let domContentLoadedPromise = new Promise((resolve, reject) => {
+  console.log('domContentLoadedPromise start');
+  document.addEventListener('DOMContentLoaded', event => {
+    console.log('document.DOMContentLoaded');
+    resolve();
+  });
+  console.log('domContentLoadedPromise end');
+});
+
+console.log('begin await all');
+Promise.all([loadRecurlyPromise, domContentLoadedPromise]).then(() => {
+  console.log('finish await all');
+  decorate_form_with_recurly();
+});
+
+function useRecurly() {
+  // Continue IFF the form has hidden field `_use_recurly`
+  const form = document.getElementsByTagName('form')[0];
+  if (!form) return false;
+  const useRecurly = Array.from(form.getElementsByTagName('input')).filter(e => e.id == '_use_recurly')[0];
+  if (!useRecurly) return false;
+  return true;
+}
+
+function decorate_form_with_recurly() {
   if (!useRecurly()) return;
 
   // Set PUBLIC key
@@ -54,28 +109,4 @@ window.addEventListener('load', (event) => {
     });
     console.log('window.ub.hooks.beforeFormSubmit DONE');
   });
-});
-
-document.addEventListener('DOMContentLoaded', (event) => {
-  if (!useRecurly()) return;
-
-  // Reference recurly.js CDN assets
-  // https://developers.recurly.com/reference/recurly-js/#getting-started
-  const scriptRef = document.createElement('script');
-  scriptRef.src = 'https://js.recurly.com/v4/recurly.js';
-  document.getElementsByTagName("head")[0].appendChild(scriptRef);
-  const cssRef = document.createElement('link');
-  cssRef.href = 'https://js.recurly.com/v4/recurly.css';
-  cssRef.type = 'text/css';
-  cssRef.rel = 'stylesheet';
-  document.getElementsByTagName("head")[0].appendChild(cssRef);
-});
-
-function useRecurly() {
-  // Continue IFF the form has hidden field `_use_recurly`
-  const form = document.getElementsByTagName('form')[0];
-  if (!form) return false;
-  const useRecurly = Array.from(form.getElementsByTagName('input')).filter(e => e.id == '_use_recurly')[0];
-  if (!useRecurly) return false;
-  return true;
 }
