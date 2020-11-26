@@ -16,22 +16,22 @@ function getCheckoutFormBody(_config) {
     return "<form id='aa-checkout-form' method='POST'>" +
     "<h2><span style='font-family: lato; font-size: 24px; color: rgb(0, 0, 0); text-decoration: underline;'>Contact Details</span></h2>" +
     "<div class='checkout-row'><div class='checkout-col'><label for='firstName' class='checkout-label'>First Name :</label>" +
-    "</div><div class='checkout-col'><input type='text' id='firstname' required></div></div>" +
+    "</div><div class='checkout-col'><input type='text' id='firstname' checkout-prefill='user/firstname' required></div></div>" +
     "<div class='checkout-row'><div class='checkout-col'><label for='lastName' class='checkout-label'>Last Name :</label>" +
-    "</div><div class='checkout-col'><input type='text' id='lastname' required></div></div>" +
+    "</div><div class='checkout-col'><input type='text' id='lastname' checkout-prefill='user/lastname' required></div></div>" +
     "<div class='checkout-row'><div class='checkout-col'><label for='emailId' class='checkout-label'>Email Address :</label>" +
-    "</div><div class='checkout-col'><input type='email' id='email' readonly required></div></div>" +
+    "</div><div class='checkout-col'><input type='email' id='email' checkout-prefill='user/email' readonly required></div></div>" +
     "<div class='checkout-row'><div class='checkout-col'><label for='phone' class='checkout-label'>Contact Number :</label>" +
-    "</div><div class='checkout-col'><input type='text' id='phone'></div></div>" +
+    "</div><div class='checkout-col'><input type='text' id='phone' checkout-prefill='user/phone'></div></div>" +
     "<br><br><h2><span style='font-family: lato; font-size: 24px; color: rgb(0, 0, 0); text-decoration: underline;'>Current Billing Address</span></h2>" +
     "<div class='checkout-row'><div class='checkout-col'><label for='adr' class='checkout-label'>Address :</label>" +
-    "</div><div class='checkout-col'><input type='text' id='adr' required></div></div>" +
+    "</div><div class='checkout-col'><input type='text' id='adr' checkout-prefill='user/address' required></div></div>" +
     "<div class='checkout-row'><div class='checkout-col'><label for='city' class='checkout-label'>City :</label>" +
-    "</div><div class='checkout-col'><input type='text' id='city'></div></div>" +
+    "</div><div class='checkout-col'><input type='text' id='city' checkout-prefill='user/city'></div></div>" +
     "<div class='checkout-row'><div class='checkout-col'><label for='postal-code'' class='checkout-label'>Zip/Postal Code :</label>" +
-    "</div><div class='checkout-col'><input type='text' id='postal-code' required></div></div>" +
+    "</div><div class='checkout-col'><input type='text' id='postal-code' checkout-prefill='user/postal-code' required></div></div>" +
     "<div class='checkout-row'><div class='checkout-col'><label for='country' class='checkout-label'>Country :</label>" +
-    "</div><div class='checkout-col'><input id='country' list='countriesList'>" +
+    "</div><div class='checkout-col'><input id='country' checkout-prefill='user/country' list='countriesList'>" +
     "<datalist id='countriesList'>" +
     "</datalist></div></div>" +
     "<div class='checkout-row'><div class='checkout-col'><label for='state' class='checkout-label'>State/Province :</label>" +
@@ -63,18 +63,35 @@ function prefillForm() {
     let _urlParams = new URLSearchParams(window.location.search);
     let _token = _urlParams.get('token');
     let _userHash = _urlParams.get('hash');
-    fetch(`http://aaproxyapis.astrologyanswerstest.com/checkout/params?hash=${_userHash}&token=${_token}`)
-        .then(
-            function (response){
-                if(response.status !== 200){
-                    console.log('Error with API. Status code : ' + response.status);
-                    return;
-                }
-                response.json().then(function (data){
-                    console.log(data);
-                })
+    // TODO pass in token
+    fetch(`https://aaproxyapis.astrologyanswerstest.com/checkout/params?hash=${_userHash}`)
+        .then(response => {
+            if(response.status !== 200){
+                console.log('Error with API. Status code : ' + response.status);
+                return;
             }
-        )
+            response.json().then(data => {
+                
+                const form = getCheckoutElem().querySelector('#aa-checkout-form');
+                const inputs = Array.from(form.getElementsByTagName('input'));
+                inputs.forEach(input => {
+                    /**
+                     * Because the `data` is nested, we use `checkout-prefill` value as a \-separated key to navigated `data`
+                     * e.g. key 'user/firstname' -> {user: {firstname: Han}} -> Han
+                     */
+                    const dataFieldKey = input.getAttribute('checkout-prefill');
+                    if (!dataFieldKey) return;
+                    const keySegments = dataFieldKey.split('/');
+                    let value = data;
+                    while (keySegments.length > 0) {
+                        const segment = keySegments.shift();
+                        value = value[segment];
+                    }
+                    if (!value || typeof(value) == 'object') return;
+                    input.value = value;
+                });
+            });
+        });
 }
 
 window.addEventListener('DOMContentLoaded', (e) => {
