@@ -82,7 +82,21 @@ function setupForm(form) {
     const countrySelect = form.querySelector('#country');
     countrySelect.addEventListener('change', e => {
         const stateSelect = form.querySelector('#state');
-        console.log('country changed');
+        fetch(`https://aaproxyapis.astrologyanswerstest.com/countries/${countrySelect.value}/states`).then(response => {
+            if( response.status !== 200){
+                console.log('Error with API. Status code : ' + response.status);
+                return;
+            }
+            response.json().then(data => {
+                stateSelect.innerHTML = '';
+                for (let key in data) {
+                    const option = document.createElement('option');
+                    option.text = data[key];
+                    option.value = key;
+                    stateSelect.appendChild(option);
+                }
+            });
+        });
     });
 }
 
@@ -90,8 +104,7 @@ function prefillForm(form) {
     let _urlParams = new URLSearchParams(window.location.search);
     let _token = _urlParams.get('token');
     let _userHash = _urlParams.get('hash');
-    // TODO pass in token
-    fetch(`https://aaproxyapis.astrologyanswerstest.com/checkout/params?hash=${_userHash}`)
+    fetch(`https://aaproxyapis.astrologyanswerstest.com/checkout/params?hash=${_userHash}&token=${_token}`)
         .then(response => {
             if(response.status !== 200){
                 console.log('Error with API. Status code : ' + response.status);
@@ -101,13 +114,13 @@ function prefillForm(form) {
                 // Set input ranges for address->country
                 const countrySelect = form.querySelector('#country');
                 var countryData = data['address']['countries'];
-                console.log(countryData);
                 for (let key in countryData) {
                     const option = document.createElement('option');
                     option.text = countryData[key];
                     option.value = key;
                     countrySelect.appendChild(option);
                 }
+                // TODO how to trigger the inital update of the states list?
 
                 // Prefill input values from user
                 const userData = data['user'];
