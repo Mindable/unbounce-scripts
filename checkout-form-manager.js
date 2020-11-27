@@ -45,10 +45,10 @@ function getCheckoutFormBody(_config) {
     "</div><div class='checkout-col'><input type='text' id='cc_number' required></div></div>" +
     "<div class='checkout-row'><div class='checkout-col'><label for='cc_number' class='checkout-label'>CVV :</label>" +
     "</div><div class='checkout-col'><input type='text' id='cc_cvv' required minlength='3' maxlength='4'></div></div>" +
-    "<div class='checkout-row'><div class='checkout-col'><label for='cc_month' class='checkout-label'>Expiry Month: </label>" +
-    "</div><div class='checkout-col'><select id='cc_month' required list='ccMonthList'>" +
-    "<datalist id='ccMonthList'>" +
-    "</datalist></div></div>" +
+    "<div class='checkout-row'><div class='checkout-col'><label for='cc_month' class='checkout-label'>Expiry Month: </label></div>" +
+    "<div class='checkout-col'><select id='cc_month' list='ccMonthList'></select></div></div>" +
+    "<div class='checkout-row'><div class='checkout-col'><label for='cc_year' class='checkout-label'>Expiry Year: </label></div>" +
+    "<div class='checkout-col'><select id='cc_year' list='ccMonthList'></select></div></div>" +
     "<button class='lp-element lp-pom-button' type='submit'>" + _config.checkoutButtonText + "</button>" +
     "</form>";
 }
@@ -70,7 +70,17 @@ function setupForm(form) {
     [1,2,3,4,5,6,7,8,9,10,11,12].forEach(i => {
         const option = document.createElement('option');
         option.text = i;
+        option.value = i;
         ccMonthSelect.appendChild(option);
+    });
+
+    const ccYearSelect = form.querySelector('#cc_year');
+    const currentYear = new Date().getFullYear();
+    Array(10).fill().map((_, i) => currentYear + i).forEach(year => {
+        const option = document.createElement('option');
+        option.text = year;
+        option.value = year;
+        ccYearSelect.appendChild(option);
     });
 }
 
