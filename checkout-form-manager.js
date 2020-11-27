@@ -45,21 +45,36 @@ function getCheckoutFormBody(_config) {
     "</div><div class='checkout-col'><input type='text' id='cc_number' required></div></div>" +
     "<div class='checkout-row'><div class='checkout-col'><label for='cc_number' class='checkout-label'>CVV :</label>" +
     "</div><div class='checkout-col'><input type='text' id='cc_cvv' required minlength='3' maxlength='4'></div></div>" +
+    "<div class='checkout-row'><div class='checkout-col'><label for='cc_month' class='checkout-label'>Expiry Month: </label>" +
+    "</div><div class='checkout-col'><select id='cc_month' required list='ccMonthList'>" +
+    "<datalist id='ccMonthList'>" +
+    "</datalist></div></div>" +
     "<button class='lp-element lp-pom-button' type='submit'>" + _config.checkoutButtonText + "</button>" +
     "</form>";
 }
 
 function addCheckoutForm() {
-    let _checkoutElem = getCheckoutElem();
+    const _checkoutElem = getCheckoutElem();
     _checkoutElem.innerHTML = getCheckoutFormBody(getCheckoutConfig(_checkoutElem));
-    prefillForm();
+    const form = _checkoutElem.querySelector('#aa-checkout-form');
+    setupForm(form);
+    prefillForm(form);
     _checkoutElem.addEventListener("submit", function(event){
-    event.preventDefault();
-    console.log('Form Submit Avoided');
-});
+        event.preventDefault();
+        console.log('Form Submit Avoided');
+    });
 }
 
-function prefillForm() {
+function setupForm(form) {
+    const ccMonthSelect = form.querySelector('#cc_month');
+    [1,2,3,4,5,6,7,8,9,10,11,12].forEach(i => {
+        const option = document.createElement('option');
+        option.text = i;
+        ccMonthSelect.appendChild(option);
+    });
+}
+
+function prefillForm(form) {
     let _urlParams = new URLSearchParams(window.location.search);
     let _token = _urlParams.get('token');
     let _userHash = _urlParams.get('hash');
@@ -71,8 +86,6 @@ function prefillForm() {
                 return;
             }
             response.json().then(data => {
-                
-                const form = getCheckoutElem().querySelector('#aa-checkout-form');
                 const inputs = Array.from(form.getElementsByTagName('input'));
                 inputs.forEach(input => {
                     /**
