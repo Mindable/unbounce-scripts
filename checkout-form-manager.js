@@ -120,7 +120,9 @@ function prefillForm(form) {
                     option.value = key;
                     countrySelect.appendChild(option);
                 }
-                // TODO how to trigger the inital update of the states list?
+
+                // Trigger the inital update of the states list
+                countrySelect.dispatchEvent(new Event('change'));
 
                 // Prefill input values from user
                 const userData = data['user'];
