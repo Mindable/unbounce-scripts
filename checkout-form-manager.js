@@ -83,19 +83,22 @@ function setupForm(form) {
     countrySelect.addEventListener('change', e => {
         const stateSelect = form.querySelector('#state');
         fetch(`https://aaproxyapis.astrologyanswerstest.com/countries/${countrySelect.value}/states`).then(response => {
-            if( response.status !== 200){
-                console.log('Error with API. Status code : ' + response.status);
-                return;
+            if(response.status == 200){
+                response.json().then(data => {
+                    stateSelect.innerHTML = '';
+                    for (let key in data) {
+                        const option = document.createElement('option');
+                        option.text = data[key];
+                        option.value = key;
+                        stateSelect.appendChild(option);
+                    }
+                    stateSelect.style.display = 'initial';
+                });
             }
-            response.json().then(data => {
-                stateSelect.innerHTML = '';
-                for (let key in data) {
-                    const option = document.createElement('option');
-                    option.text = data[key];
-                    option.value = key;
-                    stateSelect.appendChild(option);
-                }
-            });
+            else {
+                console.log('Error with API. Status code : ' + response.status);
+                stateSelect.style.display = 'none';
+            }
         });
     });
 }
