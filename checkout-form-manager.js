@@ -5,10 +5,10 @@ function getCheckoutElem() {
 }
 
 function getCheckoutConfig(_checkoutElem) {
-    let _config = [];
-    _config.checkoutFormType = _checkoutElem.dataset.checkoutFormType ?? 'digital';
-    _config.successfulCheckoutUrl = _checkoutElem.dataset.successfulCheckoutUrl ?? 'astrologyanswers.com';
-    _config.checkoutButtonText = _checkoutElem.dataset.checkoutButtonText ?? 'Buy Now!';
+    let _config = {};
+    _config.checkoutFormType = _checkoutElem.getAttribute('checkoutFormType') ?? 'digital';
+    _config.successfulCheckoutUrl = _checkoutElem.getAttribute('successfulCheckoutUrl') ?? 'astrologyanswers.com';
+    _config.checkoutButtonText = _checkoutElem.getAttribute('checkoutButtonText') ?? 'Buy Now!';
     return _config;
 }
 
@@ -106,8 +106,14 @@ function addCheckoutForm() {
     prefillForm(form);
     _checkoutElem.addEventListener("submit", function (event) {
         event.preventDefault();
-        console.log('Form Submit Avoided');
+        submitCheckout(event);
     });
+}
+
+function submitCheckout(event) {
+    const config = getCheckoutConfig(getCheckoutElem());
+    // TODO Call apiproxy->checkout
+    window.location.href = config.successfulCheckoutUrl;
 }
 
 function setupForm(form) {
