@@ -13,90 +13,107 @@ function getCheckoutConfig(_checkoutElem) {
 }
 
 function getCheckoutFormBody(_config) {
-    return `<form id='aa-checkout-form' method='POST'>
-    <h2><span style='font-family: lato; font-size: 24px; color: rgb(0, 0, 0); text-decoration: underline;'>Contact
-        Details</span></h2>
-    <div class='checkout-row'>
-      <div class='checkout-col'><label for='firstName' class='checkout-label'>First Name :</label>
-      </div>
-      <div class='checkout-col'><input type='text' id='firstname' name='firstname' checkout-prefill='firstname' required></div>
-    </div>
-    <div class='checkout-row'>
-      <div class='checkout-col'><label for='lastName' class='checkout-label'>Last Name :</label>
-      </div>
-      <div class='checkout-col'><input type='text' id='lastname' name='lastname' checkout-prefill='lastname' required></div>
-    </div>
-    <div class='checkout-row'>
-      <div class='checkout-col'><label for='email' class='checkout-label'>Email Address :</label>
-      </div>
-      <div class='checkout-col'><input type='email' id='email' name='email' checkout-prefill='email' readonly required></div>
-    </div>
-    <div class='checkout-row'>
-      <div class='checkout-col'><label for='phone' class='checkout-label'>Contact Number :</label>
-      </div>
-      <div class='checkout-col'><input type='text' id='phone' name='phone' checkout-prefill='phone'></div>
-    </div>
-    <br><br>
-    <h2><span style='font-family: lato; font-size: 24px; color: rgb(0, 0, 0); text-decoration: underline;'>Current Billing
-        Address</span></h2>
-    <div class='checkout-row'>
-      <div class='checkout-col'><label for='adr' class='checkout-label'>Address :</label>
-      </div>
-      <div class='checkout-col'><input type='text' id='adr' name='adr' checkout-prefill='address' required></div>
-    </div>
-    <div class='checkout-row'>
-      <div class='checkout-col'><label for='city' class='checkout-label'>City :</label>
-      </div>
-      <div class='checkout-col'><input type='text' id='city' name='city' checkout-prefill='city'></div>
-    </div>
-    <div class='checkout-row'>
-      <div class='checkout-col'><label for='postal-code'' class=' checkout-label'>Zip/Postal Code :</label>
-      </div>
-      <div class='checkout-col'><input type='text' id='postal- name='postal'code' checkout-prefill='postal-code' required></div>
-    </div>
-    <div class='checkout-row'>
-      <div class='checkout-col'><label for='country' class='checkout-label'>Country :</label>
-      </div>
-      <div class='checkout-col'><select id='country' name='country' checkout-prefill='country'></select></div>
-    </div>
-    <div class='checkout-row'>
-      <div class='checkout-col'><label for='state' class='checkout-label'>State/Province :</label>
-      </div>
-      <div class='checkout-col'><select id='state' name='state'></select></div>
-    </div>
-    <br><br>
-    <h2><span style='font-family: lato; font-size: 24px; color: rgb(0, 0, 0); text-decoration: underline;'>Credit Card
-        Information</span></h2>
-    <div class='checkout-row'>
-      <div class='checkout-col'><label for='cc_type' class='checkout-label'>Credit card Type :</label>
-      </div>
-      <div class='checkout-col'><select id='cc_type' name='cc_type'>
-          <option value=0>Select One</option>
-          <option value='mastercard'>MasterCard</option>
-          <option value='visa'>VISA</option>
-        </select></div>
-    </div>
-    <div class='checkout-row'>
-      <div class='checkout-col'><label for='cc_number' class='checkout-label'>Credit card Number :</label>
-      </div>
-      <div class='checkout-col'><input type='text' id='cc_number' name='cc_number' required></div>
-    </div>
-    <div class='checkout-row'>
-      <div class='checkout-col'><label for='cc_number' class='checkout-label'>CVV :</label>
-      </div>
-      <div class='checkout-col'><input type='text' id='cc_cvv' name='cc_cvv' required minlength='3' maxlength='4'></div>
-    </div>
-    <div class='checkout-row'>
-      <div class='checkout-col'><label for='cc_month' class='checkout-label'>Expiry Month: </label></div>
-      <div class='checkout-col'><select id='cc_month' name='cc_month'></select></div>
-    </div>
-    <div class='checkout-row'>
-      <div class='checkout-col'><label for='cc_year' class='checkout-label'>Expiry Year: </label></div>
-      <div class='checkout-col'><select id='cc_year' name='cc_year'></select></div>
-    </div>
-    <div class='checkout-errror' id='checkout_error'></div>
-    <button class='lp-element lp-pom-button' type='submit'> ${_config.checkoutButtonText} </button>
-  </form>`;
+    const formTypeLookup = {
+        'digital':
+            `<form id='aa-checkout-form' method='POST'>
+            <h2><span style='font-family: lato; font-size: 24px; color: rgb(0, 0, 0); text-decoration: underline;'>Contact
+                Details</span></h2>
+            <div class='checkout-row'>
+              <div class='checkout-col'><label for='firstName' class='checkout-label'>First Name :</label>
+              </div>
+              <div class='checkout-col'><input type='text' id='firstname' name='firstname' checkout-prefill='firstname' required>
+              </div>
+            </div>
+            <div class='checkout-row'>
+              <div class='checkout-col'><label for='lastName' class='checkout-label'>Last Name :</label>
+              </div>
+              <div class='checkout-col'><input type='text' id='lastname' name='lastname' checkout-prefill='lastname' required>
+              </div>
+            </div>
+            <div class='checkout-row'>
+              <div class='checkout-col'><label for='email' class='checkout-label'>Email Address :</label>
+              </div>
+              <div class='checkout-col'><input type='email' id='email' name='email' checkout-prefill='email' readonly required>
+              </div>
+            </div>
+            <div class='checkout-row'>
+              <div class='checkout-col'><label for='phone' class='checkout-label'>Contact Number :</label>
+              </div>
+              <div class='checkout-col'><input type='text' id='phone' name='phone' checkout-prefill='phone'></div>
+            </div>
+            <br><br>
+            <h2><span style='font-family: lato; font-size: 24px; color: rgb(0, 0, 0); text-decoration: underline;'>Current Billing
+                Address</span></h2>
+            <div class='checkout-row'>
+              <div class='checkout-col'><label for='adr' class='checkout-label'>Address :</label>
+              </div>
+              <div class='checkout-col'><input type='text' id='adr' name='adr' checkout-prefill='address' required></div>
+            </div>
+            <div class='checkout-row'>
+              <div class='checkout-col'><label for='city' class='checkout-label'>City :</label>
+              </div>
+              <div class='checkout-col'><input type='text' id='city' name='city' checkout-prefill='city'></div>
+            </div>
+            <div class='checkout-row'>
+              <div class='checkout-col'><label for='postal-code'' class=' checkout-label'>Zip/Postal Code :</label>
+              </div>
+              <div class='checkout-col'><input type='text' id='postal- name=' postal'code' checkout-prefill='postal-code'
+                  required></div>
+            </div>
+            <div class='checkout-row'>
+              <div class='checkout-col'><label for='country' class='checkout-label'>Country :</label>
+              </div>
+              <div class='checkout-col'><select id='country' name='country' checkout-prefill='country'></select></div>
+            </div>
+            <div class='checkout-row'>
+              <div class='checkout-col'><label for='state' class='checkout-label'>State/Province :</label>
+              </div>
+              <div class='checkout-col'><select id='state' name='state'></select></div>
+            </div>
+            <br><br>
+            <h2><span style='font-family: lato; font-size: 24px; color: rgb(0, 0, 0); text-decoration: underline;'>Credit Card
+                Information</span></h2>
+            <div class='checkout-row'>
+              <div class='checkout-col'><label for='cc_type' class='checkout-label'>Credit card Type :</label>
+              </div>
+              <div class='checkout-col'><select id='cc_type' name='cc_type'>
+                  <option value=0>Select One</option>
+                  <option value='mastercard'>MasterCard</option>
+                  <option value='visa'>VISA</option>
+                </select></div>
+            </div>
+            <div class='checkout-row'>
+              <div class='checkout-col'><label for='cc_number' class='checkout-label'>Credit card Number :</label>
+              </div>
+              <div class='checkout-col'><input type='text' id='cc_number' name='cc_number' required></div>
+            </div>
+            <div class='checkout-row'>
+              <div class='checkout-col'><label for='cc_number' class='checkout-label'>CVV :</label>
+              </div>
+              <div class='checkout-col'><input type='text' id='cc_cvv' name='cc_cvv' required minlength='3' maxlength='4'></div>
+            </div>
+            <div class='checkout-row'>
+              <div class='checkout-col'><label for='cc_month' class='checkout-label'>Expiry Month: </label></div>
+              <div class='checkout-col'><select id='cc_month' name='cc_month'></select></div>
+            </div>
+            <div class='checkout-row'>
+              <div class='checkout-col'><label for='cc_year' class='checkout-label'>Expiry Year: </label></div>
+              <div class='checkout-col'><select id='cc_year' name='cc_year'></select></div>
+            </div>
+            <div class='checkout-errror' id='checkout_error'></div>
+            <button class='lp-element lp-pom-button' type='submit'> ${_config.checkoutButtonText} </button>
+          </form>`,
+        'upsell':
+            `<form id='aa-checkout-form' method='POST'>
+                <div class='checkout-row'>
+                    <div class='checkout-col'><label for='product_id' class='checkout-label'>Product Id: </label></div>
+                    <div class='checkout-col'><input type='text' id='product_id' name='product_id' required readonly value='123'></div>
+                </div>
+                <div class='checkout-errror' id='checkout_error'></div>
+                <button class='lp-element lp-pom-button' type='submit'> ${_config.checkoutButtonText} </button>
+            </form>`
+    };
+    return formTypeLookup[_config.checkoutFormType];
 }
 
 function addCheckoutForm() {
@@ -199,7 +216,7 @@ function submitCheckout(event) {
     const formData = new FormData(form);
     // TODO get product_id from url
     formData.append('product_id', 123);
-    
+
     const formDataJson = Array.from(formData).reduce((acc, cur) => {
         acc[cur[0]] = cur[1];
         return acc;
