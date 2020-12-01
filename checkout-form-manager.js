@@ -25,10 +25,22 @@ function buildForm(config) {
             prefillField: 'firstname'
         },
         {
+            type: 'text',
+            label: 'Last Name',
+            name: 'lastname',
+            prefillField: 'lastname'
+        },
+        {
             type: 'email',
             label: 'Email',
             name: 'email',
             prefillField: 'email'
+        },
+        {
+            type: 'text',
+            label: 'Contact Number',
+            name: 'phone',
+            prefillField: 'phone'
         },
         {
             type: 'header',
@@ -49,7 +61,8 @@ function buildForm(config) {
             type: 'select',
             label: 'Country',
             name: 'country',
-            prefillField: 'country'
+            prefillField: 'country',
+            onChange: countrySelectChanged
         },
         {
             type: 'select',
@@ -100,6 +113,7 @@ function buildForm(config) {
         },
         {
             type: 'submit',
+            name: 'submit',
             label: config.checkoutButtonText
         }
     ];
@@ -125,13 +139,14 @@ function buildForm(config) {
             form.appendChild(result);
             result.outerHTML = `<div class='checkout-row'>
                                     <div class='checkout-col'><label for='${c.name}' class='checkout-label'>${c.label}:</label></div>
-                                    <div class='checkout-col'><select id='${c.name}' name='${c.name}'></select></div>
+                                    <div class='checkout-col'><select id='${c.name}' name='${c.name}' required></select></div>
                                 </div>`;
         },
         'submit': (c, form) => {
             const result = document.createElement('div');
             form.appendChild(result);
-            result.outerHTML = `<button class='lp-element lp-pom-button' type='submit'> ${c.label} </button>`;
+            result.outerHTML = `<div class='checkout-errror' id='checkout_error'></div>
+                                <button class='lp-element lp-pom-button' id='${c.name}' type='submit'> ${c.label} </button>`;
         }
     };
     var formElement = document.createElement('form');
@@ -147,149 +162,17 @@ function buildForm(config) {
             option.value = o.value;
             formElement.querySelector(`#${c.name}`).appendChild(option);
         });
+        if (c.onChange) formElement.querySelector(`#${c.name}`).addEventListener('change', c.onChange);
     });
     return formElement;
-}
-
-function getCheckoutFormBody(_config) {
-    const formTypeLookup = {
-        'digital':
-            `<form id='aa-checkout-form' method='POST'>
-            <h2><span style='font-family: lato; font-size: 24px; color: rgb(0, 0, 0); text-decoration: underline;'>Contact
-                Details</span></h2>
-            <div class='checkout-row'>
-              <div class='checkout-col'><label for='firstName' class='checkout-label'>First Name :</label>
-              </div>
-              <div class='checkout-col'><input type='text' id='firstname' name='firstname' checkout-prefill='firstname' required>
-              </div>
-            </div>
-            <div class='checkout-row'>
-              <div class='checkout-col'><label for='lastName' class='checkout-label'>Last Name :</label>
-              </div>
-              <div class='checkout-col'><input type='text' id='lastname' name='lastname' checkout-prefill='lastname' required>
-              </div>
-            </div>
-            <div class='checkout-row'>
-              <div class='checkout-col'><label for='email' class='checkout-label'>Email Address :</label>
-              </div>
-              <div class='checkout-col'><input type='email' id='email' name='email' checkout-prefill='email' readonly required>
-              </div>
-            </div>
-            <div class='checkout-row'>
-              <div class='checkout-col'><label for='phone' class='checkout-label'>Contact Number :</label>
-              </div>
-              <div class='checkout-col'><input type='text' id='phone' name='phone' checkout-prefill='phone'></div>
-            </div>
-            <br><br>
-            <h2><span style='font-family: lato; font-size: 24px; color: rgb(0, 0, 0); text-decoration: underline;'>Current Billing
-                Address</span></h2>
-            <div class='checkout-row'>
-              <div class='checkout-col'><label for='adr' class='checkout-label'>Address :</label>
-              </div>
-              <div class='checkout-col'><input type='text' id='adr' name='adr' checkout-prefill='address' required></div>
-            </div>
-            <div class='checkout-row'>
-              <div class='checkout-col'><label for='city' class='checkout-label'>City :</label>
-              </div>
-              <div class='checkout-col'><input type='text' id='city' name='city' checkout-prefill='city'></div>
-            </div>
-            <div class='checkout-row'>
-              <div class='checkout-col'><label for='postal-code'' class=' checkout-label'>Zip/Postal Code :</label>
-              </div>
-              <div class='checkout-col'><input type='text' id='postal- name=' postal'code' checkout-prefill='postal-code'
-                  required></div>
-            </div>
-            <div class='checkout-row'>
-              <div class='checkout-col'><label for='country' class='checkout-label'>Country :</label>
-              </div>
-              <div class='checkout-col'><select id='country' name='country' checkout-prefill='country'></select></div>
-            </div>
-            <div class='checkout-row'>
-              <div class='checkout-col'><label for='state' class='checkout-label'>State/Province :</label>
-              </div>
-              <div class='checkout-col'><select id='state' name='state'></select></div>
-            </div>
-            <br><br>
-            <h2><span style='font-family: lato; font-size: 24px; color: rgb(0, 0, 0); text-decoration: underline;'>Credit Card
-                Information</span></h2>
-            <div class='checkout-row'>
-              <div class='checkout-col'><label for='cc_type' class='checkout-label'>Credit card Type :</label>
-              </div>
-              <div class='checkout-col'><select id='cc_type' name='cc_type'>
-                  <option value=0>Select One</option>
-                  <option value='mastercard'>MasterCard</option>
-                  <option value='visa'>VISA</option>
-                </select></div>
-            </div>
-            <div class='checkout-row'>
-              <div class='checkout-col'><label for='cc_number' class='checkout-label'>Credit card Number :</label>
-              </div>
-              <div class='checkout-col'><input type='text' id='cc_number' name='cc_number' required></div>
-            </div>
-            <div class='checkout-row'>
-              <div class='checkout-col'><label for='cc_number' class='checkout-label'>CVV :</label>
-              </div>
-              <div class='checkout-col'><input type='text' id='cc_cvv' name='cc_cvv' required minlength='3' maxlength='4'></div>
-            </div>
-            <div class='checkout-row'>
-              <div class='checkout-col'><label for='cc_month' class='checkout-label'>Expiry Month: </label></div>
-              <div class='checkout-col'><select id='cc_month' name='cc_month'></select></div>
-            </div>
-            <div class='checkout-row'>
-              <div class='checkout-col'><label for='cc_year' class='checkout-label'>Expiry Year: </label></div>
-              <div class='checkout-col'><select id='cc_year' name='cc_year'></select></div>
-            </div>
-            <div class='checkout-errror' id='checkout_error'></div>
-            <button class='lp-element lp-pom-button' type='submit'> ${_config.checkoutButtonText} </button>
-          </form>`,
-        'upsell':
-            `<form id='aa-checkout-form' method='POST'>
-                <div class='checkout-row'>
-                    <div class='checkout-col'><label for='product_id' class='checkout-label'>Product Id: </label></div>
-                    <div class='checkout-col'><input type='text' id='product_id' name='product_id' required readonly value='123'></div>
-                </div>
-                <div class='checkout-errror' id='checkout_error'></div>
-                <button class='lp-element lp-pom-button' type='submit'> ${_config.checkoutButtonText} </button>
-            </form>`
-    };
-    return formTypeLookup[_config.checkoutFormType];
 }
 
 function addCheckoutForm() {
     const _checkoutElem = getCheckoutElem();
     const form = buildForm(getCheckoutConfig(_checkoutElem));
     _checkoutElem.appendChild(form);
-    setupForm(form);
     prefillForm(form);
-    _checkoutElem.addEventListener("submit", function (event) {
-        event.preventDefault();
-        submitCheckout(event);
-    });
-}
-
-function setupForm(form) {
-    const countrySelect = form.querySelector('#country');
-    countrySelect.addEventListener('change', e => {
-        const stateSelect = form.querySelector('#state');
-        fetch(`https://aaproxyapis.astrologyanswerstest.com/countries/${countrySelect.value}/states`).then(response => {
-            if (response.status == 200) {
-                response.json().then(data => {
-                    stateSelect.innerHTML = '';
-                    for (let key in data) {
-                        const option = document.createElement('option');
-                        option.text = data[key];
-                        option.value = key;
-                        stateSelect.appendChild(option);
-                    }
-                    stateSelect.style.display = 'initial';
-                });
-            }
-            else {
-                console.log('Error with API. Status code : ' + response.status);
-                stateSelect.style.display = 'none';
-            }
-        });
-    });
+    form.addEventListener('submit', submitCheckout);
 }
 
 function prefillForm(form) {
@@ -331,7 +214,31 @@ function prefillForm(form) {
         });
 }
 
-function submitCheckout(event) {
+function countrySelectChanged(e) {
+    const form = getCheckoutElem().querySelector('#aa-checkout-form');
+    const stateSelect = form.querySelector('#state');
+    fetch(`https://aaproxyapis.astrologyanswerstest.com/countries/${e.target.value}/states`).then(response => {
+        if (response.status == 200) {
+            response.json().then(data => {
+                stateSelect.innerHTML = '';
+                for (let key in data) {
+                    const option = document.createElement('option');
+                    option.text = data[key];
+                    option.value = key;
+                    stateSelect.appendChild(option);
+                }
+                stateSelect.style.display = 'initial';
+            });
+        }
+        else {
+            console.log('Error with API. Status code : ' + response.status);
+            stateSelect.style.display = 'none';
+        }
+    });
+}
+
+function submitCheckout(e) {
+    e.preventDefault();
     const config = getCheckoutConfig(getCheckoutElem());
     const form = getCheckoutElem().querySelector('#aa-checkout-form');
 
