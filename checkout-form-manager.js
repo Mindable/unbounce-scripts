@@ -94,6 +94,7 @@ function getCheckoutFormBody(_config) {
       <div class='checkout-col'><label for='cc_year' class='checkout-label'>Expiry Year: </label></div>
       <div class='checkout-col'><select id='cc_year' name='cc_year'></select></div>
     </div>
+    <div class='checkout-errror' id='checkout_error'></div>
     <button class='lp-element lp-pom-button' type='submit'> ${_config.checkoutButtonText} </button>
   </form>`;
 }
@@ -214,7 +215,7 @@ function submitCheckout(event) {
         }
         response.json().then(data => {
             if (data['status'] != 'success') {
-                console.log(`Checkout unsuccessful: ${data}`);
+                form.querySelector('#checkout_error').innerHTML = `Checkout unsuccessful: ${data['message']}`;
                 return;
             }
             window.location.href = config.successfulCheckoutUrl;
