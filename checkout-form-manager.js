@@ -88,8 +88,15 @@ function buildForm() {
             type: 'select',
             label: 'Expiry Year',
             name: 'cc_year',
-            options: () => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-                .map(i => { return { text: i, value: i } })
+            options: () => {
+                const currentYear = new Date().getFullYear();
+                return Array(10).fill().map((_, i) => currentYear + i).map(year => {
+                    const option = document.createElement('option');
+                    option.text = year;
+                    option.value = year;
+                    return option;
+                });
+            }
         },
         {
             type: 'submit',
@@ -120,14 +127,6 @@ function buildForm() {
                                     <div class='checkout-col'><label for='${c.name}' class='checkout-label'>${c.label}:</label></div>
                                     <div class='checkout-col'><select id='${c.name}' name='${c.name}'></select></div>
                                 </div>`;
-            console.log(result);
-            if (c.prefillField) result.setAttribute('checkout-prefill', c.prefillField);
-            if (c.options) c.options().forEach(o => {
-                const option = document.createElement('option');
-                option.text = o.text;
-                option.value = o.value;
-                // result.querySelector(`#${c.name}`).appendChild(option);
-            })
         },
         'submit': (c, form) => {
             const result = document.createElement('div');
@@ -139,6 +138,15 @@ function buildForm() {
     formElement.id = 'aa-checkout-form';
     components.forEach(c => {
         componentBuilderMap[c.type](c, formElement);
+    });
+    components.forEach(c => {
+        if (c.prefillField) formElement.querySelector(`#${c.name}`).setAttribute('checkout-prefill', c.prefillField);
+        if (c.options) c.options().forEach(o => {
+            const option = document.createElement('option');
+            option.text = o.text;
+            option.value = o.value;
+            formElement.querySelector(`#${c.name}`).appendChild(option);
+        });
     });
     return formElement;
 }
@@ -231,11 +239,9 @@ function getCheckoutFormBody(_config) {
 }
 
 function addCheckoutForm() {
-    // _checkoutElem.innerHTML = getCheckoutFormBody(getCheckoutConfig(_checkoutElem));
-    // _checkoutElem.innerHTML = buildForm();
     const _checkoutElem = getCheckoutElem();
-    _checkoutElem.appendChild(buildForm());
-    const form = _checkoutElem.querySelector('#aa-checkout-form');
+    const form = buildForm();
+    _checkoutElem.appendChild(form);
     setupForm(form);
     prefillForm(form);
     _checkoutElem.addEventListener("submit", function (event) {
@@ -245,16 +251,6 @@ function addCheckoutForm() {
 }
 
 function setupForm(form) {
-
-    const ccYearSelect = form.querySelector('#cc_year');
-    const currentYear = new Date().getFullYear();
-    Array(10).fill().map((_, i) => currentYear + i).forEach(year => {
-        const option = document.createElement('option');
-        option.text = year;
-        option.value = year;
-        ccYearSelect.appendChild(option);
-    });
-
     const countrySelect = form.querySelector('#country');
     countrySelect.addEventListener('change', e => {
         const stateSelect = form.querySelector('#state');
