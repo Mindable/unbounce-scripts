@@ -27,7 +27,7 @@ function getCheckoutFormBody(_config) {
       <div class='checkout-col'><input type='text' id='lastname' name='lastname' checkout-prefill='lastname' required></div>
     </div>
     <div class='checkout-row'>
-      <div class='checkout-col'><label for='emailId' class='checkout-label'>Email Address :</label>
+      <div class='checkout-col'><label for='email' class='checkout-label'>Email Address :</label>
       </div>
       <div class='checkout-col'><input type='email' id='email' name='email' checkout-prefill='email' readonly required></div>
     </div>
@@ -196,8 +196,8 @@ function submitCheckout(event) {
     const form = getCheckoutElem().querySelector('#aa-checkout-form');
 
     const formData = new FormData(form);
-    // TODO get productId from url
-    formData.append('productId', 123);
+    // TODO get product_id from url
+    formData.append('product_id', 123);
     
     const formDataJson = Array.from(formData).reduce((acc, cur) => {
         acc[cur[0]] = cur[1];
