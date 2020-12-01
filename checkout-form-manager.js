@@ -12,7 +12,7 @@ function getCheckoutConfig(_checkoutElem) {
     return _config;
 }
 
-function buildForm() {
+function buildForm(config) {
     const components = [
         {
             type: 'header',
@@ -100,7 +100,7 @@ function buildForm() {
         },
         {
             type: 'submit',
-            label: getCheckoutConfig(getCheckoutElem()).checkoutButtonText
+            label: config.checkoutButtonText
         }
     ];
     const createFromTextCompononent = function (c, form) {
@@ -131,7 +131,7 @@ function buildForm() {
         'submit': (c, form) => {
             const result = document.createElement('div');
             form.appendChild(result);
-            result.outerHTML = ``;
+            result.outerHTML = `<button class='lp-element lp-pom-button' type='submit'> ${c.label} </button>`;
         }
     };
     var formElement = document.createElement('form');
@@ -240,7 +240,7 @@ function getCheckoutFormBody(_config) {
 
 function addCheckoutForm() {
     const _checkoutElem = getCheckoutElem();
-    const form = buildForm();
+    const form = buildForm(getCheckoutConfig(_checkoutElem));
     _checkoutElem.appendChild(form);
     setupForm(form);
     prefillForm(form);
