@@ -12,6 +12,113 @@ function getCheckoutConfig(_checkoutElem) {
     return _config;
 }
 
+function buildForm() {
+    const components = [
+        {
+            type: 'header',
+            label: 'Contact Details'
+        },
+        {
+            type: 'text',
+            label: 'First Name',
+            name: 'firstname',
+            prefillField: 'firstname'
+        },
+        {
+            type: 'email',
+            label: 'Email',
+            name: 'email',
+            prefillField: 'email'
+        },
+        {
+            type: 'header',
+            label: 'Current Billing Address'
+        },
+        {
+            type: 'text',
+            label: 'Address',
+            name: 'adr'
+        },
+        {
+            type: 'text',
+            label: 'City',
+            name: 'city',
+            prefillField: 'city'
+        },
+        {
+            type: 'select',
+            label: 'Country',
+            name: 'country',
+            prefillField: 'country',
+            options: () => []
+        },
+        {
+            type: 'select',
+            label: 'State',
+            name: 'state',
+            prefillField: 'state',
+            options: () => []
+        },
+        {
+            type: 'header',
+            label: 'Credit Card Information'
+        },
+        {
+            type: 'select',
+            label: 'Card Type',
+            name: 'cc_type',
+            options: () => [
+                { text: 'Select One', value: null },
+                { text: 'VISA', value: 'visa' },
+                { text: 'MasterCard', value: 'mastercard' },
+            ]
+        },
+        {
+            type: 'text',
+            label: 'Card Number',
+            name: 'cc_number',
+            prefillField: 'cc_number'
+        },
+        {
+            type: 'select',
+            label: 'Expiry Month',
+            name: 'cc_month',
+            options: () => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+                .map(i => { return { text: i, value: i } })
+        },
+        {
+            type: 'select',
+            label: 'Expiry Year',
+            name: 'cc_year',
+            options: () => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+                .map(i => { return { text: i, value: i } })
+        },
+        {
+            type: 'submit',
+            label: getCheckoutConfig(getCheckoutElem()).checkoutButtonText
+        }
+    ];
+    const componentBuilderMap = {
+        'header': c => {
+            const result = document.createElement('div');
+            result.innerHTML = `<h2><span style='font-family: lato; font-size: 24px; color: rgb(0, 0, 0); text-decoration: underline;'>${c.label}</span></h2>`;
+            return result;
+        },
+        'text': c => { return document.createElement('div'); },
+        'email': c => { return document.createElement('div'); },
+        'select': c => { return document.createElement('div'); },
+        'submit': c => { return document.createElement('div'); }
+    };
+    var formElement = document.createElement('form');
+    formElement.id = 'aa-checkout-form';
+    components.forEach(c => {
+        console.log(c);
+        const element = componentBuilderMap[c.type](c);
+        formElement.appendChild(element);
+    });
+    return formElement;
+}
+
 function getCheckoutFormBody(_config) {
     return `<form id='aa-checkout-form' method='POST'>
     <h2><span style='font-family: lato; font-size: 24px; color: rgb(0, 0, 0); text-decoration: underline;'>Contact
@@ -52,7 +159,7 @@ function getCheckoutFormBody(_config) {
     <div class='checkout-row'>
       <div class='checkout-col'><label for='postal-code'' class=' checkout-label'>Zip/Postal Code :</label>
       </div>
-      <div class='checkout-col'><input type='text' id='postal- name='postal'code' checkout-prefill='postal-code' required></div>
+      <div class='checkout-col'><input type='text' id='postal-code' checkout-prefill='postal-code' required></div>
     </div>
     <div class='checkout-row'>
       <div class='checkout-col'><label for='country' class='checkout-label'>Country :</label>
@@ -100,8 +207,10 @@ function getCheckoutFormBody(_config) {
 }
 
 function addCheckoutForm() {
+    // _checkoutElem.innerHTML = getCheckoutFormBody(getCheckoutConfig(_checkoutElem));
+    // _checkoutElem.innerHTML = buildForm();
     const _checkoutElem = getCheckoutElem();
-    _checkoutElem.innerHTML = getCheckoutFormBody(getCheckoutConfig(_checkoutElem));
+    _checkoutElem.appendChild(buildForm());
     const form = _checkoutElem.querySelector('#aa-checkout-form');
     setupForm(form);
     prefillForm(form);
@@ -199,7 +308,7 @@ function submitCheckout(event) {
     const formData = new FormData(form);
     // TODO get product_id from url
     formData.append('product_id', 123);
-    
+
     const formDataJson = Array.from(formData).reduce((acc, cur) => {
         acc[cur[0]] = cur[1];
         return acc;
