@@ -49,15 +49,13 @@ function buildForm() {
             type: 'select',
             label: 'Country',
             name: 'country',
-            prefillField: 'country',
-            options: () => []
+            prefillField: 'country'
         },
         {
             type: 'select',
             label: 'State',
             name: 'state',
-            prefillField: 'state',
-            options: () => []
+            prefillField: 'state'
         },
         {
             type: 'header',
@@ -98,23 +96,49 @@ function buildForm() {
             label: getCheckoutConfig(getCheckoutElem()).checkoutButtonText
         }
     ];
+    const createFromTextCompononent = function (c, form) {
+        const result = document.createElement('div');
+        form.appendChild(result);
+        result.outerHTML = `<div class='checkout-row'>
+                                <div class='checkout-col'><label for='${c.name}' class='checkout-label'>${c.label}:</label></div>
+                                <div class='checkout-col'><input type='${c.type}' id='${c.name}' name='${c.name}' required></div>
+                            </div>`;
+        if (c.prefillField) result.setAttribute('checkout-prefill', c.prefillField);
+    };
     const componentBuilderMap = {
-        'header': c => {
+        'header': (c, form) => {
             const result = document.createElement('div');
-            result.innerHTML = `<h2><span style='font-family: lato; font-size: 24px; color: rgb(0, 0, 0); text-decoration: underline;'>${c.label}</span></h2>`;
-            return result;
+            form.appendChild(result);
+            result.outerHTML = `<h2><span style='font-family: lato; font-size: 24px; color: rgb(0, 0, 0); text-decoration: underline;'>${c.label}</span></h2>`;
         },
-        'text': c => { return document.createElement('div'); },
-        'email': c => { return document.createElement('div'); },
-        'select': c => { return document.createElement('div'); },
-        'submit': c => { return document.createElement('div'); }
+        'text': (c, form) => createFromTextCompononent(c, form),
+        'email': (c, form) => createFromTextCompononent(c, form),
+        'select': (c, form) => {
+            const result = document.createElement('div');
+            form.appendChild(result);
+            result.outerHTML = `<div class='checkout-row'>
+                                    <div class='checkout-col'><label for='${c.name}' class='checkout-label'>${c.label}:</label></div>
+                                    <div class='checkout-col'><select id='${c.name}' name='${c.name}'></select></div>
+                                </div>`;
+            console.log(result);
+            if (c.prefillField) result.setAttribute('checkout-prefill', c.prefillField);
+            if (c.options) c.options().forEach(o => {
+                const option = document.createElement('option');
+                option.text = o.text;
+                option.value = o.value;
+                // result.querySelector(`#${c.name}`).appendChild(option);
+            })
+        },
+        'submit': (c, form) => {
+            const result = document.createElement('div');
+            form.appendChild(result);
+            result.outerHTML = ``;
+        }
     };
     var formElement = document.createElement('form');
     formElement.id = 'aa-checkout-form';
     components.forEach(c => {
-        console.log(c);
-        const element = componentBuilderMap[c.type](c);
-        formElement.appendChild(element);
+        componentBuilderMap[c.type](c, formElement);
     });
     return formElement;
 }
@@ -221,13 +245,6 @@ function addCheckoutForm() {
 }
 
 function setupForm(form) {
-    const ccMonthSelect = form.querySelector('#cc_month');
-    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].forEach(i => {
-        const option = document.createElement('option');
-        option.text = i;
-        option.value = i;
-        ccMonthSelect.appendChild(option);
-    });
 
     const ccYearSelect = form.querySelector('#cc_year');
     const currentYear = new Date().getFullYear();
