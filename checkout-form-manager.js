@@ -35,7 +35,8 @@ function buildForm(config) {
                 type: 'email',
                 label: 'Email',
                 name: 'email',
-                prefillField: 'email'
+                prefillField: 'email',
+                readonly: true
             },
             {
                 type: 'text',
@@ -146,7 +147,6 @@ function buildForm(config) {
                                 <div class='checkout-col'><label for='${c.name}' class='checkout-label'>${c.label}:</label></div>
                                 <div class='checkout-col'><input type='${c.type}' id='${c.name}' name='${c.name}' required></div>
                             </div>`;
-        if (c.prefillField) result.setAttribute('checkout-prefill', c.prefillField);
     };
     const componentBuilderMap = {
         'header': (c, form) => {
@@ -177,6 +177,7 @@ function buildForm(config) {
         componentBuilderMap[c.type](c, formElement);
     });
     components.forEach(c => {
+        if (c.readonly) formElement.querySelector(`#${c.name}`).setAttribute('readonly', 'true');
         if (c.prefillField) formElement.querySelector(`#${c.name}`).setAttribute('checkout-prefill', c.prefillField);
         if (c.options) c.options().forEach(o => {
             const option = document.createElement('option');
