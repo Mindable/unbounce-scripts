@@ -266,6 +266,7 @@ function submitCheckout(e) {
     const form = getCheckoutElem().querySelector('#aa-checkout-form');
 
     const formData = new FormData(form);
+    formData.append('hash', (new URL(document.location)).searchParams.get('hash'));
     // TODO get offer_id from url
     formData.append('offer_id', 123);
 
