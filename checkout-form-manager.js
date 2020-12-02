@@ -112,6 +112,12 @@ function buildForm(config) {
             }
         },
         {
+            type: 'text',
+            label: 'CVV',
+            name: 'cc_cvv',
+            prefillField: 'cc_cvv'
+        },
+        {
             type: 'submit',
             name: 'submit',
             label: config.checkoutButtonText
