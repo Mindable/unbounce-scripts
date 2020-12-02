@@ -128,9 +128,9 @@ function buildForm(config) {
         'upsell': [
             {
                 type: 'text',
-                label: 'Product ID',
-                name: 'product_id',
-                prefillField: 'product_id'
+                label: 'Offer ID',
+                name: 'offer_id',
+                prefillField: 'offer_id'
             },
             {
                 type: 'submit',
@@ -266,8 +266,8 @@ function submitCheckout(e) {
     const form = getCheckoutElem().querySelector('#aa-checkout-form');
 
     const formData = new FormData(form);
-    // TODO get product_id from url
-    formData.append('product_id', 123);
+    // TODO get offer_id from url
+    formData.append('offer_id', 123);
 
     const formDataJson = Array.from(formData).reduce((acc, cur) => {
         acc[cur[0]] = cur[1];
