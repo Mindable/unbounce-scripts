@@ -13,116 +13,132 @@ function getCheckoutConfig(_checkoutElem) {
 }
 
 function buildForm(config) {
-    const components = [
-        {
-            type: 'header',
-            label: 'Contact Details'
-        },
-        {
-            type: 'text',
-            label: 'First Name',
-            name: 'firstname',
-            prefillField: 'firstname'
-        },
-        {
-            type: 'text',
-            label: 'Last Name',
-            name: 'lastname',
-            prefillField: 'lastname'
-        },
-        {
-            type: 'email',
-            label: 'Email',
-            name: 'email',
-            prefillField: 'email'
-        },
-        {
-            type: 'text',
-            label: 'Contact Number',
-            name: 'phone',
-            prefillField: 'phone'
-        },
-        {
-            type: 'header',
-            label: 'Current Billing Address'
-        },
-        {
-            type: 'text',
-            label: 'Address',
-            name: 'adr'
-        },
-        {
-            type: 'text',
-            label: 'City',
-            name: 'city',
-            prefillField: 'city'
-        },
-        {
-            type: 'select',
-            label: 'Country',
-            name: 'country',
-            prefillField: 'country',
-            onChange: countrySelectChanged
-        },
-        {
-            type: 'select',
-            label: 'State',
-            name: 'state',
-            prefillField: 'state'
-        },
-        {
-            type: 'header',
-            label: 'Credit Card Information'
-        },
-        {
-            type: 'select',
-            label: 'Card Type',
-            name: 'cc_type',
-            options: () => [
-                { text: 'Select One', value: null },
-                { text: 'VISA', value: 'visa' },
-                { text: 'MasterCard', value: 'mastercard' },
-            ]
-        },
-        {
-            type: 'text',
-            label: 'Card Number',
-            name: 'cc_number',
-            prefillField: 'cc_number'
-        },
-        {
-            type: 'select',
-            label: 'Expiry Month',
-            name: 'cc_month',
-            options: () => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-                .map(i => { return { text: i, value: i } })
-        },
-        {
-            type: 'select',
-            label: 'Expiry Year',
-            name: 'cc_year',
-            options: () => {
-                const currentYear = new Date().getFullYear();
-                return Array(10).fill().map((_, i) => currentYear + i).map(year => {
-                    const option = document.createElement('option');
-                    option.text = year;
-                    option.value = year;
-                    return option;
-                });
+    const formTypeLookup = {
+        'digital': [
+            {
+                type: 'header',
+                label: 'Contact Details'
+            },
+            {
+                type: 'text',
+                label: 'First Name',
+                name: 'firstname',
+                prefillField: 'firstname'
+            },
+            {
+                type: 'text',
+                label: 'Last Name',
+                name: 'lastname',
+                prefillField: 'lastname'
+            },
+            {
+                type: 'email',
+                label: 'Email',
+                name: 'email',
+                prefillField: 'email'
+            },
+            {
+                type: 'text',
+                label: 'Contact Number',
+                name: 'phone',
+                prefillField: 'phone'
+            },
+            {
+                type: 'header',
+                label: 'Current Billing Address'
+            },
+            {
+                type: 'text',
+                label: 'Address',
+                name: 'adr'
+            },
+            {
+                type: 'text',
+                label: 'City',
+                name: 'city',
+                prefillField: 'city'
+            },
+            {
+                type: 'select',
+                label: 'Country',
+                name: 'country',
+                prefillField: 'country',
+                onChange: countrySelectChanged
+            },
+            {
+                type: 'select',
+                label: 'State',
+                name: 'state',
+                prefillField: 'state'
+            },
+            {
+                type: 'header',
+                label: 'Credit Card Information'
+            },
+            {
+                type: 'select',
+                label: 'Card Type',
+                name: 'cc_type',
+                options: () => [
+                    { text: 'Select One', value: null },
+                    { text: 'VISA', value: 'visa' },
+                    { text: 'MasterCard', value: 'mastercard' },
+                ]
+            },
+            {
+                type: 'text',
+                label: 'Card Number',
+                name: 'cc_number',
+                prefillField: 'cc_number'
+            },
+            {
+                type: 'select',
+                label: 'Expiry Month',
+                name: 'cc_month',
+                options: () => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+                    .map(i => { return { text: i, value: i } })
+            },
+            {
+                type: 'select',
+                label: 'Expiry Year',
+                name: 'cc_year',
+                options: () => {
+                    const currentYear = new Date().getFullYear();
+                    return Array(10).fill().map((_, i) => currentYear + i).map(year => {
+                        const option = document.createElement('option');
+                        option.text = year;
+                        option.value = year;
+                        return option;
+                    });
+                }
+            },
+            {
+                type: 'text',
+                label: 'CVV',
+                name: 'cc_cvv',
+                prefillField: 'cc_cvv'
+            },
+            {
+                type: 'submit',
+                name: 'submit',
+                label: config.checkoutButtonText
             }
-        },
-        {
-            type: 'text',
-            label: 'CVV',
-            name: 'cc_cvv',
-            prefillField: 'cc_cvv'
-        },
-        {
-            type: 'submit',
-            name: 'submit',
-            label: config.checkoutButtonText
-        }
-    ];
+        ],
+        'upsell': [
+            {
+                type: 'text',
+                label: 'Product ID',
+                name: 'product_id',
+                prefillField: 'product_id'
+            },
+            {
+                type: 'submit',
+                name: 'submit',
+                label: config.checkoutButtonText
+            }
+        ]
+    };
+    const components = formTypeLookup[config.checkoutFormType];
     const createFromTextCompononent = function (c, form) {
         const result = document.createElement('div');
         form.appendChild(result);
