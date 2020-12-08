@@ -288,7 +288,7 @@ function submitCheckout(e) {
                 form.querySelector('#checkout_error').innerHTML = `Checkout unsuccessful: ${data['message']}`;
                 return;
             }
-            window.location.href = config.successfulCheckoutUrl;
+            window.location.href = `${config.successfulCheckoutUrl}&nonce=${data['nonce']}`;
         });
     });
 }
