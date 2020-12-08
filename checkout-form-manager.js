@@ -209,18 +209,19 @@ function prefillForm(form) {
                 return;
             }
             response.json().then(data => {
-                // Set input ranges for address->country
+                // Set countrySelect options from address->country
                 const countrySelect = form.querySelector('#country');
-                var countryData = data['address']['countries'];
-                for (let key in countryData) {
-                    const option = document.createElement('option');
-                    option.text = countryData[key];
-                    option.value = key;
-                    countrySelect.appendChild(option);
+                if (countrySelect) {
+                    var countryData = data['address']['countries'];
+                    for (let key in countryData) {
+                        const option = document.createElement('option');
+                        option.text = countryData[key];
+                        option.value = key;
+                        countrySelect.appendChild(option);
+                    }
+                    // Trigger the inital update of the states list
+                    countrySelect.dispatchEvent(new Event('change'));
                 }
-
-                // Trigger the inital update of the states list
-                countrySelect.dispatchEvent(new Event('change'));
 
                 // Prefill input values from user
                 const userData = data['user'];
