@@ -295,27 +295,35 @@ function submitCheckout(e) {
 }
 
 function registerUpsellLinks() {
-    // href format: `funnel://upsell?hash=USER_ID&offerId=OFFER_ID&token=TOKEN&callbackUrl=URL_TO_FFLUX`
+    // design-time href: `funnel://upsell?offerId=OFFER_ID&callbackUrl=https://flux.astrologyanswers.com/?flux_action=1&flux_f=1&flux_ffn=2`
+    // rendered href: `https://flux.astrologyanswers.com/?flux_action=1&flux_f=1&flux_ffn=2&offerId=OFFER_ID&hash=HASH&token=TOKEN`
     Array.from(document.getElementsByTagName('a')).forEach(a => {
-        const hrefPattern = /funnel:\/\/upsell\?(.*)/;
+        const hrefPattern = /funnel:\/\/upsell\?([^&]*)&?callbackUrl=(.*)/;
         const match = hrefPattern.exec(a.href);
         if (!match) return;
-        const params = match[1].split('&').reduce((acc, cur) => {
-            const items = cur.split('=');
-            const key = items[0];
-            const value = items[1];
-            acc[key] = value;
+        
+        const hrefParams = match[1].split('&').reduce((acc, cur) => {
+            const tuple = cur.split('=');
+            acc.push({name: tuple[0], value: tuple[1]});
             return acc;
-        }, {});
+        }, []);
+
+        urlParams = new URLSearchParams(window.location.search);
+        hrefParams.push({name: 'hash', value: urlParams.get('hash')});
+        hrefParams.push({name: 'token', value: urlParams.get('token')});
+
+        const callbackUrl = match[2];
         a.addEventListener('click', e => {
             e.preventDefault();
-            submitUpsell(params);
+            submitUpsell(callbackUrl, hrefParams);
         })
     });
 }
 
-function submitUpsell(params) {
-    window.location.href = `${params['callbackUrl']}?hash=${params['hash']}&offerId=${params['offerId']}&token=${params['token']}`;
+function submitUpsell(callbackUrl, additionalParams) {
+    const url = new URL(callbackUrl);
+    additionalParams.forEach(p => url.searchParams.append(p.name, p.value));
+    window.location.href = url.toString();
 }
 
 window.addEventListener('DOMContentLoaded', (e) => {
