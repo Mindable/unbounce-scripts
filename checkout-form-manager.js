@@ -295,10 +295,10 @@ function submitCheckout(e) {
 }
 
 function registerUpsellLinks() {
-    // design-time href: `funnel://upsell?offerId=OFFER_ID&callbackUrl=https://flux.astrologyanswers.com/?flux_action=1&flux_f=1&flux_ffn=2`
+    // design-time href: `//funnel/upsell?offerId=OFFER_ID&callbackUrl=https://flux.astrologyanswers.com/?flux_action=1&flux_f=1&flux_ffn=2`
     // rendered href: `https://flux.astrologyanswers.com/?flux_action=1&flux_f=1&flux_ffn=2&offerId=OFFER_ID&hash=HASH&token=TOKEN`
     Array.from(document.getElementsByTagName('a')).forEach(a => {
-        const hrefPattern = /funnel:\/\/upsell\?([^&]*)&?callbackUrl=(.*)/;
+        const hrefPattern = /.*\/\/funnel\/upsell\?([^&]*)&?callbackUrl=(.*)/;
         const match = hrefPattern.exec(a.href);
         if (!match) return;
         
