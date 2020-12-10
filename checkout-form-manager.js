@@ -289,12 +289,36 @@ function submitCheckout(e) {
                 form.querySelector('#checkout_error').innerHTML = `Checkout unsuccessful: ${data['message']}`;
                 return;
             }
-            window.location.href = `${config.successfulCheckoutUrl}&nonce=${data['nonce']}`;
+            window.location.href = `${config.successfulCheckoutUrl}&token=${data['token']}`;
         });
     });
 }
 
+function registerUpsellLinks() {
+    // href format: `funnel://upsell?hash=USER_ID&offerId=OFFER_ID&token=TOKEN&callbackUrl=URL_TO_FFLUX`
+    Array.from(document.getElementsByTagName('a')).forEach(a => {
+        const hrefPattern = /funnel:\/\/upsell\?(.*)/;
+        const match = hrefPattern.exec(a.href);
+        if (!match) return;
+        const params = match[1].split('&').reduce((acc, cur) => {
+            const items = cur.split('=');
+            const key = items[0];
+            const value = items[1];
+            acc[key] = value;
+            return acc;
+        }, {});
+        a.addEventListener('click', e => {
+            e.preventDefault();
+            submitUpsell(params);
+        })
+    });
+}
+
+function submitUpsell(params) {
+    window.location.href = `${params['callbackUrl']}?hash=${params['hash']}&offerId=${params['offerId']}&token=${params['token']}`;
+}
+
 window.addEventListener('DOMContentLoaded', (e) => {
-    if (!getCheckoutElem()) return;
-    addCheckoutForm();
+    if (getCheckoutElem()) addCheckoutForm();
+    registerUpsellLinks();
 });
