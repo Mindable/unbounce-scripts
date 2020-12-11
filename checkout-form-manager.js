@@ -7,6 +7,7 @@ function getCheckoutElem() {
 function getCheckoutConfig(_checkoutElem) {
     let _config = {};
     _config.checkoutFormType = _checkoutElem.getAttribute('checkoutFormType') ?? 'digital';
+    _config.offerId = _checkoutElem.getAttribute('offerId');
     _config.successfulCheckoutUrl = _checkoutElem.getAttribute('successfulCheckoutUrl') ?? 'astrologyanswers.com';
     _config.checkoutButtonText = _checkoutElem.getAttribute('checkoutButtonText') ?? 'Buy Now!';
     return _config;
@@ -83,7 +84,7 @@ function buildForm(config) {
                 label: 'Card Type',
                 name: 'cc_type',
                 options: () => [
-                    { text: 'Select One', value: null },
+                    { text: 'Select One', value: undefined },
                     { text: 'VISA', value: 'visa' },
                     { text: 'MasterCard', value: 'mastercard' },
                 ]
@@ -273,13 +274,13 @@ function countrySelectChanged(e) {
 
 function submitCheckout(e) {
     e.preventDefault();
-    const config = getCheckoutConfig(getCheckoutElem());
-    const form = getCheckoutElem().querySelector('#aa-checkout-form');
+    const checkoutElement = getCheckoutElem();
+    const config = getCheckoutConfig(checkoutElement);
+    const form = checkoutElement.querySelector('#aa-checkout-form');
 
     const formData = new FormData(form);
     formData.append('hash', (new URL(document.location)).searchParams.get('hash'));
-    // TODO get offer_id from url
-    formData.append('offer_id', 123);
+    formData.append('offer_id', checkoutElement.getAttribute('offerId'));
 
     const formDataJson = Array.from(formData).reduce((acc, cur) => {
         acc[cur[0]] = cur[1];
@@ -305,8 +306,8 @@ function submitCheckout(e) {
 }
 
 function registerUpsellLinks() {
-    // design-time href: `//funnel/upsell?offerId=OFFER_ID&callbackUrl=https://flux.astrologyanswers.com/?flux_action=1&flux_f=1&flux_ffn=2`
-    // rendered href: `https://flux.astrologyanswers.com/?flux_action=1&flux_f=1&flux_ffn=2&offerId=OFFER_ID&hash=HASH&token=TOKEN`
+    // design-time href: `//funnel/upsell?offer_id=OFFER_ID&callbackUrl=https://flux.astrologyanswers.com/?flux_action=1&flux_f=1&flux_ffn=2`
+    // rendered href: `https://flux.astrologyanswers.com/?flux_action=1&flux_f=1&flux_ffn=2&offer_id=OFFER_ID&hash=HASH&token=TOKEN`
     Array.from(document.getElementsByTagName('a')).forEach(a => {
         const hrefPattern = /.*\/\/funnel\/upsell\?([^&]*)&?callbackUrl=(.*)/;
         const match = hrefPattern.exec(a.href);
