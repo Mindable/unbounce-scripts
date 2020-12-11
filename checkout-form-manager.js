@@ -36,7 +36,9 @@ function buildForm(config) {
                 label: 'Email',
                 name: 'email',
                 prefillField: 'email',
-                readonly: true
+                attributes: [
+                    ['readonly', 'true']
+                ]
             },
             {
                 type: 'text',
@@ -90,7 +92,11 @@ function buildForm(config) {
                 type: 'text',
                 label: 'Card Number',
                 name: 'cc_number',
-                prefillField: 'cc_number'
+                prefillField: 'cc_number',
+                attributes: [
+                    ['minlength', 16],
+                    ['maxlength', 16]
+                ]
             },
             {
                 type: 'select',
@@ -117,7 +123,11 @@ function buildForm(config) {
                 type: 'text',
                 label: 'CVV',
                 name: 'cc_cvv',
-                prefillField: 'cc_cvv'
+                prefillField: 'cc_cvv',
+                attributes: [
+                    ['minlength', 3],
+                    ['maxlength', 4]
+                ]
             },
             {
                 type: 'submit',
@@ -125,12 +135,12 @@ function buildForm(config) {
                 label: config.checkoutButtonText
             }
         ],
-        'upsell': [
+        'physical': [
             {
                 type: 'text',
-                label: 'Offer ID',
-                name: 'offer_id',
-                prefillField: 'offer_id'
+                label: 'TODO',
+                name: 'todo',
+                prefillField: 'todo'
             },
             {
                 type: 'submit',
@@ -177,7 +187,6 @@ function buildForm(config) {
         componentBuilderMap[c.type](c, formElement);
     });
     components.forEach(c => {
-        if (c.readonly) formElement.querySelector(`#${c.name}`).setAttribute('readonly', 'true');
         if (c.prefillField) formElement.querySelector(`#${c.name}`).setAttribute('checkout-prefill', c.prefillField);
         if (c.options) c.options().forEach(o => {
             const option = document.createElement('option');
@@ -185,6 +194,7 @@ function buildForm(config) {
             option.value = o.value;
             formElement.querySelector(`#${c.name}`).appendChild(option);
         });
+        if (c.attributes) c.attributes.forEach(a => formElement.querySelector(`#${c.name}`).setAttribute(a[0], a[1]))
         if (c.onChange) formElement.querySelector(`#${c.name}`).addEventListener('change', c.onChange);
     });
     return formElement;
@@ -301,16 +311,16 @@ function registerUpsellLinks() {
         const hrefPattern = /.*\/\/funnel\/upsell\?([^&]*)&?callbackUrl=(.*)/;
         const match = hrefPattern.exec(a.href);
         if (!match) return;
-        
+
         const hrefParams = match[1].split('&').reduce((acc, cur) => {
             const tuple = cur.split('=');
-            acc.push({name: tuple[0], value: tuple[1]});
+            acc.push({ name: tuple[0], value: tuple[1] });
             return acc;
         }, []);
 
         urlParams = new URLSearchParams(window.location.search);
-        hrefParams.push({name: 'hash', value: urlParams.get('hash')});
-        hrefParams.push({name: 'token', value: urlParams.get('token')});
+        hrefParams.push({ name: 'hash', value: urlParams.get('hash') });
+        hrefParams.push({ name: 'token', value: urlParams.get('token') });
 
         const callbackUrl = match[2];
         a.addEventListener('click', e => {
