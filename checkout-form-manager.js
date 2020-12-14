@@ -202,11 +202,21 @@ function buildForm(config) {
 }
 
 function addCheckoutForm() {
-    const _checkoutElem = getCheckoutElem();
-    const form = buildForm(getCheckoutConfig(_checkoutElem));
-    _checkoutElem.appendChild(form);
+    const checkoutElem = getCheckoutElem();
+    const checkoutConfig = getCheckoutConfig(checkoutElem);
+    if (!validateCheckoutConfig(checkoutConfig, checkoutElem)) return;
+    const form = buildForm(checkoutConfig);
+    checkoutElem.appendChild(form);
     prefillForm(form);
     form.addEventListener('submit', submitCheckout);
+}
+
+function validateCheckoutConfig(config, element) {
+    if (!config.offerId) {
+        element.innerHTML = 'Missing attribute: offerId';
+        return false;
+    }
+    return true;
 }
 
 function prefillForm(form) {
