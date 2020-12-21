@@ -10,6 +10,7 @@ function getCheckoutConfig(_checkoutElem) {
     _config.offerId = _checkoutElem.getAttribute('offerId');
     _config.successfulCheckoutUrl = _checkoutElem.getAttribute('successfulCheckoutUrl') ?? 'astrologyanswers.com';
     _config.checkoutButtonText = _checkoutElem.getAttribute('checkoutButtonText') ?? 'Buy Now!';
+    _config.disableDefaultCss = _checkoutElem.getAttribute('disableDefaultCss') ?? false;
     return _config;
 }
 
@@ -151,35 +152,35 @@ function buildForm(config) {
         ]
     };
     const components = formTypeLookup[config.checkoutFormType];
-    const createFromTextCompononent = function (c, form) {
+    const createTextInputFromComponent = function (c, form) {
         const result = document.createElement('div');
         form.appendChild(result);
         result.outerHTML = `<div class='checkout-row'>
-                                <div class='checkout-col'><label for='${c.name}' class='checkout-label'>${c.label}:</label></div>
-                                <div class='checkout-col'><input type='${c.type}' id='${c.name}' name='${c.name}' required></div>
+                                <div class='checkout-col'><label class='checkout-label' for='${c.name}' >${c.label}:</label></div>
+                                <div class='checkout-col'><input class='checkout-input' type='${c.type}' id='${c.name}' name='${c.name}' required></div>
                             </div>`;
     };
     const componentBuilderMap = {
         'header': (c, form) => {
             const result = document.createElement('div');
             form.appendChild(result);
-            result.outerHTML = `<h2><span style='font-family: lato; font-size: 24px; color: rgb(0, 0, 0); text-decoration: underline;'>${c.label}</span></h2>`;
+            result.outerHTML = `<div class="checkout-header>${c.label}</div>`;
         },
-        'text': (c, form) => createFromTextCompononent(c, form),
-        'email': (c, form) => createFromTextCompononent(c, form),
+        'text': (c, form) => createTextInputFromComponent(c, form),
+        'email': (c, form) => createTextInputFromComponent(c, form),
         'select': (c, form) => {
             const result = document.createElement('div');
             form.appendChild(result);
             result.outerHTML = `<div class='checkout-row'>
-                                    <div class='checkout-col'><label for='${c.name}' class='checkout-label'>${c.label}:</label></div>
-                                    <div class='checkout-col'><select id='${c.name}' name='${c.name}' required></select></div>
+                                    <div class='checkout-col'><label class='checkout-label' for='${c.name}' >${c.label}:</label></div>
+                                    <div class='checkout-col'><select class='checkout-input' id='${c.name}' name='${c.name}' required></select></div>
                                 </div>`;
         },
         'submit': (c, form) => {
             const result = document.createElement('div');
             form.appendChild(result);
             result.outerHTML = `<div class='checkout-errror' id='checkout_error'></div>
-                                <button class='lp-element lp-pom-button' id='${c.name}' type='submit'> ${c.label} </button>`;
+                                <button class='checkout-submit' id='${c.name}' type='submit'> ${c.label} </button>`;
         }
     };
     var formElement = document.createElement('form');
@@ -201,10 +202,23 @@ function buildForm(config) {
     return formElement;
 }
 
+function addDefaultFormCss() {
+    const defaultFormCss = `
+.checkout-label {
+    color: red;
+}
+`;
+    const styleElement = document.createElement('style');
+    styleElement.setAttribute('type', 'text/css');
+    styleElement.innerHTML = defaultFormCss;
+    document.head.appendChild(styleElement);
+}
+
 function addCheckoutForm() {
     const checkoutElem = getCheckoutElem();
     const checkoutConfig = getCheckoutConfig(checkoutElem);
     if (!validateCheckoutConfig(checkoutConfig, checkoutElem)) return;
+    if (!checkoutConfig.disableDefaultCss) addDefaultFormCss();
     const form = buildForm(checkoutConfig);
     checkoutElem.appendChild(form);
     prefillForm(form);
