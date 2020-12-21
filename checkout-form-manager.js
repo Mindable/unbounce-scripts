@@ -50,7 +50,7 @@ function buildForm(config) {
             },
             {
                 type: 'header',
-                label: 'Current Billing Address'
+                label: 'Billing Address'
             },
             {
                 type: 'text',
@@ -78,14 +78,14 @@ function buildForm(config) {
             },
             {
                 type: 'header',
-                label: 'Credit Card Information'
+                label: 'Payment Information'
             },
             {
                 type: 'select',
                 label: 'Card Type',
                 name: 'cc_type',
                 options: () => [
-                    { text: 'Select One', value: undefined },
+                    { text: 'Card Type', value: undefined, isPlaceholder: true },
                     { text: 'VISA', value: 'visa' },
                     { text: 'MasterCard', value: 'mastercard' },
                 ]
@@ -193,6 +193,11 @@ function buildForm(config) {
             const option = document.createElement('option');
             option.text = o.text;
             option.value = o.value;
+            if (o.isPlaceholder) {
+                option.disabled = true;
+                option.selected = true;
+            }
+
             formElement.querySelector(`#${c.name}`).appendChild(option);
         });
         if (c.attributes) c.attributes.forEach(a => formElement.querySelector(`#${c.name}`).setAttribute(a[0], a[1]))
@@ -254,14 +259,17 @@ function prefillForm(form) {
                 const countrySelect = form.querySelector('#country');
                 if (countrySelect) {
                     var countryData = data['address']['countries'];
+                    const placeholder = document.createElement('option');
+                    placeholder.text = 'Country';
+                    placeholder.disabled = true;
+                    placeholder.selected = true;
+                    countrySelect.appendChild(placeholder);
                     for (let key in countryData) {
                         const option = document.createElement('option');
                         option.text = countryData[key];
                         option.value = key;
                         countrySelect.appendChild(option);
                     }
-                    // Trigger the inital update of the states list
-                    countrySelect.dispatchEvent(new Event('change'));
                 }
 
                 // Prefill input values from user
@@ -286,6 +294,11 @@ function countrySelectChanged(e) {
         if (response.status == 200) {
             response.json().then(data => {
                 stateSelect.innerHTML = '';
+                const placeholder = document.createElement('option');
+                placeholder.text = 'State';
+                placeholder.disabled = true;
+                placeholder.selected = true;
+                stateSelect.appendChild(placeholder);
                 for (let key in data) {
                     const option = document.createElement('option');
                     option.text = data[key];
