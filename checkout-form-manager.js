@@ -156,15 +156,15 @@ function buildForm(config) {
         const result = document.createElement('div');
         form.appendChild(result);
         result.outerHTML = `<div class='checkout-row'>
-                                <div class='checkout-col'><label class='checkout-label' for='${c.name}' >${c.label}:</label></div>
-                                <div class='checkout-col'><input class='checkout-input' type='${c.type}' id='${c.name}' name='${c.name}' required></div>
+                                <div class='checkout-col'><input class='checkout-input' type='${c.type}' id='${c.name}' name='${c.name}' placeholder='${c.label}' required></div>
                             </div>`;
     };
     const componentBuilderMap = {
         'header': (c, form) => {
+            console.log('wat');
             const result = document.createElement('div');
             form.appendChild(result);
-            result.outerHTML = `<div class="checkout-header>${c.label}</div>`;
+            result.outerHTML = `<div class='checkout-header'>${c.label}</div>`;
         },
         'text': (c, form) => createTextInputFromComponent(c, form),
         'email': (c, form) => createTextInputFromComponent(c, form),
@@ -172,7 +172,6 @@ function buildForm(config) {
             const result = document.createElement('div');
             form.appendChild(result);
             result.outerHTML = `<div class='checkout-row'>
-                                    <div class='checkout-col'><label class='checkout-label' for='${c.name}' >${c.label}:</label></div>
                                     <div class='checkout-col'><select class='checkout-input' id='${c.name}' name='${c.name}' required></select></div>
                                 </div>`;
         },
@@ -204,8 +203,15 @@ function buildForm(config) {
 
 function addDefaultFormCss() {
     const defaultFormCss = `
-.checkout-label {
-    color: red;
+.checkout-row {
+    display: flex;
+    margin: 0px;
+}
+.checkout-col {
+}
+.checkout-input {
+}
+.checkout-header {
 }
 `;
     const styleElement = document.createElement('style');
