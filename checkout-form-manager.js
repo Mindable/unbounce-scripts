@@ -219,16 +219,19 @@ function addDefaultFormCss() {
 }
 .checkout-header {
     display: flex;
-    font-style: bold;
+    font-weight: bold;
 }
 .checkout-row {
-    margin: 0px;
+    margin-bottom: 0.1rem;
     display: flex;
 }
 .checkout-col {
 }
 .checkout-input {
     width: 10rem;
+    border: 0.1rem solid;
+    border-radius: 0.2rem;
+    border-color: #A3BAC6;
 }
 select.checkout-input {
     white-space: nowrap;
