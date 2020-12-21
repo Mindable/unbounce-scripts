@@ -68,13 +68,19 @@ function buildForm(config) {
                 label: 'Country',
                 name: 'country',
                 prefillField: 'country',
-                onChange: countrySelectChanged
+                onChange: countrySelectChanged,
+                options: () => [
+                    { text: 'Country', value: undefined, isPlaceholder: true },
+                ]
             },
             {
                 type: 'select',
                 label: 'State',
                 name: 'state',
-                prefillField: 'state'
+                prefillField: 'state',
+                options: () => [
+                    { text: 'State', value: undefined, isPlaceholder: true },
+                ]
             },
             {
                 type: 'header',
@@ -161,7 +167,6 @@ function buildForm(config) {
     };
     const componentBuilderMap = {
         'header': (c, form) => {
-            console.log('wat');
             const result = document.createElement('div');
             form.appendChild(result);
             result.outerHTML = `<div class='checkout-header'>${c.label}</div>`;
@@ -178,12 +183,13 @@ function buildForm(config) {
         'submit': (c, form) => {
             const result = document.createElement('div');
             form.appendChild(result);
-            result.outerHTML = `<div class='checkout-errror' id='checkout_error'></div>
-                                <button class='checkout-submit' id='${c.name}' type='submit'> ${c.label} </button>`;
+            result.outerHTML = `<div class='checkout-error' id='checkout_error'></div>
+                                <input class='checkout-input' id='${c.name}' value='${c.label}' type='submit'></input>`;
         }
     };
     var formElement = document.createElement('form');
     formElement.id = 'aa-checkout-form';
+    formElement.className = 'checkout-form';
     components.forEach(c => {
         componentBuilderMap[c.type](c, formElement);
     });
@@ -208,15 +214,30 @@ function buildForm(config) {
 
 function addDefaultFormCss() {
     const defaultFormCss = `
-.checkout-row {
+.checkout-form {
+    width: min-content;
+}
+.checkout-header {
     display: flex;
+    font-style: bold;
+}
+.checkout-row {
     margin: 0px;
+    display: flex;
 }
 .checkout-col {
 }
 .checkout-input {
+    width: 10rem;
 }
-.checkout-header {
+select.checkout-input {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;  
+}
+.checkout-error {]
+}
+.checkout-submit {
 }
 `;
     const styleElement = document.createElement('style');
