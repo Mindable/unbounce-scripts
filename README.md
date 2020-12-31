@@ -1,2 +1,4 @@
 # unbounce-scripts
-- The scripts here should be the source for what's in Unbounce's global `Script Manager`
+- *WARNING*: This is a public repo!
+- TODO Update repo name as we're no longer using Unbounce
+- The `.js` files are referenced by public pages
