@@ -10,6 +10,7 @@ function getCheckoutConfig(_checkoutElem) {
     _config.offerId = _checkoutElem.getAttribute('offerId');
     _config.successfulCheckoutUrl = _checkoutElem.getAttribute('successfulCheckoutUrl') ?? 'astrologyanswers.com';
     _config.checkoutButtonText = _checkoutElem.getAttribute('checkoutButtonText') ?? 'Buy Now!';
+    _config.disableDefaultCss = _checkoutElem.getAttribute('disableDefaultCss') ?? false;
     return _config;
 }
 
@@ -49,7 +50,7 @@ function buildForm(config) {
             },
             {
                 type: 'header',
-                label: 'Current Billing Address'
+                label: 'Billing Address'
             },
             {
                 type: 'text',
@@ -67,24 +68,30 @@ function buildForm(config) {
                 label: 'Country',
                 name: 'country',
                 prefillField: 'country',
-                onChange: countrySelectChanged
+                onChange: countrySelectChanged,
+                options: () => [
+                    { text: 'Country', value: undefined, isPlaceholder: true },
+                ]
             },
             {
                 type: 'select',
                 label: 'State',
                 name: 'state',
-                prefillField: 'state'
+                prefillField: 'state',
+                options: () => [
+                    { text: 'State', value: undefined, isPlaceholder: true },
+                ]
             },
             {
                 type: 'header',
-                label: 'Credit Card Information'
+                label: 'Payment Information'
             },
             {
                 type: 'select',
                 label: 'Card Type',
                 name: 'cc_type',
                 options: () => [
-                    { text: 'Select One', value: undefined },
+                    { text: 'Card Type', value: undefined, isPlaceholder: true },
                     { text: 'VISA', value: 'visa' },
                     { text: 'MasterCard', value: 'mastercard' },
                 ]
@@ -151,39 +158,38 @@ function buildForm(config) {
         ]
     };
     const components = formTypeLookup[config.checkoutFormType];
-    const createFromTextCompononent = function (c, form) {
+    const createTextInputFromComponent = function (c, form) {
         const result = document.createElement('div');
         form.appendChild(result);
         result.outerHTML = `<div class='checkout-row'>
-                                <div class='checkout-col'><label for='${c.name}' class='checkout-label'>${c.label}:</label></div>
-                                <div class='checkout-col'><input type='${c.type}' id='${c.name}' name='${c.name}' required></div>
+                                <div class='checkout-col'><input class='checkout-input' type='${c.type}' id='${c.name}' name='${c.name}' placeholder='${c.label}' required></div>
                             </div>`;
     };
     const componentBuilderMap = {
         'header': (c, form) => {
             const result = document.createElement('div');
             form.appendChild(result);
-            result.outerHTML = `<h2><span style='font-family: lato; font-size: 24px; color: rgb(0, 0, 0); text-decoration: underline;'>${c.label}</span></h2>`;
+            result.outerHTML = `<div class='checkout-header'>${c.label}</div>`;
         },
-        'text': (c, form) => createFromTextCompononent(c, form),
-        'email': (c, form) => createFromTextCompononent(c, form),
+        'text': (c, form) => createTextInputFromComponent(c, form),
+        'email': (c, form) => createTextInputFromComponent(c, form),
         'select': (c, form) => {
             const result = document.createElement('div');
             form.appendChild(result);
             result.outerHTML = `<div class='checkout-row'>
-                                    <div class='checkout-col'><label for='${c.name}' class='checkout-label'>${c.label}:</label></div>
-                                    <div class='checkout-col'><select id='${c.name}' name='${c.name}' required></select></div>
+                                    <div class='checkout-col'><select class='checkout-input' id='${c.name}' name='${c.name}' required></select></div>
                                 </div>`;
         },
         'submit': (c, form) => {
             const result = document.createElement('div');
             form.appendChild(result);
-            result.outerHTML = `<div class='checkout-errror' id='checkout_error'></div>
-                                <button class='lp-element lp-pom-button' id='${c.name}' type='submit'> ${c.label} </button>`;
+            result.outerHTML = `<div class='checkout-error' id='checkout_error'></div>
+                                <input class='checkout-input' id='${c.name}' value='${c.label}' type='submit'></input>`;
         }
     };
     var formElement = document.createElement('form');
     formElement.id = 'aa-checkout-form';
+    formElement.className = 'checkout-form';
     components.forEach(c => {
         componentBuilderMap[c.type](c, formElement);
     });
@@ -193,6 +199,11 @@ function buildForm(config) {
             const option = document.createElement('option');
             option.text = o.text;
             option.value = o.value;
+            if (o.isPlaceholder) {
+                option.disabled = true;
+                option.selected = true;
+            }
+
             formElement.querySelector(`#${c.name}`).appendChild(option);
         });
         if (c.attributes) c.attributes.forEach(a => formElement.querySelector(`#${c.name}`).setAttribute(a[0], a[1]))
@@ -201,10 +212,48 @@ function buildForm(config) {
     return formElement;
 }
 
+function addDefaultFormCss() {
+    const defaultFormCss = `
+.checkout-form {
+    width: min-content;
+}
+.checkout-header {
+    display: flex;
+    font-weight: bold;
+}
+.checkout-row {
+    margin-bottom: 0.1rem;
+    display: flex;
+}
+.checkout-col {
+}
+.checkout-input {
+    width: 10rem;
+    border: 0.1rem solid;
+    border-radius: 0.2rem;
+    border-color: #A3BAC6;
+}
+select.checkout-input {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;  
+}
+.checkout-error {]
+}
+.checkout-submit {
+}
+`;
+    const styleElement = document.createElement('style');
+    styleElement.setAttribute('type', 'text/css');
+    styleElement.innerHTML = defaultFormCss;
+    document.head.appendChild(styleElement);
+}
+
 function addCheckoutForm() {
     const checkoutElem = getCheckoutElem();
     const checkoutConfig = getCheckoutConfig(checkoutElem);
     if (!validateCheckoutConfig(checkoutConfig, checkoutElem)) return;
+    if (!checkoutConfig.disableDefaultCss) addDefaultFormCss();
     const form = buildForm(checkoutConfig);
     checkoutElem.appendChild(form);
     prefillForm(form);
@@ -234,14 +283,17 @@ function prefillForm(form) {
                 const countrySelect = form.querySelector('#country');
                 if (countrySelect) {
                     var countryData = data['address']['countries'];
+                    const placeholder = document.createElement('option');
+                    placeholder.text = 'Country';
+                    placeholder.disabled = true;
+                    placeholder.selected = true;
+                    countrySelect.appendChild(placeholder);
                     for (let key in countryData) {
                         const option = document.createElement('option');
                         option.text = countryData[key];
                         option.value = key;
                         countrySelect.appendChild(option);
                     }
-                    // Trigger the inital update of the states list
-                    countrySelect.dispatchEvent(new Event('change'));
                 }
 
                 // Prefill input values from user
@@ -266,6 +318,11 @@ function countrySelectChanged(e) {
         if (response.status == 200) {
             response.json().then(data => {
                 stateSelect.innerHTML = '';
+                const placeholder = document.createElement('option');
+                placeholder.text = 'State';
+                placeholder.disabled = true;
+                placeholder.selected = true;
+                stateSelect.appendChild(placeholder);
                 for (let key in data) {
                     const option = document.createElement('option');
                     option.text = data[key];
