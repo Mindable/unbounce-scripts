@@ -41,11 +41,11 @@ window.instapageFormSubmitSuccess = function (form) {
     // Obtain form data in JSON format, strip off ignore fields
     const formDataJson = getFormDataJson(form);
     stripFormDataJson(formDataJson);
-    console.log(formDataJson);
 
     // Transform formDataJson as query params
-
+    const url = new URL(ffluxSubmitUrl);
+    Object.keys(formDataJson).forEach(key => url.searchParams.append(key, formDataJson[key]));
 
     // Perform form submission
-    // window.location.href = 'https://flux2.astrologyanswers.com/?flux_action=1&flux_f=1129646899613600679&flux_ffn=1129647158147156679&wat=hello';
+    window.location.href = url.toString();
 };
