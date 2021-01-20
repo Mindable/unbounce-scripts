@@ -1,4 +1,5 @@
 let _checkoutFormId = 'aa-checkout-div';
+let _offerSubtotal = 0.0;
 
 function getCheckoutElem() {
     return document.querySelector(`#${_checkoutFormId}`);
@@ -78,6 +79,7 @@ function buildForm(config) {
                 label: 'State',
                 name: 'state',
                 prefillField: 'state',
+                onChange: onStateSelectChanged,
                 options: () => [
                     { text: 'State', value: undefined, isPlaceholder: true },
                 ]
@@ -138,6 +140,14 @@ function buildForm(config) {
                 ]
             },
             {
+                type: 'header',
+                label: 'Review'
+            },
+            {
+                type: 'div',
+                name: 'pricing'
+            },
+            {
                 type: 'submit',
                 name: 'submit',
                 label: config.checkoutButtonText
@@ -165,14 +175,19 @@ function buildForm(config) {
                                 <div class='checkout-col'><input class='checkout-input' type='${c.type}' id='${c.name}' name='${c.name}' placeholder='${c.label}' required></div>
                             </div>`;
     };
+    const createDivFromComponent = function (c, form) {
+        const result = document.createElement('div');
+        result.id = c.name;
+        form.appendChild(result);
+    };
     const componentBuilderMap = {
         'header': (c, form) => {
             const result = document.createElement('div');
             form.appendChild(result);
             result.outerHTML = `<div class='checkout-header'>${c.label}</div>`;
         },
-        'text': (c, form) => createTextInputFromComponent(c, form),
-        'email': (c, form) => createTextInputFromComponent(c, form),
+        'text': createTextInputFromComponent,
+        'email': createTextInputFromComponent,
         'select': (c, form) => {
             const result = document.createElement('div');
             form.appendChild(result);
@@ -180,6 +195,7 @@ function buildForm(config) {
                                     <div class='checkout-col'><select class='checkout-input' id='${c.name}' name='${c.name}' required></select></div>
                                 </div>`;
         },
+        'div': createDivFromComponent,
         'submit': (c, form) => {
             const result = document.createElement('div');
             form.appendChild(result);
@@ -282,6 +298,7 @@ function prefillForm(form) {
                 // Set countrySelect options from address->country
                 const countrySelect = form.querySelector('#country');
                 if (countrySelect) {
+                    countrySelect.innerHTML = '';
                     var countryData = data['address']['countries'];
                     const placeholder = document.createElement('option');
                     placeholder.text = 'Country';
@@ -296,6 +313,11 @@ function prefillForm(form) {
                     }
                 }
 
+                // Set pricing info
+                // TODO Get from data
+                _offerSubtotal = 123.00;
+                updatePricing();
+
                 // Prefill input values from user
                 const userData = data['user'];
                 if (!userData) return;
@@ -307,6 +329,7 @@ function prefillForm(form) {
                     if (!value || typeof (value) == 'object') return;
                     input.value = value;
                 });
+
             });
         });
 }
@@ -320,6 +343,7 @@ function countrySelectChanged(e) {
                 stateSelect.innerHTML = '';
                 const placeholder = document.createElement('option');
                 placeholder.text = 'State';
+                placeholder.value = undefined;
                 placeholder.disabled = true;
                 placeholder.selected = true;
                 stateSelect.appendChild(placeholder);
@@ -330,6 +354,7 @@ function countrySelectChanged(e) {
                     stateSelect.appendChild(option);
                 }
                 stateSelect.style.display = 'initial';
+                updatePricing();
             });
         }
         else {
@@ -337,6 +362,55 @@ function countrySelectChanged(e) {
             stateSelect.style.display = 'none';
         }
     });
+}
+
+function onStateSelectChanged(e) {
+    updatePricing();
+}
+
+function updatePricing() {
+    const form = getCheckoutElem().querySelector('#aa-checkout-form');
+    const pricingDiv = form.querySelector('#pricing');
+    pricingDiv.innerHTML = '';
+    const country = form.querySelector('#country').value;
+    const state = form.querySelector('#state').value;
+    // console.log('updatePricing');
+    // console.log(country);
+    // console.log(state);
+    if (country == 'undefined') {
+        pricingDiv.innerHTML = 'Please select country';
+    }
+    else if (country != 'CA') {
+        // If the country is not Canada, then no tax
+        pricingDiv.innerHTML = `Total: $${_offerSubtotal}`;
+    }
+    else if (state == 'undefined') {
+        pricingDiv.innerHTML = 'Please select state';
+    }
+    else {
+        // If the country is Canada, and a valid state is selected, present tax calc
+        const taxMap = {
+            'AB': 0.05,
+            'BC': 0.05,
+            'MB': 0.05,
+            'NB': 0.05,
+            'NL': 0.05,
+            'NT': 0.05,
+            'NS': 0.05,
+            'NU': 0.05,
+            'ON': 0.05,
+            'PE': 0.05,
+            'QC': 0.05,
+            'SK': 0.05,
+            'YT': 0.05
+        };
+        const tax = _offerSubtotal * taxMap[state];
+        pricingDiv.innerHTML = `
+            <div>Subtotal: $${_offerSubtotal}</div>
+            <div>Taxes: $${tax}</div>
+            <div>Total: $${_offerSubtotal + tax}</div>
+        `;
+    }
 }
 
 function submitCheckout(e) {
