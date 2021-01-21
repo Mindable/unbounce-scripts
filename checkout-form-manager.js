@@ -302,6 +302,7 @@ function prefillForm(form) {
                     var countryData = data['address']['countries'];
                     const placeholder = document.createElement('option');
                     placeholder.text = 'Country';
+                    placeholder.value = undefined;
                     placeholder.disabled = true;
                     placeholder.selected = true;
                     countrySelect.appendChild(placeholder);
@@ -374,9 +375,9 @@ function updatePricing() {
     pricingDiv.innerHTML = '';
     const country = form.querySelector('#country').value;
     const state = form.querySelector('#state').value;
-    // console.log('updatePricing');
-    // console.log(country);
-    // console.log(state);
+    console.log('updatePricing');
+    console.log(country);
+    console.log(state);
     if (country == 'undefined') {
         pricingDiv.innerHTML = 'Please select country';
     }
