@@ -230,34 +230,55 @@ function buildForm(config) {
 
 function addDefaultFormCss() {
     const defaultFormCss = `
-.checkout-form {
-    width: min-content;
-}
-.checkout-header {
-    display: flex;
-    font-weight: bold;
-}
-.checkout-row {
-    margin-bottom: 0.1rem;
-    display: flex;
-}
-.checkout-col {
-}
-.checkout-input {
-    width: 10rem;
-    border: 0.1rem solid;
-    border-radius: 0.2rem;
-    border-color: #A3BAC6;
-}
-select.checkout-input {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;  
-}
-.checkout-error {]
-}
-.checkout-submit {
-}
+    .checkout-form {
+        width: 100%;
+        margin-bottom:2rem;
+        position:relative;
+    }
+    .checkout-header {
+        display: block;
+        font-weight: bold;
+        padding:1rem 0;
+        text-align:left;
+    }
+    .checkout-row {
+        margin-bottom: 0.1rem;
+        display: block;
+        text-align:left;
+    }
+    .checkout-col {
+    }
+    .checkout-input {
+        max-width:100%;
+        border: 0.1rem solid #999;
+        border-radius: 0.2rem;
+        margin-bottom:0.5rem;
+        padding:0.15rem 0.25rem;
+        background:#f1f1f1;
+    }
+    select.checkout-input {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;  
+    }
+    select.checkout-input{
+        padding:0;
+    }
+    .checkout-error {]
+    }
+    .checkout-submit {
+    }
+    #submit{
+        background: linear-gradient(to bottom,#31aadd,#278fc1,#1c75a5,#105c89,#03446d)!important;
+        padding:0.75rem 1rem;
+        color:#fff;
+        width:100%;
+        text-transform:uppercase;
+        font-weight:bold;
+        border:0;
+        border-radius:1.5rem;
+        margin-top:1rem;
+    }
 `;
     const styleElement = document.createElement('style');
     styleElement.setAttribute('type', 'text/css');
