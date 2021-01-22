@@ -144,8 +144,7 @@ function buildForm(config) {
                 label: 'Review'
             },
             {
-                type: 'div',
-                name: 'pricing'
+                type: 'pricing',
             },
             {
                 type: 'submit',
@@ -175,9 +174,10 @@ function buildForm(config) {
                                 <div class='checkout-col'><input class='checkout-input' type='${c.type}' id='${c.name}' name='${c.name}' placeholder='${c.label}' required></div>
                             </div>`;
     };
-    const createDivFromComponent = function (c, form) {
+    const createPricingFromComponent = function (c, form) {
         const result = document.createElement('div');
-        result.id = c.name;
+        result.id = 'pricing';
+        result.className = 'checkout-row';
         form.appendChild(result);
     };
     const componentBuilderMap = {
@@ -195,7 +195,7 @@ function buildForm(config) {
                                     <div class='checkout-col'><select class='checkout-input' id='${c.name}' name='${c.name}' required></select></div>
                                 </div>`;
         },
-        'div': createDivFromComponent,
+        'pricing': createPricingFromComponent,
         'submit': (c, form) => {
             const result = document.createElement('div');
             form.appendChild(result);
@@ -396,41 +396,41 @@ function updatePricing() {
     pricingDiv.innerHTML = '';
     const country = form.querySelector('#country').value;
     const state = form.querySelector('#state').value;
-    console.log('updatePricing');
-    console.log(country);
-    console.log(state);
+
+    // TODO Not a fan of the hardcode/copypasta of html elements
     if (country == 'undefined') {
-        pricingDiv.innerHTML = 'Please select country';
+        pricingDiv.innerHTML = `<div class='pricing-row'>Please select country</div>`;
     }
     else if (country != 'CA') {
         // If the country is not Canada, then no tax
-        pricingDiv.innerHTML = `Total: $${_offerSubtotal}`;
+        pricingDiv.innerHTML = `<div class='pricing-row'>Total: <span class='price'>$${_offerSubtotal}</span></div>`;
     }
     else if (state == 'undefined') {
-        pricingDiv.innerHTML = 'Please select state';
+        pricingDiv.innerHTML = `<div class='pricing-row'>Please select state</div>`;
     }
     else {
-        // If the country is Canada, and a valid state is selected, present tax calc
-        const taxMap = {
+        // If the country is Canada, and a valid state is selected, present subtotal & tax separately
+        // https://www.taxtips.ca/salestaxes/sales-tax-rates-2020.htm
+        const canadianTaxMap = {
             'AB': 0.05,
-            'BC': 0.05,
-            'MB': 0.05,
-            'NB': 0.05,
-            'NL': 0.05,
+            'BC': 0.12,
+            'MB': 0.12,
+            'NB': 0.15,
+            'NL': 0.15,
             'NT': 0.05,
-            'NS': 0.05,
+            'NS': 0.15,
             'NU': 0.05,
-            'ON': 0.05,
-            'PE': 0.05,
-            'QC': 0.05,
-            'SK': 0.05,
+            'ON': 0.13,
+            'PE': 0.15,
+            'QC': 0.14975,
+            'SK': 0.11,
             'YT': 0.05
         };
-        const tax = _offerSubtotal * taxMap[state];
+        const tax = Number.parseFloat(_offerSubtotal * canadianTaxMap[state]).toFixed(2);
         pricingDiv.innerHTML = `
-            <div>Subtotal: $${_offerSubtotal}</div>
-            <div>Taxes: $${tax}</div>
-            <div>Total: $${_offerSubtotal + tax}</div>
+            <div class='pricing-row'>Subtotal: <span class='price'>$${_offerSubtotal}</span></div>
+            <div class='pricing-row'>Taxes: <span class='price'>$${tax}</span></div>
+            <div class='pricing-row'>Total: <span class='price'>$${_offerSubtotal + tax}</span></div>
         `;
     }
 }
