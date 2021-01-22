@@ -109,25 +109,7 @@ function buildForm(config) {
                 ]
             },
             {
-                type: 'select',
-                label: 'Expiry Month',
-                name: 'cc_month',
-                options: () => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-                    .map(i => { return { text: i, value: i } })
-            },
-            {
-                type: 'select',
-                label: 'Expiry Year',
-                name: 'cc_year',
-                options: () => {
-                    const currentYear = new Date().getFullYear();
-                    return Array(10).fill().map((_, i) => currentYear + i).map(year => {
-                        const option = document.createElement('option');
-                        option.text = year;
-                        option.value = year;
-                        return option;
-                    });
-                }
+                type: 'cc_expiry'
             },
             {
                 type: 'text',
@@ -167,6 +149,18 @@ function buildForm(config) {
         ]
     };
     const components = formTypeLookup[config.checkoutFormType];
+    const addOptionsToSelectElement = function (id, options) {
+        options.forEach(o => {
+            const option = document.createElement('option');
+            option.text = o.text;
+            option.value = o.value;
+            if (o.isPlaceholder) {
+                option.disabled = true;
+                option.selected = true;
+            }
+            formElement.querySelector(`#${id}`).appendChild(option);
+        });
+    };
     const createTextInputFromComponent = function (c, form) {
         const result = document.createElement('div');
         form.appendChild(result);
@@ -179,6 +173,26 @@ function buildForm(config) {
         result.id = 'pricing';
         result.className = 'checkout-row';
         form.appendChild(result);
+    };
+    const createCcExpiryFromComponent = function (c, form) {
+        const result = document.createElement('div');
+        form.appendChild(result);
+        // TODO Refactor the builder to allow for nested components so we don't have to hardcode html here,
+        // and use leverage how `select` components are built instead 
+        result.outerHTML = `<div class='checkout-row'>
+                                <div class='checkout-col'>
+                                    <select class='checkout-input' id='cc_month' name='cc_month' required></select>
+                                    <select class='checkout-input' id='cc_year' name='cc_year' required></select>
+                                </div>
+                            </div>`;
+        addOptionsToSelectElement('cc_month', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+            .map(i => { return { text: i, value: i } }));
+        addOptionsToSelectElement('cc_year', Array(10).fill().map((_, i) => new Date().getFullYear() + i).map(year => {
+            const option = document.createElement('option');
+            option.text = year;
+            option.value = year;
+            return option;
+        }));
     };
     const componentBuilderMap = {
         'header': (c, form) => {
@@ -195,6 +209,7 @@ function buildForm(config) {
                                     <div class='checkout-col'><select class='checkout-input' id='${c.name}' name='${c.name}' required></select></div>
                                 </div>`;
         },
+        'cc_expiry': createCcExpiryFromComponent,
         'pricing': createPricingFromComponent,
         'submit': (c, form) => {
             const result = document.createElement('div');
@@ -211,17 +226,7 @@ function buildForm(config) {
     });
     components.forEach(c => {
         if (c.prefillField) formElement.querySelector(`#${c.name}`).setAttribute('checkout-prefill', c.prefillField);
-        if (c.options) c.options().forEach(o => {
-            const option = document.createElement('option');
-            option.text = o.text;
-            option.value = o.value;
-            if (o.isPlaceholder) {
-                option.disabled = true;
-                option.selected = true;
-            }
-
-            formElement.querySelector(`#${c.name}`).appendChild(option);
-        });
+        if (c.options) addOptionsToSelectElement(c.name, c.options());
         if (c.attributes) c.attributes.forEach(a => formElement.querySelector(`#${c.name}`).setAttribute(a[0], a[1]))
         if (c.onChange) formElement.querySelector(`#${c.name}`).addEventListener('change', c.onChange);
     });
@@ -426,11 +431,11 @@ function updatePricing() {
             'SK': 0.11,
             'YT': 0.05
         };
-        const tax = Number.parseFloat(_offerSubtotal * canadianTaxMap[state]).toFixed(2);
+        const tax = _offerSubtotal * canadianTaxMap[state];
         pricingDiv.innerHTML = `
             <div class='pricing-row'>Subtotal: <span class='price'>$${_offerSubtotal}</span></div>
-            <div class='pricing-row'>Taxes: <span class='price'>$${tax}</span></div>
-            <div class='pricing-row'>Total: <span class='price'>$${_offerSubtotal + tax}</span></div>
+            <div class='pricing-row'>Taxes: <span class='price'>$${tax.toFixed(2)}</span></div>
+            <div class='pricing-row'>Total: <span class='price'>$${(_offerSubtotal + tax).toFixed(2)}</span></div>
         `;
     }
 }
