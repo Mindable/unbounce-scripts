@@ -405,33 +405,33 @@ function updatePricing() {
     const country = form.querySelector('#country').value;
     const state = form.querySelector('#state').value;
 
+    const addPricingRow = function (name, value) {
+        const element = document.createElement('div');
+        pricingDiv.appendChild(element);
+        element.outerHTML = `<div class='pricing-row'>${name}: <span class='price'>$${value}</span></div>`;
+    };
+    const addMessageRow = function (message) {
+        const element = document.createElement('div');
+        element.className = 'pricing-row message';
+        element.innerText = message;
+        pricingDiv.appendChild(element);
+    };
 
     const offerNameElement = document.createElement('div');
     offerNameElement.className = 'pricing-row offer-name';
     offerNameElement.innerText = _offerData['offer_name'];
     pricingDiv.appendChild(offerNameElement);
 
-    // TODO Not a fan of the copypasta of html elements
     const offerSubtotal = Number.parseFloat(_offerData['offer_price']);
     if (country == 'undefined') {
-        const element = document.createElement('div');
-        element.className = 'pricing-row';
-        element.innerText = 'Please select country';
-        pricingDiv.appendChild(element);
+        addMessageRow('Please select country');
     }
     else if (country != 'CA') {
         // If the country is not Canada, then no tax
-        const element = document.createElement('div');
-        element.className = 'pricing-row';
-        element.innerHTML = `Total: <span class='price'>$${offerSubtotal}</span>`;
-        pricingDiv.appendChild(element);
-
+        addPricingRow('Taxes', offerSubtotal);
     }
     else if (state == 'undefined') {
-        const element = document.createElement('div');
-        element.className = 'pricing-row';
-        element.innerText = 'Please select state';
-        pricingDiv.appendChild(element);
+        addMessageRow('Please select state');
     }
     else {
         // If the country is Canada, and a valid state is selected, present subtotal & tax separately
@@ -453,14 +453,9 @@ function updatePricing() {
         };
         const tax = offerSubtotal * canadianTaxMap[state];
         const total = offerSubtotal + tax;
-        const addCanadaPricingRow = function(name, value) {
-            const element = document.createElement('div');
-            pricingDiv.appendChild(element);
-            element.outerHTML = `<div class='pricing-row'>${name}: <span class='price'>$${value}</span></div>`;
-        };
-        addCanadaPricingRow('Subtotal', offerSubtotal);
-        addCanadaPricingRow('Taxes', tax.toFixed(2));
-        addCanadaPricingRow('Total', total.toFixed(2));
+        addPricingRow('Subtotal', offerSubtotal);
+        addPricingRow('Taxes', tax.toFixed(2));
+        addPricingRow('Total', total.toFixed(2));
     }
 }
 
