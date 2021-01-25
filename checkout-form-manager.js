@@ -395,7 +395,7 @@ function prefillForm(form) {
 
                 // Set pricing info
                 // TODO Get from data
-                const _offerData = data['offerData'];
+                _offerData = data['offerData'];
                 updatePricing();
 
                 // Prefill input values from user
