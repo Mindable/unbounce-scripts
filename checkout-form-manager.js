@@ -7,8 +7,9 @@ function getCheckoutElem() {
 
 function getCheckoutConfig(_checkoutElem) {
     let _config = {};
+    let _urlParams = new URLSearchParams(window.location.search);
     _config.checkoutFormType = _checkoutElem.getAttribute('checkoutFormType') ?? 'digital';
-    _config.offerId = _checkoutElem.getAttribute('offerId');
+    _config.offerId = _urlParams.get('offerId') ?? _checkoutElem.getAttribute('offerId');
     _config.successfulCheckoutUrl = _checkoutElem.getAttribute('successfulCheckoutUrl') ?? 'astrologyanswers.com';
     _config.checkoutButtonText = _checkoutElem.getAttribute('checkoutButtonText') ?? 'Buy Now!';
     _config.disableDefaultCss = _checkoutElem.getAttribute('disableDefaultCss') ?? false;
@@ -412,7 +413,8 @@ function prefillForm(form) {
     let _urlParams = new URLSearchParams(window.location.search);
     let _token = _urlParams.get('token');
     let _userHash = _urlParams.get('hash');
-    fetch(`https://aaproxyapis.astrologyanswerstest.com/checkout/params?hash=${_userHash}&token=${_token}`)
+    let _offerId = getCheckoutConfig(getCheckoutElem())['offerId'];
+    fetch(`https://aaproxyapis.astrologyanswerstest.com/checkout/params?hash=${_userHash}&token=${_token}&offer_id=${_offerId}`)
         .then(response => {
             if (response.status !== 200) {
                 console.log('Error with API. Status code : ' + response.status);
@@ -440,11 +442,7 @@ function prefillForm(form) {
 
                 // Set pricing info
                 // TODO Get from data
-                _offerData = {
-                    "offer_id": "1358",
-                    "offer_name": "Essential Year Forecast 3 Month - $37",
-                    "offer_price": "37.00"
-                };
+                _offerData = data['offerData'];
                 updatePricing();
 
                 // Prefill input values from user
@@ -566,6 +564,18 @@ function submitCheckout(e) {
     const formData = new FormData(form);
     formData.append('hash', (new URL(document.location)).searchParams.get('hash'));
     formData.append('offer_id', checkoutElement.getAttribute('offerId'));
+    
+    //Adding utm parameters
+    let _urlParams = new URLSearchParams(window.location.search);
+    formData.append('utm_source', _urlParams.get('utm_source')??'');
+    formData.append('utm_campaign', _urlParams.get('utm_campaign')??'');
+    formData.append('utm_content', _urlParams.get('utm_content')??'');
+    formData.append('utm_term', _urlParams.get('utm_term')??'');
+    //Adding Tag & Tag2
+    formData.append('tag', _urlParams.get('tag')??'');
+    formData.append('tag2', _urlParams.get('tag2')??'');
+    //Adding Order page url
+    formData.append('order_page_url', `${window.location.protocol }//${window.location.host}/${window.location.pathname}`);
 
     const formDataJson = Array.from(formData).reduce((acc, cur) => {
         acc[cur[0]] = cur[1];
