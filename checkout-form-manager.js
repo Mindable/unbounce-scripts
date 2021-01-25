@@ -453,11 +453,14 @@ function updatePricing() {
         };
         const tax = offerSubtotal * canadianTaxMap[state];
         const total = offerSubtotal + tax;
-        pricingDiv.innerHTML = `
-        <div class='pricing-row'>Subtotal: <span class='price'>$${offerSubtotal}</span></div>
-        <div class='pricing-row'>Taxes: <span class='price'>$${tax.toFixed(2)}</span></div>
-        <div class='pricing-row'>Total: <span class='price'>$${total.toFixed(2)}</span></div>
-        `;
+        const addCanadaPricingRow = function(name, value) {
+            const element = document.createElement('div');
+            pricingDiv.appendChild(element);
+            element.outerHTML = `<div class='pricing-row'>${name}: <span class='price'>$${value}</span></div>`;
+        };
+        addCanadaPricingRow('Subtotal', offerSubtotal);
+        addCanadaPricingRow('Taxes', tax.toFixed(2));
+        addCanadaPricingRow('Total', total.toFixed(2));
     }
 }
 
