@@ -214,7 +214,8 @@ function buildForm(config) {
         'submit': (c, form) => {
             const result = document.createElement('div');
             form.appendChild(result);
-            result.outerHTML = `<div class='checkout-error' id='checkout_error'></div>
+            result.outerHTML = `<p class="terms">By submitting your request, you agree to the <a href="https://astrologyanswers.com/info/terms-of-service/" target="blank" title="Terms Of Service">Terms of Service.</a></p>
+                                <div class='checkout-error' id='checkout_error'></div>
                                 <input class='checkout-input' id='${c.name}' value='${c.label}' type='submit'></input>`;
         }
     };
