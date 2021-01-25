@@ -326,6 +326,16 @@ function addDefaultFormCss() {
     #cc_cvv{
         max-width:205px;
     }
+    .pricing-row.message {
+        font-style: italic;
+    }
+    .pricing-row.offer-name {
+        font-weight: bold;
+    }
+    .pricing-row .price {
+        font-weight: bold;
+        float: right;
+    }
 `;
     const styleElement = document.createElement('style');
     styleElement.setAttribute('type', 'text/css');
@@ -450,7 +460,7 @@ function updatePricing() {
     const addPricingRow = function (name, value) {
         const element = document.createElement('div');
         pricingDiv.appendChild(element);
-        element.outerHTML = `<div class='pricing-row'>${name}: <span class='price'>$${value}</span></div>`;
+        element.outerHTML = `<div class='pricing-row'>${name}: <span class='price'>$${value.toFixed(2)}</span></div>`;
     };
     const addMessageRow = function (message) {
         const element = document.createElement('div');
@@ -470,7 +480,7 @@ function updatePricing() {
     }
     else if (country != 'CA') {
         // If the country is not Canada, then no tax
-        addPricingRow('Taxes', offerSubtotal);
+        addPricingRow('Total', offerSubtotal);
     }
     else if (state == 'undefined') {
         addMessageRow('Please select state');
@@ -496,8 +506,8 @@ function updatePricing() {
         const tax = offerSubtotal * canadianTaxMap[state];
         const total = offerSubtotal + tax;
         addPricingRow('Subtotal', offerSubtotal);
-        addPricingRow('Taxes', tax.toFixed(2));
-        addPricingRow('Total', total.toFixed(2));
+        addPricingRow('Taxes', tax);
+        addPricingRow('Total', total);
     }
 }
 
