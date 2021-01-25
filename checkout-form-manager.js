@@ -1,5 +1,5 @@
 let _checkoutFormId = 'aa-checkout-div';
-let _offerSubtotal = 0.0;
+let _offerData;
 
 function getCheckoutElem() {
     return document.querySelector(`#${_checkoutFormId}`);
@@ -342,7 +342,11 @@ function prefillForm(form) {
 
                 // Set pricing info
                 // TODO Get from data
-                _offerSubtotal = 123.00;
+                _offerData = {
+                    "offer_id": "1358",
+                    "offer_name": "Essential Year Forecast 3 Month - $37",
+                    "offer_price": "37.00"
+                };
                 updatePricing();
 
                 // Prefill input values from user
@@ -356,7 +360,6 @@ function prefillForm(form) {
                     if (!value || typeof (value) == 'object') return;
                     input.value = value;
                 });
-
             });
         });
 }
@@ -402,16 +405,33 @@ function updatePricing() {
     const country = form.querySelector('#country').value;
     const state = form.querySelector('#state').value;
 
-    // TODO Not a fan of the hardcode/copypasta of html elements
+
+    const offerNameElement = document.createElement('div');
+    offerNameElement.className = 'pricing-row offer-name';
+    offerNameElement.innerText = _offerData['offer_name'];
+    pricingDiv.appendChild(offerNameElement);
+
+    // TODO Not a fan of the copypasta of html elements
+    const offerSubtotal = Number.parseFloat(_offerData['offer_price']);
     if (country == 'undefined') {
-        pricingDiv.innerHTML = `<div class='pricing-row'>Please select country</div>`;
+        const element = document.createElement('div');
+        element.className = 'pricing-row';
+        element.innerText = 'Please select country';
+        pricingDiv.appendChild(element);
     }
     else if (country != 'CA') {
         // If the country is not Canada, then no tax
-        pricingDiv.innerHTML = `<div class='pricing-row'>Total: <span class='price'>$${_offerSubtotal}</span></div>`;
+        const element = document.createElement('div');
+        element.className = 'pricing-row';
+        element.innerHTML = `Total: <span class='price'>$${offerSubtotal}</span>`;
+        pricingDiv.appendChild(element);
+
     }
     else if (state == 'undefined') {
-        pricingDiv.innerHTML = `<div class='pricing-row'>Please select state</div>`;
+        const element = document.createElement('div');
+        element.className = 'pricing-row';
+        element.innerText = 'Please select state';
+        pricingDiv.appendChild(element);
     }
     else {
         // If the country is Canada, and a valid state is selected, present subtotal & tax separately
@@ -431,11 +451,12 @@ function updatePricing() {
             'SK': 0.11,
             'YT': 0.05
         };
-        const tax = _offerSubtotal * canadianTaxMap[state];
+        const tax = offerSubtotal * canadianTaxMap[state];
+        const total = offerSubtotal + tax;
         pricingDiv.innerHTML = `
-            <div class='pricing-row'>Subtotal: <span class='price'>$${_offerSubtotal}</span></div>
-            <div class='pricing-row'>Taxes: <span class='price'>$${tax.toFixed(2)}</span></div>
-            <div class='pricing-row'>Total: <span class='price'>$${(_offerSubtotal + tax).toFixed(2)}</span></div>
+        <div class='pricing-row'>Subtotal: <span class='price'>$${offerSubtotal}</span></div>
+        <div class='pricing-row'>Taxes: <span class='price'>$${tax.toFixed(2)}</span></div>
+        <div class='pricing-row'>Total: <span class='price'>$${total.toFixed(2)}</span></div>
         `;
     }
 }
