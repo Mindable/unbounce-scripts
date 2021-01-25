@@ -321,6 +321,7 @@ function addDefaultFormCss() {
     }
     #cc_month, #cc_year{
         width:100px;
+        margin-right: 0.3rem;
     }
     #cc_cvv{
         max-width:205px;
