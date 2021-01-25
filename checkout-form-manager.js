@@ -24,19 +24,19 @@ function buildForm(config) {
             },
             {
                 type: 'text',
-                label: 'First Name',
+                label: 'First Name*',
                 name: 'firstname',
                 prefillField: 'firstname'
             },
             {
                 type: 'text',
-                label: 'Last Name',
+                label: 'Last Name*',
                 name: 'lastname',
                 prefillField: 'lastname'
             },
             {
                 type: 'email',
-                label: 'Email',
+                label: 'Email*',
                 name: 'email',
                 prefillField: 'email',
                 attributes: [
@@ -55,33 +55,33 @@ function buildForm(config) {
             },
             {
                 type: 'text',
-                label: 'Address',
+                label: 'Address*',
                 name: 'adr'
             },
             {
                 type: 'text',
-                label: 'City',
+                label: 'City*',
                 name: 'city',
                 prefillField: 'city'
             },
             {
                 type: 'select',
-                label: 'Country',
+                label: 'Country*',
                 name: 'country',
                 prefillField: 'country',
                 onChange: countrySelectChanged,
                 options: () => [
-                    { text: 'Country', value: undefined, isPlaceholder: true },
+                    { text: 'Country*', value: undefined, isPlaceholder: true },
                 ]
             },
             {
                 type: 'select',
-                label: 'State',
+                label: 'State*',
                 name: 'state',
                 prefillField: 'state',
                 onChange: onStateSelectChanged,
                 options: () => [
-                    { text: 'State', value: undefined, isPlaceholder: true },
+                    { text: 'State*', value: undefined, isPlaceholder: true },
                 ]
             },
             {
@@ -90,7 +90,7 @@ function buildForm(config) {
             },
             {
                 type: 'select',
-                label: 'Card Type',
+                label: 'Card Type*',
                 name: 'cc_type',
                 options: () => [
                     { text: 'Card Type', value: undefined, isPlaceholder: true },
@@ -100,7 +100,7 @@ function buildForm(config) {
             },
             {
                 type: 'text',
-                label: 'Card Number',
+                label: 'Card Number*',
                 name: 'cc_number',
                 prefillField: 'cc_number',
                 attributes: [
@@ -113,7 +113,7 @@ function buildForm(config) {
             },
             {
                 type: 'text',
-                label: 'CVV',
+                label: 'CVV*',
                 name: 'cc_cvv',
                 prefillField: 'cc_cvv',
                 attributes: [
@@ -239,43 +239,68 @@ function addDefaultFormCss() {
         width: 100%;
         margin-bottom:2rem;
         position:relative;
+        font-family: Montserrat, sans-serif;
     }
     .checkout-header {
         display: block;
         font-weight: bold;
         padding:1rem 0;
         text-align:left;
+        font-family: Montserrat, sans-serif;
+    }
+    .checkout-row{
+        display:inline-block;
+        width:50%;
+    }
+    .checkout-row:nth-of-type(12){
+        width:30%;
+    }
+    .checkout-row:nth-of-type(13){
+        width:70%;
+    }
+    .checkout-row:nth-of-type(14){
+        width:100%;
+    }
+    .checkout-row .checkout-input{
+        width:100%;
+    }
+    .checkout-row .checkout-col{
+        padding-right:0.5rem;
     }
     .checkout-row {
         margin-bottom: 0.1rem;
-        display: block;
         text-align:left;
-    }
-    .checkout-col {
     }
     .checkout-input {
         max-width:100%;
-        border: 0.1rem solid #999;
+        border: 0.1rem solid #A3BAC6;
         border-radius: 0.2rem;
         margin-bottom:0.5rem;
-        padding:0.15rem 0.25rem;
-        background:#f1f1f1;
+        padding:0.5rem 0.625rem 0.5625rem;
+        background:#fff;
+        font-family: Montserrat, sans-serif;
+        height: 2.6875rem;
+        color:#5E6C7B;
     }
-    select.checkout-input {
+    select.checkout-input{
         white-space: nowrap;
         overflow: hidden;
-        text-overflow: ellipsis;  
+        text-overflow: ellipsis;
+        color:#5E6C7B;  
+        padding:0.5rem 0.625rem 0.5625rem;
+        padding-left:0.5625rem!important;
+        width:100%;
     }
     select.checkout-input{
         padding:0;
     }
-    .checkout-error {]
+    .checkout-error {
     }
     .checkout-submit {
     }
     #submit{
         background: linear-gradient(to bottom,#31aadd,#278fc1,#1c75a5,#105c89,#03446d)!important;
-        padding:0.75rem 1rem;
+        padding:0.85rem 1rem;
         color:#fff;
         width:100%;
         text-transform:uppercase;
@@ -283,6 +308,23 @@ function addDefaultFormCss() {
         border:0;
         border-radius:1.5rem;
         margin-top:1rem;
+        box-shadow:1px 2px 2px rgba(0,0,0,0.5);
+    }
+    ::-webkit-input-placeholder, :-ms-input-placeholder, ::placeholder{ 
+        color: #5E6C7B;
+    }
+    #cc_type{
+        width:100%;
+    }
+    #cc_number{
+        width:100%;
+    }
+    #cc_month, #cc_year{
+        width:100px;
+        margin-right: 0.3rem;
+    }
+    #cc_cvv{
+        max-width:205px;
     }
 `;
     const styleElement = document.createElement('style');
