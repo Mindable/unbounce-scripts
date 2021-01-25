@@ -7,6 +7,7 @@ function getCheckoutElem() {
 
 function getCheckoutConfig(_checkoutElem) {
     let _config = {};
+    let _urlParams = new URLSearchParams(window.location.search);
     _config.checkoutFormType = _checkoutElem.getAttribute('checkoutFormType') ?? 'digital';
     _config.offerId = _urlParams.get('offerId') ?? _checkoutElem.getAttribute('offerId');
     _config.successfulCheckoutUrl = _checkoutElem.getAttribute('successfulCheckoutUrl') ?? 'astrologyanswers.com';
