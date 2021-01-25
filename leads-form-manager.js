@@ -15,13 +15,12 @@ window.instapageFormSubmitSuccess = function (form) {
         return;
     }
 
+    // Remove unwanted 'form data' prior to submission
+    ['lpsSubmissionConfig'].forEach(key => {
+        form.querySelector(`input[name="${key}"]`).value = '';
+    });
+
     // Modify form to POST to FunnelFlux w/ form-data on submit
     form.action = ffluxSubmitUrl;
     form.submit();
 };
-
-/**
- * Notes for documentaion
- * - make sure Instapage's Form's Submission's Destination & Thank-You Message fields are set to blank
- * - You can either have a leads form, OR a multi-part form. not both!
- */
