@@ -299,16 +299,26 @@ function addDefaultFormCss() {
     .checkout-submit {
     }
     #submit{
-        background: linear-gradient(to bottom,#31aadd,#278fc1,#1c75a5,#105c89,#03446d)!important;
+        background: linear-gradient(to bottom, rgba(98, 78, 151, 1) 0%, rgba(98, 78, 151, 1) 0%, rgba(98, 78, 151, 1) 0%, rgba(98, 78, 151, 1) 31%, rgba(73, 51, 135, 1) 58%, rgba(73, 51, 135, 1) 100%);
         padding:0.85rem 1rem;
+        height:auto;
         color:#fff;
-        width:100%;
         text-transform:uppercase;
         font-weight:bold;
         border:0;
         border-radius:1.5rem;
         margin-top:1rem;
         box-shadow:1px 2px 2px rgba(0,0,0,0.5);
+        font-size:18px;
+        max-idth: 100%;
+        width: 475px;
+        white-space: normal;    
+    }
+    #submit:hover{
+        background:#472f85;
+    }
+    #submit:focus{
+        outline:none;
     }
     ::-webkit-input-placeholder, :-ms-input-placeholder, ::placeholder{ 
         color: #5E6C7B;
@@ -324,17 +334,53 @@ function addDefaultFormCss() {
         margin-right: 0.3rem;
     }
     #cc_cvv{
-        max-width:205px;
+        max-width:208px;
     }
     .pricing-row.message {
         font-style: italic;
     }
     .pricing-row.offer-name {
         font-weight: bold;
+        border-bottom: 1px solid #ccc;
+        margin-bottom: 5px;
+        padding-bottom: 5px;
+        color:#472f85;
     }
     .pricing-row .price {
         font-weight: bold;
         float: right;
+    }
+    .message{
+        color:red;
+        font-size:12px;
+    }
+    #pricing{
+        padding:1rem;
+        background:#f3f4f6;
+        border-radius:0.5rem;
+        width:440px;
+        max-width:100%;
+    }
+    .terms{
+        font-size:12px;
+    }
+    .terms a{
+        color:#656565;
+        text-decoration:underline;
+    }
+    @media screen and (max-width:767){
+        #pricing{
+            max-width:92%;
+        }
+        #submit{
+            width:100%;
+        }
+        .checkout-row{
+            width:100%;
+        }
+        .terms{
+            text-alig:center;
+        }
     }
 `;
     const styleElement = document.createElement('style');
