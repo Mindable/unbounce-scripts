@@ -528,7 +528,7 @@ function submitCheckout(e) {
     formData.append('tag', _urlParams.get('tag')??'');
     formData.append('tag2', _urlParams.get('tag2')??'');
     //Adding Order page url
-    formData.append('order_page_url', window.location.protocol + "//" + window.location.host + "/" + window.location.pathname);
+    formData.append('order_page_url', `${window.location.protocol }//${window.location.host}/${window.location.pathname}`);
 
     const formDataJson = Array.from(formData).reduce((acc, cur) => {
         acc[cur[0]] = cur[1];
