@@ -105,7 +105,8 @@ function buildForm(config) {
                 options: () => [
                     { text: 'Card Type', value: undefined, isPlaceholder: true },
                     { text: 'VISA', value: 'visa' },
-                    { text: 'MasterCard', value: 'mastercard' },
+                    // TODO This makes NO sense, fix in backend
+                    { text: 'MasterCard', value: 'master' },
                 ]
             },
             {
