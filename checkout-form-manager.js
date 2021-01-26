@@ -242,7 +242,7 @@ function buildForm(config) {
                 The entire transaction will take place on a<br>
                 secure server using SSL technology.
             </p>
-            <div id="badges">
+            <div class="after-submit">
                 <img src="https://mindable.github.io/unbounce-scripts/assets/mcafee_badge.png" alt="McAfee">
                 <img src="https://mindable.github.io/unbounce-scripts/assets/truste_badge.png" alt="TRUSTe">
             </div>
@@ -411,8 +411,14 @@ function addDefaultFormCss() {
             width:100%;
         }
         .terms{
-            text-alig:center;
+            text-align:center;
         }
+    }
+    .after-submit{
+        text-align: center;
+    }
+    .after-submit .heavy{
+        font-weight: bold;
     }
 `;
     const styleElement = document.createElement('style');
