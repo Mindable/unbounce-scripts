@@ -143,6 +143,9 @@ function buildForm(config) {
                 type: 'submit',
                 name: 'submit',
                 label: config.checkoutButtonText
+            },
+            {
+                type: 'after-submit'
             }
         ],
         'physical': [
@@ -228,6 +231,23 @@ function buildForm(config) {
             result.outerHTML = `<p class="terms">By submitting your request, you agree to the <a href="https://astrologyanswers.com/info/terms-of-service/" target="blank" title="Terms Of Service">Terms of Service.</a></p>
                                 <div class='checkout-error' id='checkout_error'></div>
                                 <input class='checkout-input' id='${c.name}' value='${c.label}' type='submit'></input>`;
+        },
+        'after-submit': (c, form) => {
+            const result = document.createElement('div');
+            result.id = 'after-submit';
+            form.appendChild(result);
+            result.innerHTML = `
+            <p class="after-submit">
+                <img src="https://mindable.github.io/unbounce-scripts/assets/lock_icon.jpg" alt="Italian Trulli">&nbsp;<b>Privacy & Security</b> - All your information is safe and secure.<br>
+                The entire transaction will take place on a<br>
+                secure server using SSL technology.
+            </p>
+            <div class="after-submit">
+                <img src="https://mindable.github.io/unbounce-scripts/assets/mcafee_badge.png" alt="McAfee">&nbsp;
+                <img src="https://mindable.github.io/unbounce-scripts/assets/truste_badge.png" alt="TRUSTe">
+            </div>
+            <p class="after-submit"><span class="heavy">Questions?</span> Call Toll Free: 1-866-329-7640</p>
+            `;
         }
     };
     var formElement = document.createElement('form');
@@ -396,6 +416,15 @@ function addDefaultFormCss() {
             display:block;
             font-size:10px;
         }
+    }
+    .after-submit{
+        text-align: center;
+        font-size:12px;
+        max-width:475px;
+        width:100%;
+    }
+    .after-submit .heavy{
+        font-weight: bold;
     }
 `;
     const styleElement = document.createElement('style');
@@ -584,18 +613,18 @@ function submitCheckout(e) {
     const formData = new FormData(form);
     formData.append('hash', (new URL(document.location)).searchParams.get('hash'));
     formData.append('offer_id', checkoutElement.getAttribute('offerId'));
-    
+
     //Adding utm parameters
     let _urlParams = new URLSearchParams(window.location.search);
-    formData.append('utm_source', _urlParams.get('utm_source')??'');
-    formData.append('utm_campaign', _urlParams.get('utm_campaign')??'');
-    formData.append('utm_content', _urlParams.get('utm_content')??'');
-    formData.append('utm_term', _urlParams.get('utm_term')??'');
+    formData.append('utm_source', _urlParams.get('utm_source') ?? '');
+    formData.append('utm_campaign', _urlParams.get('utm_campaign') ?? '');
+    formData.append('utm_content', _urlParams.get('utm_content') ?? '');
+    formData.append('utm_term', _urlParams.get('utm_term') ?? '');
     //Adding Tag & Tag2
-    formData.append('tag', _urlParams.get('tag')??'');
-    formData.append('tag2', _urlParams.get('tag2')??'');
+    formData.append('tag', _urlParams.get('tag') ?? '');
+    formData.append('tag2', _urlParams.get('tag2') ?? '');
     //Adding Order page url
-    formData.append('order_page_url', `${window.location.protocol }//${window.location.host}/${window.location.pathname}`);
+    formData.append('order_page_url', `${window.location.protocol}//${window.location.host}/${window.location.pathname}`);
 
     const formDataJson = Array.from(formData).reduce((acc, cur) => {
         acc[cur[0]] = cur[1];
