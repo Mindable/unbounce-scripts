@@ -430,7 +430,8 @@ function prefillForm(form) {
     let _utm_campaign = _urlParams.get('utm_campaign')??'';
     let _utm_content = _urlParams.get('utm_content')??'';
     let _utm_term = _urlParams.get('utm_term')??'';
-    fetch(`https://aaproxyapis.astrologyanswerstest.com/checkout/params?hash=${_userHash}&token=${_token}&offer_id=${_offerId}&utm_source=${_utm_source}&utm_campaign=${_utm_campaign}&utm_content=${_utm_content}&utm_term=${_utm_term}`)
+    let _utm_medium = _urlParams.get('utm_medium')??'';
+    fetch(`https://aaproxyapis.astrologyanswerstest.com/checkout/params?hash=${_userHash}&token=${_token}&offer_id=${_offerId}&utm_source=${_utm_source}&utm_campaign=${_utm_campaign}&utm_content=${_utm_content}&utm_term=${_utm_term}&utm_medium=${_utm_medium}`)
         .then(response => {
             if (response.status !== 200) {
                 console.log('Error with API. Status code : ' + response.status);
