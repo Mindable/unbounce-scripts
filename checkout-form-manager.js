@@ -259,18 +259,23 @@ function addDefaultFormCss() {
         padding:1rem 0;
         text-align:left;
         font-family: Montserrat, sans-serif;
+        clear:both; 
     }
     .checkout-row{
         display:inline-block;
         width:50%;
+        float:left; 
     }
-    .checkout-row:nth-of-type(12){
-        width:30%;
+    .checkout-row:nth-of-type(11){
+        width:50%;
     }
     .checkout-row:nth-of-type(13){
-        width:70%;
+        width:30%;
     }
     .checkout-row:nth-of-type(14){
+        width:70%;
+    }
+    .checkout-row:nth-of-type(15){
         width:100%;
     }
     .checkout-row .checkout-input{
@@ -341,12 +346,9 @@ function addDefaultFormCss() {
     #cc_number{
         width:100%;
     }
-    #cc_month, #cc_year{
-        width:100px;
-        margin-right: 0.3rem;
-    }
-    #cc_cvv{
-        max-width:208px;
+    #cc_month, #cc_year, #cc_cvv{
+        width:95px;
+        margin-right: 0.25rem;
     }
     .pricing-row.message {
         font-style: italic;
@@ -370,20 +372,19 @@ function addDefaultFormCss() {
         padding:1rem;
         background:#f3f4f6;
         border-radius:0.5rem;
-        width:440px;
+        width:100%;
         max-width:100%;
+        margin-bottom:10px;
     }
     .terms{
         font-size:12px;
+        clear:both;
     }
     .terms a{
         color:#656565;
         text-decoration:underline;
     }
-    @media screen and (max-width:767){
-        #pricing{
-            max-width:92%;
-        }
+    @media screen and (max-width:767px){
         #submit{
             width:100%;
         }
@@ -391,7 +392,9 @@ function addDefaultFormCss() {
             width:100%;
         }
         .terms{
-            text-alig:center;
+            text-align:center;
+            display:block;
+            font-size:10px;
         }
     }
 `;
