@@ -86,6 +86,15 @@ function buildForm(config) {
                 ]
             },
             {
+                type: 'text',
+                label: 'Zip/Postal Code*',
+                name: 'zip',
+                prefillField: 'zip',
+                attributes: [
+                    ['maxlength', 10]
+                ]
+            },
+            {
                 type: 'header',
                 label: 'Payment Information'
             },
