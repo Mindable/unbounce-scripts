@@ -238,12 +238,12 @@ function buildForm(config) {
             form.appendChild(result);
             result.innerHTML = `
             <p class="after-submit">
-                <img src="https://mindable.github.io/unbounce-scripts/assets/lock_icon.jpg" alt="Italian Trulli">Privacy & Security - All your information is safe and secure.<br>
+                <img src="https://mindable.github.io/unbounce-scripts/assets/lock_icon.jpg" alt="Italian Trulli">&nbsp;<b>Privacy & Security</b> - All your information is safe and secure.<br>
                 The entire transaction will take place on a<br>
                 secure server using SSL technology.
             </p>
             <div class="after-submit">
-                <img src="https://mindable.github.io/unbounce-scripts/assets/mcafee_badge.png" alt="McAfee">
+                <img src="https://mindable.github.io/unbounce-scripts/assets/mcafee_badge.png" alt="McAfee">&nbsp;
                 <img src="https://mindable.github.io/unbounce-scripts/assets/truste_badge.png" alt="TRUSTe">
             </div>
             <p class="after-submit"><span class="heavy">Questions?</span> Call Toll Free: 1-866-329-7640</p>
@@ -419,6 +419,9 @@ function addDefaultFormCss() {
     }
     .after-submit{
         text-align: center;
+        font-size:12px;
+        max-width:475px;
+        width:100%;
     }
     .after-submit .heavy{
         font-weight: bold;
