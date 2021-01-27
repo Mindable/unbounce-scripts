@@ -21,9 +21,10 @@ function prefillField(selector, dataValue) {
 
 function prefillForm() {
     let _urlParams = new URLSearchParams(window.location.search);
+    let _token = _urlParams.get('token');
     let _userHash = _urlParams.get('hash');
 
-    fetch(`https://aaproxyapis.astrologyanswerstest.com/leads?hash=${_userHash}`)
+    fetch(`https://aaproxyapis.astrologyanswerstest.com/leads?hash=${_userHash}&token=${_token}`)
         .then(response => {
             if (response.status !== 200) {
                 console.log('Error with API. Status code : ' + response.status);
