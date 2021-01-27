@@ -344,12 +344,14 @@ function addDefaultFormCss() {
         font-weight:bold;
         border:0;
         border-radius:1.5rem;
-        margin-top:1rem;
         box-shadow:1px 2px 2px rgba(0,0,0,0.5);
         font-size:18px;
-        max-idth: 100%;
-        width: 475px;
-        white-space: normal;    
+        max-width: 100%;
+        width: 570px;
+        margin-left:auto;
+        margin-right:auto;
+        white-space: normal;  
+        margin-bottom:15px;  
     }
     #submit:hover{
         background:#472f85;
@@ -394,11 +396,12 @@ function addDefaultFormCss() {
         border-radius:0.5rem;
         width:100%;
         max-width:100%;
-        margin-bottom:10px;
+        margin-bottom:1rem;
     }
     .terms{
         font-size:12px;
         clear:both;
+        margin-bottom:1rem;
     }
     .terms a{
         color:#656565;
@@ -407,6 +410,7 @@ function addDefaultFormCss() {
     @media screen and (max-width:767px){
         #submit{
             width:100%;
+            margin-bottom:1rem;
         }
         .checkout-row{
             width:100%;
@@ -417,11 +421,15 @@ function addDefaultFormCss() {
             font-size:10px;
         }
     }
+    #after-submit{
+        width:570px;
+        max-width:100%;
+    }
     .after-submit{
         text-align: center;
         font-size:12px;
-        max-width:475px;
         width:100%;
+        margin-bottom:1rem;
     }
     .after-submit .heavy{
         font-weight: bold;
