@@ -48,7 +48,8 @@ function buildForm(config) {
                 type: 'text',
                 label: 'Contact Number',
                 name: 'phone',
-                prefillField: 'phone'
+                prefillField: 'phone',
+                optional: true
             },
             {
                 type: 'header',
@@ -179,7 +180,7 @@ function buildForm(config) {
         const result = document.createElement('div');
         form.appendChild(result);
         result.outerHTML = `<div class='checkout-row'>
-                                <div class='checkout-col'><input class='checkout-input' type='${c.type}' id='${c.name}' name='${c.name}' placeholder='${c.label}' required></div>
+                                <div class='checkout-col'><input class='checkout-input' type='${c.type}' id='${c.name}' name='${c.name}' placeholder='${c.label}' ${c.optional===true?'':'required'}></div>
                             </div>`;
     };
     const createPricingFromComponent = function (c, form) {
