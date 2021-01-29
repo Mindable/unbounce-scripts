@@ -629,6 +629,8 @@ function submitCheckout(e) {
     formData.append('utm_campaign', _urlParams.get('utm_campaign') ?? '');
     formData.append('utm_content', _urlParams.get('utm_content') ?? '');
     formData.append('utm_term', _urlParams.get('utm_term') ?? '');
+    //Add device Id, we should have it added to URL parameters from go-links
+    formData.append('device_id', _urlParams.get('device_id') ?? 1);
     //Adding Tag & Tag2
     formData.append('tag', _urlParams.get('tag') ?? '');
     formData.append('tag2', _urlParams.get('tag2') ?? '');
