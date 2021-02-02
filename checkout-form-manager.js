@@ -73,7 +73,7 @@ function buildForm(config) {
                 prefillField: 'country',
                 onChange: countrySelectChanged,
                 options: () => [
-                    { text: 'Country*', value: undefined, isPlaceholder: true },
+                    { text: 'Select Country*', value: '' },
                 ]
             },
             {
@@ -83,7 +83,7 @@ function buildForm(config) {
                 prefillField: 'state',
                 onChange: onStateSelectChanged,
                 options: () => [
-                    { text: 'State*', value: undefined, isPlaceholder: true },
+                    { text: 'Select State*', value: '' },
                 ]
             },
             {
@@ -104,7 +104,7 @@ function buildForm(config) {
                 label: 'Card Type*',
                 name: 'cc_type',
                 options: () => [
-                    { text: 'Card Type', value: undefined, isPlaceholder: true },
+                    { text: 'Select Card Type', value: '' },
                     { text: 'VISA', value: 'visa' },
                     // TODO This makes NO sense, fix in backend
                     { text: 'MasterCard', value: 'master' },
@@ -169,10 +169,6 @@ function buildForm(config) {
             const option = document.createElement('option');
             option.text = o.text;
             option.value = o.value;
-            if (o.isPlaceholder) {
-                option.disabled = true;
-                option.selected = true;
-            }
             formElement.querySelector(`#${id}`).appendChild(option);
         });
     };
@@ -485,10 +481,8 @@ function prefillForm(form) {
                     countrySelect.innerHTML = '';
                     var countryData = data['address']['countries'];
                     const placeholder = document.createElement('option');
-                    placeholder.text = 'Country';
-                    placeholder.value = undefined;
-                    placeholder.disabled = true;
-                    placeholder.selected = true;
+                    placeholder.text = 'Select Country*';
+                    placeholder.value = '';
                     countrySelect.appendChild(placeholder);
                     for (let key in countryData) {
                         const option = document.createElement('option');
@@ -526,10 +520,8 @@ function countrySelectChanged(e) {
             response.json().then(data => {
                 stateSelect.innerHTML = '';
                 const placeholder = document.createElement('option');
-                placeholder.text = 'State';
-                placeholder.value = undefined;
-                placeholder.disabled = true;
-                placeholder.selected = true;
+                placeholder.text = 'Select State*';
+                placeholder.value = '';
                 stateSelect.appendChild(placeholder);
                 for (let key in data) {
                     const option = document.createElement('option');
@@ -544,6 +536,7 @@ function countrySelectChanged(e) {
         else {
             console.log('Error with API. Status code : ' + response.status);
             stateSelect.style.display = 'none';
+            stateSelect.required = false;
         }
     });
 }
