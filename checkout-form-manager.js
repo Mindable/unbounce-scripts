@@ -73,7 +73,7 @@ function buildForm(config) {
                 prefillField: 'country',
                 onChange: countrySelectChanged,
                 options: () => [
-                    { text: 'Country*', value: undefined, isPlaceholder: true },
+                    { text: '', value: undefined, isPlaceholder: true },
                 ]
             },
             {
@@ -83,7 +83,7 @@ function buildForm(config) {
                 prefillField: 'state',
                 onChange: onStateSelectChanged,
                 options: () => [
-                    { text: 'State*', value: undefined, isPlaceholder: true },
+                    { text: '', value: undefined, isPlaceholder: true },
                 ]
             },
             {
@@ -104,7 +104,7 @@ function buildForm(config) {
                 label: 'Card Type*',
                 name: 'cc_type',
                 options: () => [
-                    { text: 'Card Type', value: undefined, isPlaceholder: true },
+                    { text: '', value: undefined, isPlaceholder: true },
                     { text: 'VISA', value: 'visa' },
                     // TODO This makes NO sense, fix in backend
                     { text: 'MasterCard', value: 'master' },
@@ -180,7 +180,10 @@ function buildForm(config) {
         const result = document.createElement('div');
         form.appendChild(result);
         result.outerHTML = `<div class='checkout-row'>
-                                <div class='checkout-col'><input class='checkout-input' type='${c.type}' id='${c.name}' name='${c.name}' placeholder='${c.label}' ${c.optional===true?'':'required'}></div>
+                                <label for='${c.name}'>${c.label}</label>
+                                <div class='checkout-col'>
+                                    <input class='checkout-input' type='${c.type}' id='${c.name}' name='${c.name}' ${c.optional===true?'':'required'}>
+                                </div>
                             </div>`;
     };
     const createPricingFromComponent = function (c, form) {
@@ -195,6 +198,7 @@ function buildForm(config) {
         // TODO Refactor the builder to allow for nested components so we don't have to hardcode html here,
         // and use leverage how `select` components are built instead 
         result.outerHTML = `<div class='checkout-row'>
+                                <label>Expires*</label>
                                 <div class='checkout-col'>
                                     <select class='checkout-input' id='cc_month' name='cc_month' required></select>
                                     <select class='checkout-input' id='cc_year' name='cc_year' required></select>
@@ -221,7 +225,10 @@ function buildForm(config) {
             const result = document.createElement('div');
             form.appendChild(result);
             result.outerHTML = `<div class='checkout-row'>
-                                    <div class='checkout-col'><select class='checkout-input' id='${c.name}' name='${c.name}' required></select></div>
+                                    <label for='${c.name}'>${c.label}</label>
+                                    <div class='checkout-col'>    
+                                        <select class='checkout-input' id='${c.name}' name='${c.name}' required></select>
+                                    </div>
                                 </div>`;
         },
         'cc_expiry': createCcExpiryFromComponent,
@@ -291,10 +298,10 @@ function addDefaultFormCss() {
         width:50%;
     }
     .checkout-row:nth-of-type(13){
-        width:30%;
+        width:35%;
     }
     .checkout-row:nth-of-type(14){
-        width:70%;
+        width:65%;
     }
     .checkout-row:nth-of-type(15){
         width:100%;
@@ -362,12 +369,6 @@ function addDefaultFormCss() {
     }
     ::-webkit-input-placeholder, :-ms-input-placeholder, ::placeholder{ 
         color: #5E6C7B;
-    }
-    #cc_type{
-        width:100%;
-    }
-    #cc_number{
-        width:100%;
     }
     #cc_month, #cc_year, #cc_cvv{
         width:95px;
@@ -485,7 +486,6 @@ function prefillForm(form) {
                     countrySelect.innerHTML = '';
                     var countryData = data['address']['countries'];
                     const placeholder = document.createElement('option');
-                    placeholder.text = 'Country';
                     placeholder.value = undefined;
                     placeholder.disabled = true;
                     placeholder.selected = true;
@@ -526,7 +526,6 @@ function countrySelectChanged(e) {
             response.json().then(data => {
                 stateSelect.innerHTML = '';
                 const placeholder = document.createElement('option');
-                placeholder.text = 'State';
                 placeholder.value = undefined;
                 placeholder.disabled = true;
                 placeholder.selected = true;
