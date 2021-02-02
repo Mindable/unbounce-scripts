@@ -327,6 +327,9 @@ function addDefaultFormCss() {
         height: 2.6875rem;
         color:#5E6C7B;
     }
+    input[readonly].checkout-input {
+        background-color: #eee;
+    }
     select.checkout-input{
         white-space: nowrap;
         overflow: hidden;
