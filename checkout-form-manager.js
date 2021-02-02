@@ -9,7 +9,7 @@ function getCheckoutConfig(_checkoutElem) {
     let _config = {};
     let _urlParams = new URLSearchParams(window.location.search);
     _config.checkoutFormType = _checkoutElem.getAttribute('checkoutFormType') ?? 'digital';
-    _config.offerId = _urlParams.get('offerId') ?? _checkoutElem.getAttribute('offerId');
+    _config.offer_id = _urlParams.get('offerId') ?? _checkoutElem.getAttribute('offer_id');
     _config.successfulCheckoutUrl = _checkoutElem.getAttribute('successfulCheckoutUrl') ?? 'astrologyanswers.com';
     _config.checkoutButtonText = _checkoutElem.getAttribute('checkoutButtonText') ?? 'Buy Now!';
     _config.disableDefaultCss = _checkoutElem.getAttribute('disableDefaultCss') ?? false;
@@ -454,8 +454,8 @@ function addCheckoutForm() {
 }
 
 function validateCheckoutConfig(config, element) {
-    if (!config.offerId) {
-        element.innerHTML = 'Missing attribute: offerId';
+    if (!config.offer_id) {
+        element.innerHTML = 'Missing attribute: offer_id';
         return false;
     }
     return true;
@@ -465,14 +465,14 @@ function prefillForm(form) {
     let _urlParams = new URLSearchParams(window.location.search);
     let _token = _urlParams.get('token');
     let _userHash = _urlParams.get('hash');
-    let _offerId = getCheckoutConfig(getCheckoutElem())['offerId'];
+    let _offer_id = getCheckoutConfig(getCheckoutElem())['offer_id'];
     //Add UTM parameters to Checkout Parameters for trigerring Cart Abandon
     let _utm_source = _urlParams.get('utm_source')??'';
     let _utm_campaign = _urlParams.get('utm_campaign')??'';
     let _utm_content = _urlParams.get('utm_content')??'';
     let _utm_term = _urlParams.get('utm_term')??'';
     let _utm_medium = _urlParams.get('utm_medium')??'';
-    fetch(`https://aaproxyapis.astrologyanswerstest.com/checkout/params?hash=${_userHash}&token=${_token}&offer_id=${_offerId}&utm_source=${_utm_source}&utm_campaign=${_utm_campaign}&utm_content=${_utm_content}&utm_term=${_utm_term}&utm_medium=${_utm_medium}`)
+    fetch(`https://aaproxyapis.astrologyanswerstest.com/checkout/params?hash=${_userHash}&token=${_token}&offer_id=${_offer_id}&utm_source=${_utm_source}&utm_campaign=${_utm_campaign}&utm_content=${_utm_content}&utm_term=${_utm_term}&utm_medium=${_utm_medium}`)
         .then(response => {
             if (response.status !== 200) {
                 console.log('Error with API. Status code : ' + response.status);
@@ -621,7 +621,7 @@ function submitCheckout(e) {
 
     const formData = new FormData(form);
     formData.append('hash', (new URL(document.location)).searchParams.get('hash'));
-    formData.append('offer_id', checkoutElement.getAttribute('offerId'));
+    formData.append('offer_id', checkoutElement.getAttribute('offer_id'));
 
     //Adding utm parameters
     let _urlParams = new URLSearchParams(window.location.search);
