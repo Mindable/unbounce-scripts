@@ -363,6 +363,7 @@ function addDefaultFormCss() {
         margin-right:auto;
         white-space: normal;  
         margin-bottom:15px;  
+        cursor:pointer;
     }
     #submit:hover{
         background:#472f85;
