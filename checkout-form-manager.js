@@ -73,7 +73,7 @@ function buildForm(config) {
                 prefillField: 'country',
                 onChange: countrySelectChanged,
                 options: () => [
-                    { text: '', value: undefined, isPlaceholder: true },
+                    { text: 'Select Country*', value: '' },
                 ]
             },
             {
@@ -83,7 +83,7 @@ function buildForm(config) {
                 prefillField: 'state',
                 onChange: onStateSelectChanged,
                 options: () => [
-                    { text: '', value: undefined, isPlaceholder: true },
+                    { text: 'Select State*', value: '' },
                 ]
             },
             {
@@ -104,7 +104,7 @@ function buildForm(config) {
                 label: 'Card Type*',
                 name: 'cc_type',
                 options: () => [
-                    { text: '', value: undefined, isPlaceholder: true },
+                    { text: 'Select Card Type', value: '' },
                     { text: 'VISA', value: 'visa' },
                     // TODO This makes NO sense, fix in backend
                     { text: 'MasterCard', value: 'master' },
@@ -169,10 +169,6 @@ function buildForm(config) {
             const option = document.createElement('option');
             option.text = o.text;
             option.value = o.value;
-            if (o.isPlaceholder) {
-                option.disabled = true;
-                option.selected = true;
-            }
             formElement.querySelector(`#${id}`).appendChild(option);
         });
     };
@@ -471,7 +467,7 @@ function prefillForm(form) {
     let _token = _urlParams.get('token');
     let _userHash = _urlParams.get('hash');
     let _offerId = getCheckoutConfig(getCheckoutElem())['offerId'];
-    //Add UTM parameters to Checkout Parameters for trigerring Cart Abandon
+    //Add UTM parameters to Checkout Parameters for triggering Cart Abandon
     let _utm_source = _urlParams.get('utm_source')??'';
     let _utm_campaign = _urlParams.get('utm_campaign')??'';
     let _utm_content = _urlParams.get('utm_content')??'';
@@ -490,9 +486,8 @@ function prefillForm(form) {
                     countrySelect.innerHTML = '';
                     var countryData = data['address']['countries'];
                     const placeholder = document.createElement('option');
-                    placeholder.value = undefined;
-                    placeholder.disabled = true;
-                    placeholder.selected = true;
+                    placeholder.text = 'Select Country*';
+                    placeholder.value = '';
                     countrySelect.appendChild(placeholder);
                     for (let key in countryData) {
                         const option = document.createElement('option');
@@ -526,13 +521,12 @@ function countrySelectChanged(e) {
     const form = getCheckoutElem().querySelector('#aa-checkout-form');
     const stateSelect = form.querySelector('#state');
     fetch(`https://aaproxyapis.astrologyanswerstest.com/countries/${e.target.value}/states`).then(response => {
-        if (response.status == 200) {
+        if (response.status === 200) {
             response.json().then(data => {
                 stateSelect.innerHTML = '';
                 const placeholder = document.createElement('option');
-                placeholder.value = undefined;
-                placeholder.disabled = true;
-                placeholder.selected = true;
+                placeholder.text = 'Select State*';
+                placeholder.value = '';
                 stateSelect.appendChild(placeholder);
                 for (let key in data) {
                     const option = document.createElement('option');
@@ -541,12 +535,14 @@ function countrySelectChanged(e) {
                     stateSelect.appendChild(option);
                 }
                 stateSelect.style.display = 'initial';
+                stateSelect.required = true;
                 updatePricing();
             });
         }
         else {
             console.log('Error with API. Status code : ' + response.status);
             stateSelect.style.display = 'none';
+            stateSelect.required = false;
         }
     });
 }
@@ -580,15 +576,9 @@ function updatePricing() {
     pricingDiv.appendChild(offerNameElement);
 
     const offerSubtotal = Number.parseFloat(_offerData['offer_price']);
-    if (country == 'undefined') {
-        addMessageRow('Please select country');
-    }
-    else if (country != 'CA') {
+    if (country !== 'CA') {
         // If the country is not Canada, then no tax
         addPricingRow('Total', offerSubtotal);
-    }
-    else if (state == 'undefined') {
-        addMessageRow('Please select state');
     }
     else {
         // If the country is Canada, and a valid state is selected, present subtotal & tax separately
@@ -649,12 +639,12 @@ function submitCheckout(e) {
         method: 'POST',
         body: JSON.stringify(formDataJson)
     }).then(response => {
-        if (response.status != 200) {
+        if (response.status !== 200) {
             console.log(`Error on checkout API: ${response.status}`);
             return;
         }
         response.json().then(data => {
-            if (data['status'] != 'success') {
+            if (data['status'] !== 'success') {
                 form.querySelector('#checkout_error').innerHTML = `Checkout unsuccessful: ${data['message']}`;
                 return;
             }
@@ -677,7 +667,7 @@ function registerUpsellLinks() {
             return acc;
         }, []);
 
-        urlParams = new URLSearchParams(window.location.search);
+        let urlParams = new URLSearchParams(window.location.search);
         hrefParams.push({ name: 'hash', value: urlParams.get('hash') });
         hrefParams.push({ name: 'token', value: urlParams.get('token') });
 
