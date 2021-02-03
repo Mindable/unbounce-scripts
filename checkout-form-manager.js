@@ -6,14 +6,21 @@ function getCheckoutElem() {
 }
 
 function getCheckoutConfig(_checkoutElem) {
-    let _config = {};
-    let _urlParams = new URLSearchParams(window.location.search);
-    _config.checkoutFormType = _checkoutElem.getAttribute('checkoutFormType') ?? 'digital';
-    _config.offerId = _urlParams.get('offerId') ?? _checkoutElem.getAttribute('offerId');
-    _config.successfulCheckoutUrl = _checkoutElem.getAttribute('successfulCheckoutUrl') ?? 'astrologyanswers.com';
-    _config.checkoutButtonText = _checkoutElem.getAttribute('checkoutButtonText') ?? 'Buy Now!';
-    _config.disableDefaultCss = _checkoutElem.getAttribute('disableDefaultCss') ?? false;
-    return _config;
+    let config = {};
+    let urlParams = new URLSearchParams(window.location.search);
+
+    // TODO Remove fallback on older camel-case attributes once `data-` attributes are commmon e.g. remove `?? _checkoutElem.getAttribute('offerId')`
+    config.checkoutFormType = _checkoutElem.dataset.checkoutFormType ?? 'physical';
+    config.offer_id = urlParams.get('offerId') ?? _checkoutElem.dataset.offerId ?? _checkoutElem.getAttribute('offer_id') ?? _checkoutElem.getAttribute('offerId');
+    config.successfulCheckoutUrl = _checkoutElem.dataset.successfulCheckoutUrl ?? _checkoutElem.getAttribute('successfulCheckoutUrl') ?? 'astrologyanswers.com';
+    config.checkoutButtonText = _checkoutElem.dataset.checkoutButtonText ?? _checkoutElem.getAttribute('checkoutButtonText') ?? 'Purchase';
+    config.disableDefaultCss = _checkoutElem.dataset.disableDefaultCss == 'true';
+
+    // TODO Remove deprecation warning check when removing older fallback attributes
+    if (Array.from(_checkoutElem.attributes).some(a => ['offerid', 'offer_id', 'successfulcheckoutUrl', 'checkoutbuttontext'].includes(a.name))) {
+        console.warn(`offerId, offer_id, successfulCheckoutUrl & checkoutButtonText are deprecated and will be removed in the future; use data-offer-id, data-checkout-button-text & data-successful-checkout-url instead`);
+    }
+    return config;
 }
 
 function buildForm(config) {
@@ -180,7 +187,7 @@ function buildForm(config) {
         const result = document.createElement('div');
         form.appendChild(result);
         result.outerHTML = `<div class='checkout-row'>
-                                <div class='checkout-col'><input class='checkout-input' type='${c.type}' id='${c.name}' name='${c.name}' placeholder='${c.label}' ${c.optional===true?'':'required'}></div>
+                                <div class='checkout-col'><input class='checkout-input' type='${c.type}' id='${c.name}' name='${c.name}' placeholder='${c.label}' ${c.optional === true ? '' : 'required'}></div>
                             </div>`;
     };
     const createPricingFromComponent = function (c, form) {
@@ -454,8 +461,8 @@ function addCheckoutForm() {
 }
 
 function validateCheckoutConfig(config, element) {
-    if (!config.offerId) {
-        element.innerHTML = 'Missing attribute: offerId';
+    if (!config.offer_id) {
+        element.innerHTML = 'Missing attribute: offer_id';
         return false;
     }
     return true;
@@ -465,14 +472,14 @@ function prefillForm(form) {
     let _urlParams = new URLSearchParams(window.location.search);
     let _token = _urlParams.get('token');
     let _userHash = _urlParams.get('hash');
-    let _offerId = getCheckoutConfig(getCheckoutElem())['offerId'];
+    let _offer_id = getCheckoutConfig(getCheckoutElem())['offer_id'];
     //Add UTM parameters to Checkout Parameters for trigerring Cart Abandon
-    let _utm_source = _urlParams.get('utm_source')??'';
-    let _utm_campaign = _urlParams.get('utm_campaign')??'';
-    let _utm_content = _urlParams.get('utm_content')??'';
-    let _utm_term = _urlParams.get('utm_term')??'';
-    let _utm_medium = _urlParams.get('utm_medium')??'';
-    fetch(`https://aaproxyapis.astrologyanswerstest.com/checkout/params?hash=${_userHash}&token=${_token}&offer_id=${_offerId}&utm_source=${_utm_source}&utm_campaign=${_utm_campaign}&utm_content=${_utm_content}&utm_term=${_utm_term}&utm_medium=${_utm_medium}`)
+    let _utm_source = _urlParams.get('utm_source') ?? '';
+    let _utm_campaign = _urlParams.get('utm_campaign') ?? '';
+    let _utm_content = _urlParams.get('utm_content') ?? '';
+    let _utm_term = _urlParams.get('utm_term') ?? '';
+    let _utm_medium = _urlParams.get('utm_medium') ?? '';
+    fetch(`https://aaproxyapis.astrologyanswerstest.com/checkout/params?hash=${_userHash}&token=${_token}&offer_id=${_offer_id}&utm_source=${_utm_source}&utm_campaign=${_utm_campaign}&utm_content=${_utm_content}&utm_term=${_utm_term}&utm_medium=${_utm_medium}`)
         .then(response => {
             if (response.status !== 200) {
                 console.log('Error with API. Status code : ' + response.status);
@@ -621,7 +628,7 @@ function submitCheckout(e) {
 
     const formData = new FormData(form);
     formData.append('hash', (new URL(document.location)).searchParams.get('hash'));
-    formData.append('offer_id', checkoutElement.getAttribute('offerId'));
+    formData.append('offer_id', config['offer_id']);
 
     //Adding utm parameters
     let _urlParams = new URLSearchParams(window.location.search);
