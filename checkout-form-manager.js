@@ -1,4 +1,5 @@
-let _checkoutFormId = 'aa-checkout-div';
+const _checkoutFormId = 'aa-checkout-div';
+const _urlParams = new URLSearchParams(window.location.search);
 let _offerData;
 
 function getCheckoutElem() {
@@ -7,11 +8,10 @@ function getCheckoutElem() {
 
 function getCheckoutConfig(_checkoutElem) {
     let config = {};
-    let urlParams = new URLSearchParams(window.location.search);
 
     // TODO Remove fallback on older camel-case attributes once `data-` attributes are commmon e.g. remove `?? _checkoutElem.getAttribute('offerId')`
     config.checkoutFormType = _checkoutElem.dataset.checkoutFormType ?? 'physical';
-    config.offer_id = urlParams.get('offerId') ?? _checkoutElem.dataset.offerId ?? _checkoutElem.getAttribute('offer_id') ?? _checkoutElem.getAttribute('offerId');
+    config.offer_id = _urlParams.get('offerId') ?? _checkoutElem.dataset.offerId ?? _checkoutElem.getAttribute('offer_id') ?? _checkoutElem.getAttribute('offerId');
     config.successfulCheckoutUrl = _checkoutElem.dataset.successfulCheckoutUrl ?? _checkoutElem.getAttribute('successfulCheckoutUrl') ?? 'astrologyanswers.com';
     config.checkoutButtonText = _checkoutElem.dataset.checkoutButtonText ?? _checkoutElem.getAttribute('checkoutButtonText') ?? 'Purchase';
     config.disableDefaultCss = _checkoutElem.dataset.disableDefaultCss == 'true';
@@ -80,7 +80,7 @@ function buildForm(config) {
                 prefillField: 'country',
                 onChange: countrySelectChanged,
                 options: () => [
-                    { text: 'Country*', value: undefined, isPlaceholder: true },
+                    { text: 'Select Country*', value: '' },
                 ]
             },
             {
@@ -90,7 +90,7 @@ function buildForm(config) {
                 prefillField: 'state',
                 onChange: onStateSelectChanged,
                 options: () => [
-                    { text: 'State*', value: undefined, isPlaceholder: true },
+                    { text: 'Select State*', value: '' },
                 ]
             },
             {
@@ -111,7 +111,7 @@ function buildForm(config) {
                 label: 'Card Type*',
                 name: 'cc_type',
                 options: () => [
-                    { text: 'Card Type', value: undefined, isPlaceholder: true },
+                    { text: 'Select Card Type', value: '' },
                     { text: 'VISA', value: 'visa' },
                     // TODO This makes NO sense, fix in backend
                     { text: 'MasterCard', value: 'master' },
@@ -176,10 +176,6 @@ function buildForm(config) {
             const option = document.createElement('option');
             option.text = o.text;
             option.value = o.value;
-            if (o.isPlaceholder) {
-                option.disabled = true;
-                option.selected = true;
-            }
             formElement.querySelector(`#${id}`).appendChild(option);
         });
     };
@@ -209,10 +205,10 @@ function buildForm(config) {
                             </div>`;
         addOptionsToSelectElement('cc_month', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
             .map(i => { return { text: i, value: i } }));
-        addOptionsToSelectElement('cc_year', Array(10).fill().map((_, i) => new Date().getFullYear() + i).map(year => {
+        addOptionsToSelectElement('cc_year', Array(10).fill(1).map((_, i) => new Date().getFullYear() + i).map(year => {
             const option = document.createElement('option');
-            option.text = year;
-            option.value = year;
+            option.text = year.toString();
+            option.value = year.toString();
             return option;
         }));
     };
@@ -238,7 +234,7 @@ function buildForm(config) {
             form.appendChild(result);
             result.outerHTML = `<p class="terms">By submitting your request, you agree to the <a href="https://astrologyanswers.com/info/terms-of-service/" target="blank" title="Terms Of Service">Terms of Service.</a></p>
                                 <div class='checkout-error' id='checkout_error'></div>
-                                <input class='checkout-input' id='${c.name}' value='${c.label}' type='submit'></input>`;
+                                <input class='checkout-input' id='${c.name}' value='${c.label}' type='submit'>`;
         },
         'after-submit': (c, form) => {
             const result = document.createElement('div');
@@ -469,7 +465,6 @@ function validateCheckoutConfig(config, element) {
 }
 
 function prefillForm(form) {
-    let _urlParams = new URLSearchParams(window.location.search);
     let _token = _urlParams.get('token');
     let _userHash = _urlParams.get('hash');
     let _offer_id = getCheckoutConfig(getCheckoutElem())['offer_id'];
@@ -490,12 +485,10 @@ function prefillForm(form) {
                 const countrySelect = form.querySelector('#country');
                 if (countrySelect) {
                     countrySelect.innerHTML = '';
-                    var countryData = data['address']['countries'];
+                    const countryData = data['address']['countries'];
                     const placeholder = document.createElement('option');
-                    placeholder.text = 'Country';
-                    placeholder.value = undefined;
-                    placeholder.disabled = true;
-                    placeholder.selected = true;
+                    placeholder.text = 'Select Country*';
+                    placeholder.value = '';
                     countrySelect.appendChild(placeholder);
                     for (let key in countryData) {
                         const option = document.createElement('option');
@@ -529,14 +522,12 @@ function countrySelectChanged(e) {
     const form = getCheckoutElem().querySelector('#aa-checkout-form');
     const stateSelect = form.querySelector('#state');
     fetch(`https://aaproxyapis.astrologyanswerstest.com/countries/${e.target.value}/states`).then(response => {
-        if (response.status == 200) {
+        if (response.status === 200) {
             response.json().then(data => {
                 stateSelect.innerHTML = '';
                 const placeholder = document.createElement('option');
-                placeholder.text = 'State';
-                placeholder.value = undefined;
-                placeholder.disabled = true;
-                placeholder.selected = true;
+                placeholder.text = 'Select State*';
+                placeholder.value = '';
                 stateSelect.appendChild(placeholder);
                 for (let key in data) {
                     const option = document.createElement('option');
@@ -545,12 +536,14 @@ function countrySelectChanged(e) {
                     stateSelect.appendChild(option);
                 }
                 stateSelect.style.display = 'initial';
+                stateSelect.required = true;
                 updatePricing();
             });
         }
         else {
             console.log('Error with API. Status code : ' + response.status);
             stateSelect.style.display = 'none';
+            stateSelect.required = false;
         }
     });
 }
@@ -571,12 +564,6 @@ function updatePricing() {
         pricingDiv.appendChild(element);
         element.outerHTML = `<div class='pricing-row'>${name}: <span class='price'>$${value.toFixed(2)}</span></div>`;
     };
-    const addMessageRow = function (message) {
-        const element = document.createElement('div');
-        element.className = 'pricing-row message';
-        element.innerText = message;
-        pricingDiv.appendChild(element);
-    };
 
     const offerNameElement = document.createElement('div');
     offerNameElement.className = 'pricing-row offer-name';
@@ -584,17 +571,12 @@ function updatePricing() {
     pricingDiv.appendChild(offerNameElement);
 
     const offerSubtotal = Number.parseFloat(_offerData['offer_price']);
-    if (country == 'undefined') {
-        addMessageRow('Please select country');
-    }
-    else if (country != 'CA') {
+    if (country !== 'CA') {
         // If the country is not Canada, then no tax
         addPricingRow('Total', offerSubtotal);
-    }
-    else if (state == 'undefined') {
-        addMessageRow('Please select state');
-    }
-    else {
+    } else if(state === '') {
+        addPricingRow('Total', offerSubtotal);
+    } else {
         // If the country is Canada, and a valid state is selected, present subtotal & tax separately
         // https://www.taxtips.ca/salestaxes/sales-tax-rates-2020.htm
         const canadianTaxMap = {
@@ -627,11 +609,10 @@ function submitCheckout(e) {
     const form = checkoutElement.querySelector('#aa-checkout-form');
 
     const formData = new FormData(form);
-    formData.append('hash', (new URL(document.location)).searchParams.get('hash'));
+    formData.append('hash', _urlParams.get('hash'));
     formData.append('offer_id', config['offer_id']);
 
     //Adding utm parameters
-    let _urlParams = new URLSearchParams(window.location.search);
     formData.append('utm_source', _urlParams.get('utm_source') ?? '');
     formData.append('utm_campaign', _urlParams.get('utm_campaign') ?? '');
     formData.append('utm_content', _urlParams.get('utm_content') ?? '');
@@ -653,12 +634,12 @@ function submitCheckout(e) {
         method: 'POST',
         body: JSON.stringify(formDataJson)
     }).then(response => {
-        if (response.status != 200) {
+        if (response.status !== 200) {
             console.log(`Error on checkout API: ${response.status}`);
             return;
         }
         response.json().then(data => {
-            if (data['status'] != 'success') {
+            if (data['status'] !== 'success') {
                 form.querySelector('#checkout_error').innerHTML = `Checkout unsuccessful: ${data['message']}`;
                 return;
             }
@@ -681,9 +662,8 @@ function registerUpsellLinks() {
             return acc;
         }, []);
 
-        urlParams = new URLSearchParams(window.location.search);
-        hrefParams.push({ name: 'hash', value: urlParams.get('hash') });
-        hrefParams.push({ name: 'token', value: urlParams.get('token') });
+        hrefParams.push({ name: 'hash', value: _urlParams.get('hash') });
+        hrefParams.push({ name: 'token', value: _urlParams.get('token') });
 
         const callbackUrl = match[2];
         a.addEventListener('click', e => {
