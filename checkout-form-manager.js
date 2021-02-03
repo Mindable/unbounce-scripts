@@ -524,6 +524,7 @@ function prefillForm(form) {
 
 function countrySelectChanged(e) {
     const form = getCheckoutElem().querySelector('#aa-checkout-form');
+    const stateLabel = form.querySelector('label[for="state"]');
     const stateSelect = form.querySelector('#state');
     fetch(`https://aaproxyapis.astrologyanswerstest.com/countries/${e.target.value}/states`).then(response => {
         if (response.status == 200) {
@@ -540,12 +541,14 @@ function countrySelectChanged(e) {
                     option.value = key;
                     stateSelect.appendChild(option);
                 }
+                stateLabel.style.display = 'initial';
                 stateSelect.style.display = 'initial';
                 updatePricing();
             });
         }
         else {
             console.log('Error with API. Status code : ' + response.status);
+            stateLabel.style.display = 'none';
             stateSelect.style.display = 'none';
         }
     });
