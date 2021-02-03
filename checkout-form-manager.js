@@ -198,10 +198,10 @@ function buildForm(config) {
                             </div>`;
         addOptionsToSelectElement('cc_month', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
             .map(i => { return { text: i, value: i } }));
-        addOptionsToSelectElement('cc_year', Array(10).fill().map((_, i) => new Date().getFullYear() + i).map(year => {
+        addOptionsToSelectElement('cc_year', Array(10).fill(1).map((_, i) => new Date().getFullYear() + i).map(year => {
             const option = document.createElement('option');
-            option.text = year;
-            option.value = year;
+            option.text = year.toString();
+            option.value = year.toString();
             return option;
         }));
     };
@@ -478,7 +478,7 @@ function prefillForm(form) {
                 const countrySelect = form.querySelector('#country');
                 if (countrySelect) {
                     countrySelect.innerHTML = '';
-                    var countryData = data['address']['countries'];
+                    const countryData = data['address']['countries'];
                     const placeholder = document.createElement('option');
                     placeholder.text = 'Select Country*';
                     placeholder.value = '';
