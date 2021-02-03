@@ -1,4 +1,5 @@
-let _checkoutFormId = 'aa-checkout-div';
+const _checkoutFormId = 'aa-checkout-div';
+const _urlParams = new URLSearchParams(window.location.search);
 let _offerData;
 
 function getCheckoutElem() {
@@ -7,7 +8,6 @@ function getCheckoutElem() {
 
 function getCheckoutConfig(_checkoutElem) {
     let _config = {};
-    let _urlParams = new URLSearchParams(window.location.search);
     _config.checkoutFormType = _checkoutElem.getAttribute('checkoutFormType') ?? 'digital';
     _config.offerId = _urlParams.get('offerId') ?? _checkoutElem.getAttribute('offerId');
     _config.successfulCheckoutUrl = _checkoutElem.getAttribute('successfulCheckoutUrl') ?? 'astrologyanswers.com';
@@ -458,7 +458,6 @@ function validateCheckoutConfig(config, element) {
 }
 
 function prefillForm(form) {
-    let _urlParams = new URLSearchParams(window.location.search);
     let _token = _urlParams.get('token');
     let _userHash = _urlParams.get('hash');
     let _offerId = getCheckoutConfig(getCheckoutElem())['offerId'];
@@ -558,12 +557,6 @@ function updatePricing() {
         pricingDiv.appendChild(element);
         element.outerHTML = `<div class='pricing-row'>${name}: <span class='price'>$${value.toFixed(2)}</span></div>`;
     };
-    const addMessageRow = function (message) {
-        const element = document.createElement('div');
-        element.className = 'pricing-row message';
-        element.innerText = message;
-        pricingDiv.appendChild(element);
-    };
 
     const offerNameElement = document.createElement('div');
     offerNameElement.className = 'pricing-row offer-name';
@@ -608,11 +601,10 @@ function submitCheckout(e) {
     const form = checkoutElement.querySelector('#aa-checkout-form');
 
     const formData = new FormData(form);
-    formData.append('hash', (new URL(document.location)).searchParams.get('hash'));
+    formData.append('hash', _urlParams.get('hash'));
     formData.append('offer_id', checkoutElement.getAttribute('offerId'));
 
     //Adding utm parameters
-    let _urlParams = new URLSearchParams(window.location.search);
     formData.append('utm_source', _urlParams.get('utm_source') ?? '');
     formData.append('utm_campaign', _urlParams.get('utm_campaign') ?? '');
     formData.append('utm_content', _urlParams.get('utm_content') ?? '');
@@ -662,9 +654,8 @@ function registerUpsellLinks() {
             return acc;
         }, []);
 
-        let urlParams = new URLSearchParams(window.location.search);
-        hrefParams.push({ name: 'hash', value: urlParams.get('hash') });
-        hrefParams.push({ name: 'token', value: urlParams.get('token') });
+        hrefParams.push({ name: 'hash', value: _urlParams.get('hash') });
+        hrefParams.push({ name: 'token', value: _urlParams.get('token') });
 
         const callbackUrl = match[2];
         a.addEventListener('click', e => {
