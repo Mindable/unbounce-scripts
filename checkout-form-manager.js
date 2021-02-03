@@ -628,7 +628,7 @@ function submitCheckout(e) {
 
     const formData = new FormData(form);
     formData.append('hash', (new URL(document.location)).searchParams.get('hash'));
-    formData.append('offer_id', checkoutElement.getAttribute('offer_id'));
+    formData.append('offer_id', config['offer_id']);
 
     //Adding utm parameters
     let _urlParams = new URLSearchParams(window.location.search);
