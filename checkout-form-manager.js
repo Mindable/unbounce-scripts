@@ -567,8 +567,9 @@ function updatePricing() {
     if (country !== 'CA') {
         // If the country is not Canada, then no tax
         addPricingRow('Total', offerSubtotal);
-    }
-    else {
+    } else if(state === '') {
+        addPricingRow('Total', offerSubtotal);
+    } else {
         // If the country is Canada, and a valid state is selected, present subtotal & tax separately
         // https://www.taxtips.ca/salestaxes/sales-tax-rates-2020.htm
         const canadianTaxMap = {
