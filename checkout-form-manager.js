@@ -10,7 +10,7 @@ function getCheckoutConfig(_checkoutElem) {
     let config = {};
 
     // TODO Remove fallback on older camel-case attributes once `data-` attributes are commmon e.g. remove `?? _checkoutElem.getAttribute('offerId')`
-    config.checkoutFormType = _checkoutElem.dataset.checkoutFormType ?? 'physical';
+    config.checkoutFormType = _checkoutElem.dataset.checkoutFormType ?? 'digital';
     config.offer_id = _urlParams.get('offerId') ?? _checkoutElem.dataset.offerId ?? _checkoutElem.getAttribute('offer_id') ?? _checkoutElem.getAttribute('offerId');
     config.successfulCheckoutUrl = _checkoutElem.dataset.successfulCheckoutUrl ?? _checkoutElem.getAttribute('successfulCheckoutUrl') ?? 'astrologyanswers.com';
     config.checkoutButtonText = _checkoutElem.dataset.checkoutButtonText ?? _checkoutElem.getAttribute('checkoutButtonText') ?? 'Purchase';
