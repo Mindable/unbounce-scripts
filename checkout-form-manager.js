@@ -1,4 +1,5 @@
-let _checkoutFormId = 'aa-checkout-div';
+const _checkoutFormId = 'aa-checkout-div';
+const _urlParams = new URLSearchParams(window.location.search);
 let _offerData;
 
 function getCheckoutElem() {
@@ -6,14 +7,20 @@ function getCheckoutElem() {
 }
 
 function getCheckoutConfig(_checkoutElem) {
-    let _config = {};
-    let _urlParams = new URLSearchParams(window.location.search);
-    _config.checkoutFormType = _checkoutElem.getAttribute('checkoutFormType') ?? 'digital';
-    _config.offerId = _urlParams.get('offerId') ?? _checkoutElem.getAttribute('offerId');
-    _config.successfulCheckoutUrl = _checkoutElem.getAttribute('successfulCheckoutUrl') ?? 'astrologyanswers.com';
-    _config.checkoutButtonText = _checkoutElem.getAttribute('checkoutButtonText') ?? 'Buy Now!';
-    _config.disableDefaultCss = _checkoutElem.getAttribute('disableDefaultCss') ?? false;
-    return _config;
+    let config = {};
+
+    // TODO Remove fallback on older camel-case attributes once `data-` attributes are commmon e.g. remove `?? _checkoutElem.getAttribute('offerId')`
+    config.checkoutFormType = _checkoutElem.dataset.checkoutFormType ?? 'digital';
+    config.offer_id = _urlParams.get('offerId') ?? _checkoutElem.dataset.offerId ?? _checkoutElem.getAttribute('offer_id') ?? _checkoutElem.getAttribute('offerId');
+    config.successfulCheckoutUrl = _checkoutElem.dataset.successfulCheckoutUrl ?? _checkoutElem.getAttribute('successfulCheckoutUrl') ?? 'astrologyanswers.com';
+    config.checkoutButtonText = _checkoutElem.dataset.checkoutButtonText ?? _checkoutElem.getAttribute('checkoutButtonText') ?? 'Purchase';
+    config.disableDefaultCss = _checkoutElem.dataset.disableDefaultCss == 'true';
+
+    // TODO Remove deprecation warning check when removing older fallback attributes
+    if (Array.from(_checkoutElem.attributes).some(a => ['offerid', 'offer_id', 'successfulcheckoutUrl', 'checkoutbuttontext'].includes(a.name))) {
+        console.warn(`offerId, offer_id, successfulCheckoutUrl & checkoutButtonText are deprecated and will be removed in the future; use data-offer-id, data-checkout-button-text & data-successful-checkout-url instead`);
+    }
+    return config;
 }
 
 function buildForm(config) {
@@ -73,7 +80,7 @@ function buildForm(config) {
                 prefillField: 'country',
                 onChange: countrySelectChanged,
                 options: () => [
-                    { text: '', value: undefined, isPlaceholder: true },
+                    { text: 'Select Country*', value: '' },
                 ]
             },
             {
@@ -83,7 +90,7 @@ function buildForm(config) {
                 prefillField: 'state',
                 onChange: onStateSelectChanged,
                 options: () => [
-                    { text: '', value: undefined, isPlaceholder: true },
+                    { text: 'Select State*', value: '' },
                 ]
             },
             {
@@ -104,7 +111,7 @@ function buildForm(config) {
                 label: 'Card Type*',
                 name: 'cc_type',
                 options: () => [
-                    { text: '', value: undefined, isPlaceholder: true },
+                    { text: 'Select Card Type', value: '' },
                     { text: 'VISA', value: 'visa' },
                     // TODO This makes NO sense, fix in backend
                     { text: 'MasterCard', value: 'master' },
@@ -169,10 +176,6 @@ function buildForm(config) {
             const option = document.createElement('option');
             option.text = o.text;
             option.value = o.value;
-            if (o.isPlaceholder) {
-                option.disabled = true;
-                option.selected = true;
-            }
             formElement.querySelector(`#${id}`).appendChild(option);
         });
     };
@@ -206,10 +209,10 @@ function buildForm(config) {
                             </div>`;
         addOptionsToSelectElement('cc_month', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
             .map(i => { return { text: i, value: i } }));
-        addOptionsToSelectElement('cc_year', Array(10).fill().map((_, i) => new Date().getFullYear() + i).map(year => {
+        addOptionsToSelectElement('cc_year', Array(10).fill(1).map((_, i) => new Date().getFullYear() + i).map(year => {
             const option = document.createElement('option');
-            option.text = year;
-            option.value = year;
+            option.text = year.toString();
+            option.value = year.toString();
             return option;
         }));
     };
@@ -238,7 +241,7 @@ function buildForm(config) {
             form.appendChild(result);
             result.outerHTML = `<p class="terms">By submitting your request, you agree to the <a href="https://astrologyanswers.com/info/terms-of-service/" target="blank" title="Terms Of Service">Terms of Service.</a></p>
                                 <div class='checkout-error' id='checkout_error'></div>
-                                <input class='checkout-input' id='${c.name}' value='${c.label}' type='submit'></input>`;
+                                <input class='checkout-input' id='${c.name}' value='${c.label}' type='submit'>`;
         },
         'after-submit': (c, form) => {
             const result = document.createElement('div');
@@ -459,25 +462,24 @@ function addCheckoutForm() {
 }
 
 function validateCheckoutConfig(config, element) {
-    if (!config.offerId) {
-        element.innerHTML = 'Missing attribute: offerId';
+    if (!config.offer_id) {
+        element.innerHTML = 'Missing attribute: offer_id';
         return false;
     }
     return true;
 }
 
 function prefillForm(form) {
-    let _urlParams = new URLSearchParams(window.location.search);
     let _token = _urlParams.get('token');
     let _userHash = _urlParams.get('hash');
-    let _offerId = getCheckoutConfig(getCheckoutElem())['offerId'];
+    let _offer_id = getCheckoutConfig(getCheckoutElem())['offer_id'];
     //Add UTM parameters to Checkout Parameters for trigerring Cart Abandon
-    let _utm_source = _urlParams.get('utm_source')??'';
-    let _utm_campaign = _urlParams.get('utm_campaign')??'';
-    let _utm_content = _urlParams.get('utm_content')??'';
-    let _utm_term = _urlParams.get('utm_term')??'';
-    let _utm_medium = _urlParams.get('utm_medium')??'';
-    fetch(`https://aaproxyapis.astrologyanswerstest.com/checkout/params?hash=${_userHash}&token=${_token}&offer_id=${_offerId}&utm_source=${_utm_source}&utm_campaign=${_utm_campaign}&utm_content=${_utm_content}&utm_term=${_utm_term}&utm_medium=${_utm_medium}`)
+    let _utm_source = _urlParams.get('utm_source') ?? '';
+    let _utm_campaign = _urlParams.get('utm_campaign') ?? '';
+    let _utm_content = _urlParams.get('utm_content') ?? '';
+    let _utm_term = _urlParams.get('utm_term') ?? '';
+    let _utm_medium = _urlParams.get('utm_medium') ?? '';
+    fetch(`https://aaproxyapis.astrologyanswerstest.com/checkout/params?hash=${_userHash}&token=${_token}&offer_id=${_offer_id}&utm_source=${_utm_source}&utm_campaign=${_utm_campaign}&utm_content=${_utm_content}&utm_term=${_utm_term}&utm_medium=${_utm_medium}`)
         .then(response => {
             if (response.status !== 200) {
                 console.log('Error with API. Status code : ' + response.status);
@@ -488,11 +490,10 @@ function prefillForm(form) {
                 const countrySelect = form.querySelector('#country');
                 if (countrySelect) {
                     countrySelect.innerHTML = '';
-                    var countryData = data['address']['countries'];
+                    const countryData = data['address']['countries'];
                     const placeholder = document.createElement('option');
-                    placeholder.value = undefined;
-                    placeholder.disabled = true;
-                    placeholder.selected = true;
+                    placeholder.text = 'Select Country*';
+                    placeholder.value = '';
                     countrySelect.appendChild(placeholder);
                     for (let key in countryData) {
                         const option = document.createElement('option');
@@ -527,13 +528,12 @@ function countrySelectChanged(e) {
     const stateLabel = form.querySelector('label[for="state"]');
     const stateSelect = form.querySelector('#state');
     fetch(`https://aaproxyapis.astrologyanswerstest.com/countries/${e.target.value}/states`).then(response => {
-        if (response.status == 200) {
+        if (response.status === 200) {
             response.json().then(data => {
                 stateSelect.innerHTML = '';
                 const placeholder = document.createElement('option');
-                placeholder.value = undefined;
-                placeholder.disabled = true;
-                placeholder.selected = true;
+                placeholder.text = 'Select State*';
+                placeholder.value = '';
                 stateSelect.appendChild(placeholder);
                 for (let key in data) {
                     const option = document.createElement('option');
@@ -543,6 +543,7 @@ function countrySelectChanged(e) {
                 }
                 stateLabel.style.display = 'initial';
                 stateSelect.style.display = 'initial';
+                stateSelect.required = true;
                 updatePricing();
             });
         }
@@ -550,6 +551,7 @@ function countrySelectChanged(e) {
             console.log('Error with API. Status code : ' + response.status);
             stateLabel.style.display = 'none';
             stateSelect.style.display = 'none';
+            stateSelect.required = false;
         }
     });
 }
@@ -570,12 +572,6 @@ function updatePricing() {
         pricingDiv.appendChild(element);
         element.outerHTML = `<div class='pricing-row'>${name}: <span class='price'>$${value.toFixed(2)}</span></div>`;
     };
-    const addMessageRow = function (message) {
-        const element = document.createElement('div');
-        element.className = 'pricing-row message';
-        element.innerText = message;
-        pricingDiv.appendChild(element);
-    };
 
     const offerNameElement = document.createElement('div');
     offerNameElement.className = 'pricing-row offer-name';
@@ -583,17 +579,12 @@ function updatePricing() {
     pricingDiv.appendChild(offerNameElement);
 
     const offerSubtotal = Number.parseFloat(_offerData['offer_price']);
-    if (country == 'undefined') {
-        addMessageRow('Please select country');
-    }
-    else if (country != 'CA') {
+    if (country !== 'CA') {
         // If the country is not Canada, then no tax
         addPricingRow('Total', offerSubtotal);
-    }
-    else if (state == 'undefined') {
-        addMessageRow('Please select state');
-    }
-    else {
+    } else if(state === '') {
+        addPricingRow('Total', offerSubtotal);
+    } else {
         // If the country is Canada, and a valid state is selected, present subtotal & tax separately
         // https://www.taxtips.ca/salestaxes/sales-tax-rates-2020.htm
         const canadianTaxMap = {
@@ -626,11 +617,10 @@ function submitCheckout(e) {
     const form = checkoutElement.querySelector('#aa-checkout-form');
 
     const formData = new FormData(form);
-    formData.append('hash', (new URL(document.location)).searchParams.get('hash'));
-    formData.append('offer_id', checkoutElement.getAttribute('offerId'));
+    formData.append('hash', _urlParams.get('hash'));
+    formData.append('offer_id', config['offer_id']);
 
     //Adding utm parameters
-    let _urlParams = new URLSearchParams(window.location.search);
     formData.append('utm_source', _urlParams.get('utm_source') ?? '');
     formData.append('utm_campaign', _urlParams.get('utm_campaign') ?? '');
     formData.append('utm_content', _urlParams.get('utm_content') ?? '');
@@ -652,12 +642,12 @@ function submitCheckout(e) {
         method: 'POST',
         body: JSON.stringify(formDataJson)
     }).then(response => {
-        if (response.status != 200) {
+        if (response.status !== 200) {
             console.log(`Error on checkout API: ${response.status}`);
             return;
         }
         response.json().then(data => {
-            if (data['status'] != 'success') {
+            if (data['status'] !== 'success') {
                 form.querySelector('#checkout_error').innerHTML = `Checkout unsuccessful: ${data['message']}`;
                 return;
             }
@@ -680,9 +670,8 @@ function registerUpsellLinks() {
             return acc;
         }, []);
 
-        urlParams = new URLSearchParams(window.location.search);
-        hrefParams.push({ name: 'hash', value: urlParams.get('hash') });
-        hrefParams.push({ name: 'token', value: urlParams.get('token') });
+        hrefParams.push({ name: 'hash', value: _urlParams.get('hash') });
+        hrefParams.push({ name: 'token', value: _urlParams.get('token') });
 
         const callbackUrl = match[2];
         a.addEventListener('click', e => {
