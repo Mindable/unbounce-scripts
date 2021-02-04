@@ -574,7 +574,7 @@ function updatePricing() {
     if (country !== 'CA') {
         // If the country is not Canada, then no tax
         addPricingRow('Total', offerSubtotal);
-    } else if(state === '') {
+    } else if (state === '') {
         addPricingRow('Total', offerSubtotal);
     } else {
         // If the country is Canada, and a valid state is selected, present subtotal & tax separately
@@ -674,9 +674,19 @@ function registerUpsellLinks() {
 }
 
 function submitUpsell(callbackUrl, additionalParams) {
-    const url = new URL(callbackUrl);
-    additionalParams.forEach(p => url.searchParams.append(p.name, p.value));
-    window.location.href = url.toString();
+    // Due to a quirk of how FunnelFlux handles url params, POST to callbackUrl w/ params as form-data
+    const tempForm = document.createElement('form');
+    tempForm.display = 'none';
+    tempForm.action = callbackUrl;
+    tempForm.method = 'POST';
+    document.body.appendChild(tempForm);
+    additionalParams.forEach(p => {
+        const input = document.createElement('input');
+        input.name = p.name;
+        input.value = p.value;
+        tempForm.appendChild(input);
+    })
+    tempForm.submit();
 }
 
 window.addEventListener('DOMContentLoaded', (e) => {
