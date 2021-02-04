@@ -183,7 +183,10 @@ function buildForm(config) {
         const result = document.createElement('div');
         form.appendChild(result);
         result.outerHTML = `<div class='checkout-row'>
-                                <div class='checkout-col'><input class='checkout-input' type='${c.type}' id='${c.name}' name='${c.name}' placeholder='${c.label}' ${c.optional === true ? '' : 'required'}></div>
+                                <label for='${c.name}'>${c.label}</label>
+                                <div class='checkout-col'>
+                                    <input class='checkout-input' type='${c.type}' id='${c.name}' name='${c.name}' ${c.optional===true?'':'required'}>
+                                </div>
                             </div>`;
     };
     const createPricingFromComponent = function (c, form) {
@@ -198,6 +201,7 @@ function buildForm(config) {
         // TODO Refactor the builder to allow for nested components so we don't have to hardcode html here,
         // and use leverage how `select` components are built instead 
         result.outerHTML = `<div class='checkout-row'>
+                                <label>Expires*</label>
                                 <div class='checkout-col'>
                                     <select class='checkout-input' id='cc_month' name='cc_month' required></select>
                                     <select class='checkout-input' id='cc_year' name='cc_year' required></select>
@@ -224,7 +228,10 @@ function buildForm(config) {
             const result = document.createElement('div');
             form.appendChild(result);
             result.outerHTML = `<div class='checkout-row'>
-                                    <div class='checkout-col'><select class='checkout-input' id='${c.name}' name='${c.name}' required></select></div>
+                                    <label for='${c.name}'>${c.label}</label>
+                                    <div class='checkout-col'>    
+                                        <select class='checkout-input' id='${c.name}' name='${c.name}' required></select>
+                                    </div>
                                 </div>`;
         },
         'cc_expiry': createCcExpiryFromComponent,
@@ -294,10 +301,10 @@ function addDefaultFormCss() {
         width:50%;
     }
     .checkout-row:nth-of-type(13){
-        width:30%;
+        width:35%;
     }
     .checkout-row:nth-of-type(14){
-        width:70%;
+        width:65%;
     }
     .checkout-row:nth-of-type(15){
         width:100%;
@@ -322,6 +329,9 @@ function addDefaultFormCss() {
         font-family: Montserrat, sans-serif;
         height: 2.6875rem;
         color:#5E6C7B;
+    }
+    input[readonly].checkout-input {
+        background-color: #eee;
     }
     select.checkout-input{
         white-space: nowrap;
@@ -356,6 +366,7 @@ function addDefaultFormCss() {
         margin-right:auto;
         white-space: normal;  
         margin-bottom:15px;  
+        cursor:pointer;
     }
     #submit:hover{
         background:#472f85;
@@ -365,12 +376,6 @@ function addDefaultFormCss() {
     }
     ::-webkit-input-placeholder, :-ms-input-placeholder, ::placeholder{ 
         color: #5E6C7B;
-    }
-    #cc_type{
-        width:100%;
-    }
-    #cc_number{
-        width:100%;
     }
     #cc_month, #cc_year, #cc_cvv{
         width:95px;
@@ -520,6 +525,7 @@ function prefillForm(form) {
 
 function countrySelectChanged(e) {
     const form = getCheckoutElem().querySelector('#aa-checkout-form');
+    const stateLabel = form.querySelector('label[for="state"]');
     const stateSelect = form.querySelector('#state');
     fetch(`https://aaproxyapis.astrologyanswerstest.com/countries/${e.target.value}/states`).then(response => {
         if (response.status === 200) {
@@ -535,6 +541,7 @@ function countrySelectChanged(e) {
                     option.value = key;
                     stateSelect.appendChild(option);
                 }
+                stateLabel.style.display = 'initial';
                 stateSelect.style.display = 'initial';
                 stateSelect.required = true;
                 updatePricing();
@@ -542,6 +549,7 @@ function countrySelectChanged(e) {
         }
         else {
             console.log('Error with API. Status code : ' + response.status);
+            stateLabel.style.display = 'none';
             stateSelect.style.display = 'none';
             stateSelect.required = false;
         }
