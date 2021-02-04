@@ -185,7 +185,7 @@ function buildForm(config) {
         result.outerHTML = `<div class='checkout-row'>
                                 <label for='${c.name}'>${c.label}</label>
                                 <div class='checkout-col'>
-                                    <input class='checkout-input' type='${c.type}' id='${c.name}' name='${c.name}' ${c.optional===true?'':'required'}>
+                                    <input class='checkout-input' type='${c.type}' id='${c.name}' name='${c.name}' ${c.optional === true ? '' : 'required'}>
                                 </div>
                             </div>`;
     };
@@ -346,7 +346,13 @@ function addDefaultFormCss() {
         padding:0;
     }
     .checkout-error {
-        color: red;
+        padding: 20px;
+        background-color: #f44336;
+        color: white;
+        margin-bottom: 15px;
+
+        /* Will be changed by JS on checkout error */ 
+        display: none;
     }
     .checkout-submit {
     }
@@ -583,7 +589,7 @@ function updatePricing() {
     if (country !== 'CA') {
         // If the country is not Canada, then no tax
         addPricingRow('Total', offerSubtotal);
-    } else if(state === '') {
+    } else if (state === '') {
         addPricingRow('Total', offerSubtotal);
     } else {
         // If the country is Canada, and a valid state is selected, present subtotal & tax separately
@@ -650,6 +656,7 @@ function submitCheckout(e) {
         response.json().then(data => {
             if (data['status'] !== 'success') {
                 form.querySelector('#checkout_error').innerHTML = `Checkout unsuccessful: ${data['message']}`;
+                form.querySelector('#checkout_error').style.display = 'block';
                 return;
             }
             window.location.href = `${config.successfulCheckoutUrl}&token=${data['token']}`;
