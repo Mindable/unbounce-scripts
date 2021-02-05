@@ -687,7 +687,7 @@ function submitUpsell(callbackUrl, additionalParams) {
     window.location.href = url.toString();
 }
 
-window.addEventListener('DOMContentLoaded', (e) => {
+(function () {
     if (getCheckoutElem()) addCheckoutForm();
     registerUpsellLinks();
-});
+})();
