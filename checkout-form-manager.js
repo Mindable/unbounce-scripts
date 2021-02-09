@@ -11,7 +11,7 @@ function getCheckoutConfig(_checkoutElem) {
 
     // TODO Remove fallback on older camel-case attributes once `data-` attributes are commmon e.g. remove `?? _checkoutElem.getAttribute('offerId')`
     config.checkoutFormType = _checkoutElem.dataset.checkoutFormType ?? 'digital';
-    config.offer_id = _urlParams.get('offerId') ?? _checkoutElem.dataset.offerId ?? _checkoutElem.getAttribute('offer_id') ?? _checkoutElem.getAttribute('offerId');
+    config.offer_id = _checkoutElem.dataset.offerId ?? _checkoutElem.getAttribute('offer_id') ?? _checkoutElem.getAttribute('offerId');
     config.successfulCheckoutUrl = _checkoutElem.dataset.successfulCheckoutUrl ?? _checkoutElem.getAttribute('successfulCheckoutUrl') ?? 'astrologyanswers.com';
     config.checkoutButtonText = _checkoutElem.dataset.checkoutButtonText ?? _checkoutElem.getAttribute('checkoutButtonText') ?? 'Purchase';
     config.disableDefaultCss = _checkoutElem.dataset.disableDefaultCss == 'true';
@@ -185,7 +185,7 @@ function buildForm(config) {
         result.outerHTML = `<div class='checkout-row'>
                                 <label for='${c.name}'>${c.label}</label>
                                 <div class='checkout-col'>
-                                    <input class='checkout-input' type='${c.type}' id='${c.name}' name='${c.name}' ${c.optional===true?'':'required'}>
+                                    <input class='checkout-input' type='${c.type}' id='${c.name}' name='${c.name}' ${c.optional === true ? '' : 'required'}>
                                 </div>
                             </div>`;
     };
@@ -346,6 +346,13 @@ function addDefaultFormCss() {
         padding:0;
     }
     .checkout-error {
+        padding: 20px;
+        background-color: #f44336;
+        color: white;
+        margin-bottom: 15px;
+
+        /* Will be changed by JS on checkout error */ 
+        display: none;
     }
     .checkout-submit {
     }
@@ -649,6 +656,7 @@ function submitCheckout(e) {
         response.json().then(data => {
             if (data['status'] !== 'success') {
                 form.querySelector('#checkout_error').innerHTML = `Checkout unsuccessful: ${data['message']}`;
+                form.querySelector('#checkout_error').style.display = 'block';
                 return;
             }
             window.location.href = `${config.successfulCheckoutUrl}&token=${data['token']}`;
