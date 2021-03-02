@@ -22,9 +22,9 @@ function ordinal_suffix(n) {
     }
 }
 
-document.querySelector("#element-47").style.fontSize = "19px";
-document.querySelector("#element-47").style.lineHeight = "1.6em";
+document.querySelector("#element-47").style.fontSize = "1.1765rem";
+document.querySelector("#element-47").style.lineHeight = "1.6875rem";
 document.querySelector("#element-47").innerHTML = `Your golden number is ${luckyNumArr.split(',')[0]}, your lucky number par excellence. Use the number ${luckyNumArr.split(',')[0]} as often as you can: for example, when you set up an important meeting, insist on the ${ordinal_suffix(luckyNumArr.split(',')[0])} day of the month, or ${luckyNumArr.split(',')[0]} o'clock in the afternoon; when you take a train, get in the ${ordinal_suffix(luckyNumArr.split(',')[0])} car. Use it whenever you play games etc. <br><br>If you have premonitory dreams - and you should! - ${luckyNumArr.split(',')[1]} is your most auspicious number. It's also lucky for travel and in financial matters. <br><br>And ${luckyNumArr.split(',')[2]}, your number for happiness, can also be used to combat misfortune. <br><br>Use a combination of these three numbers as often as you can. Luck will do many things for you, and your intuition will do the rest.`;
-document.querySelector("#element-49").style.fontSize = "19px";
-document.querySelector("#element-49").style.lineHeight = "1.6em";
+document.querySelector("#element-49").style.fontSize = "1.1765rem";
+document.querySelector("#element-49").style.lineHeight = "1.6875rem";
 document.querySelector("#element-49").innerHTML = `${firstname}, when your ENTIRE Astrology chart is calculated using Numerology, it provides a glimpse into your purpose in life.<br><br>First, the number resulting from your True Purpose calculation is: ${expNum}<br><br>${array_soul[expNum]}`;
