@@ -710,83 +710,86 @@ function submitUpsell(callbackUrl, additionalParams) {
 
 //<-----Start New Upsell Parsing and Processing Logic
 const checkout = {
-    upsellClass: 'upsell-link',
+    upsell : {
+        className: 'upsell-link',
 
-    verifyUpsell: function () {
-        this.verifyUpsellLinks();
-        this.verifyUpsellPayload();
-    },
+        verify: function () {
+            this.verifyLinks();
+            this.verifyPayload();
+        },
 
-    verifyUpsellLinks : function () {
-        console.log('Verifying Upsell Links');
-        let _upsell_links = document.getElementsByClassName(this.upsellClass);
-        if (_upsell_links.length === 0) {
-            console.info('No Upsell Links found on this page');
-            return;
-        }
-
-        console.info(`Found ${_upsell_links.length} Upsell Links on this page`);
-
-        [..._upsell_links].forEach(elm => {
-
-            if (!elm.dataset.actionUrl) {
-                console.error(`Action URL missing for '${elm.innerHTML}'`);
+        verifyLinks: function () {
+            console.log('Verifying Upsell Links');
+            let _upsell_links = document.getElementsByClassName(this.className);
+            if (_upsell_links.length === 0) {
+                console.info('No Upsell Links found on this page');
+                return;
             }
 
-            if (!elm.dataset.offerId) {
-                console.error(`Offer Id missing for '${elm.innerHTML}'`);
+            console.info(`Found ${_upsell_links.length} Upsell Links on this page`);
+
+            [..._upsell_links].forEach(elm => {
+
+                if (!elm.dataset.actionUrl) {
+                    console.error(`Action URL missing for '${elm.innerHTML}'`);
+                }
+
+                if (!elm.dataset.offerId) {
+                    console.error(`Offer Id missing for '${elm.innerHTML}'`);
+                }
+            });
+        },
+
+        verifyPayload: function () {
+            console.log('Verify extra inputs in Payload');
+
+            if (!_urlParams.get('hash')) {
+                console.error('Unable to fetch Hash from URL');
             }
-        });
-    },
 
-    verifyUpsellPayload: function() {
-        console.log('Verify extra inputs in Payload');
+            if (!_urlParams.get('token')) {
+                console.error('Unable to fetch Token from URL');
+            }
+        },
 
-        if (!_urlParams.get('hash')) {
-            console.error('Unable to fetch Hash from URL');
+        process: function (elm) {
+            const tempForm = document.createElement('form');
+
+            tempForm.style.display = 'none';
+            tempForm.action = elm.dataset.actionUrl;
+            tempForm.method = 'POST';
+
+            let formParams = [
+                {
+                    name: 'offer_id',
+                    value: elm.dataset.offerId
+                }, {
+                    name: 'hash',
+                    value: _urlParams.get('hash')
+                }, {
+                    name: 'token',
+                    value: _urlParams.get('token')
+                },
+            ];
+
+            formParams.forEach(p => {
+                const input = document.createElement('input');
+                input.name = p.name;
+                input.value = p.value;
+                tempForm.appendChild(input);
+            });
+
+            document.body.appendChild(tempForm);
+            tempForm.submit();
         }
-
-        if (!_urlParams.get('token')) {
-            console.error('Unable to fetch Token from URL');
-        }
-    },
-
-    processUpsell : function (elm) {
-        const tempForm = document.createElement('form');
-
-        tempForm.style.display = 'none';
-        tempForm.action = elm.dataset.actionUrl;
-        tempForm.method = 'POST';
-
-        let formParams = [
-            {
-                name: 'offer_id',
-                value: elm.dataset.offerId
-            },{
-                name: 'hash',
-                value: _urlParams.get('hash')
-            },{
-                name: 'token',
-                value: _urlParams.get('token')
-            },
-        ];
-
-        formParams.forEach(p => {
-            const input = document.createElement('input');
-            input.name = p.name;
-            input.value = p.value;
-            tempForm.appendChild(input);
-        });
-
-        document.body.appendChild(tempForm);
-        tempForm.submit();
     }
 }
 
 document.addEventListener('click', function (event) {
-    let _upsellClass = checkout.upsellClass;
-    if(event.target.classList.contains(_upsellClass)){
-        checkout.processUpsell(event.target);
+    let _upsell_ClassName = checkout.upsell.className;
+    console.log(_upsell_ClassName);
+    if(event.target.classList.contains(_upsell_ClassName)){
+        checkout.upsell.process(event.target);
     }
 });
 //>-----End New Upsell Parsing and Processing Logic
