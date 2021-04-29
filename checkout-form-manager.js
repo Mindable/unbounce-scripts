@@ -715,7 +715,7 @@ const checkout = {
 
         verify: function () {
             this.verifyLinks();
-            this.verifyPayload();
+            this.verifyURLParameters();
         },
 
         verifyLinks: function () {
@@ -740,7 +740,7 @@ const checkout = {
             });
         },
 
-        verifyPayload: function () {
+        verifyURLParameters: function () {
             console.log('Verify extra inputs in Payload');
 
             if (!_urlParams.get('hash')) {
