@@ -664,6 +664,8 @@ function submitCheckout(e) {
     });
 }
 
+//Todo: Remove Old Upsell Logic once all upsell pages are updated to use new pattern
+//<-----Start Old Upsell Parsing and Processing Logic
 function registerUpsellLinks() {
     // design-time href: `//funnel/upsell?offer_id=OFFER_ID&callbackUrl=https://flux.astrologyanswers.com/?flux_action=1&flux_f=1&flux_ffn=2`
     // rendered href: `https://flux.astrologyanswers.com/?flux_action=1&flux_f=1&flux_ffn=2&offer_id=OFFER_ID&hash=HASH&token=TOKEN`
@@ -704,6 +706,90 @@ function submitUpsell(callbackUrl, additionalParams) {
     })
     tempForm.submit();
 }
+//>-----End Old Upsell Parsing and Processing Logic
+
+//<-----Start New Upsell Parsing and Processing Logic
+const checkout = {
+    upsellClass: 'upsell-link',
+
+    verifyUpsell: function () {
+        this.verifyUpsellLinks();
+        this.verifyUpsellPayload();
+    },
+
+    verifyUpsellLinks : function () {
+        console.log('Verifying Upsell Links');
+        let _upsell_links = document.getElementsByClassName(this.upsellClass);
+        if (_upsell_links.length === 0) {
+            console.info('No Upsell Links found on this page');
+            return;
+        }
+
+        console.info(`Found ${_upsell_links.length} Upsell Links on this page`);
+
+        [..._upsell_links].forEach(elm => {
+
+            if (!elm.dataset.actionUrl) {
+                console.error(`Action URL missing for '${elm.innerHTML}'`);
+            }
+
+            if (!elm.dataset.offerId) {
+                console.error(`Offer Id missing for '${elm.innerHTML}'`);
+            }
+        });
+    },
+
+    verifyUpsellPayload: function() {
+        console.log('Verify extra inputs in Payload');
+
+        if (!_urlParams.get('hash')) {
+            console.error('Unable to fetch Hash from URL');
+        }
+
+        if (!_urlParams.get('token')) {
+            console.error('Unable to fetch Token from URL');
+        }
+    },
+
+    processUpsell : function (elm) {
+        const tempForm = document.createElement('form');
+
+        tempForm.style.display = 'none';
+        tempForm.action = elm.dataset.actionUrl;
+        tempForm.method = 'POST';
+
+        let formParams = [
+            {
+                name: 'offer_id',
+                value: elm.dataset.offerId
+            },{
+                name: 'hash',
+                value: _urlParams.get('hash')
+            },{
+                name: 'token',
+                value: _urlParams.get('token')
+            },
+        ];
+
+        formParams.forEach(p => {
+            const input = document.createElement('input');
+            input.name = p.name;
+            input.value = p.value;
+            tempForm.appendChild(input);
+        });
+
+        document.body.appendChild(tempForm);
+        tempForm.submit();
+    }
+}
+
+document.addEventListener('click', function (event) {
+    let _upsellClass = checkout.upsellClass;
+    if(event.target.classList.contains(_upsellClass)){
+        checkout.processUpsell(event.target);
+    }
+});
+//>-----End New Upsell Parsing and Processing Logic
 
 (function () {
     if (getCheckoutElem()) addCheckoutForm();
