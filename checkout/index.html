@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Checkout Test Page</title>
+</head>
+<body>
+    <h2>New Checkout Form</h2>
+    <div id="checkout-div"></div>
+    <!--    Add VueJS-->
+    <script src="https://unpkg.com/vue@next"></script>
+    <!--    Add Main App-->
+    <script src="main.js"></script>
+    <!--    Add Components-->
+    <script src="components/checkoutForm.js"></script>
+    <script src="components/user-contact.js"></script>
+    <script src="components/user-address.js"></script>
+    <script src="components/user-payment.js"></script>
+    <script src="components/product-pricing.js"></script>
+    <!--    Mount App-->
+    <script>
+        const checkoutApp = app.mount('#checkout-div');
+        // checkoutApp.productVariantId = 608;
+        checkoutApp.submitButtonText = 'CLAIM MY PERSONALIZED TRANSIT PERIOD GUIDE'
+        // checkoutApp.setCheckoutType('physical');
+    </script>
+</body>
+</html>
