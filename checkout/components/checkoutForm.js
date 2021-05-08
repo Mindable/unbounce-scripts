@@ -1,4 +1,5 @@
 app.component('checkout-form',{
+    emits: ['checkoutFormSubmit'],
     props: {
         productVariant: Object,
         user: Object,
@@ -38,7 +39,14 @@ app.component('checkout-form',{
     },
     methods: {
         processCheckout() {
-            console.log(this.productVariant,this.user,this.billingAddress,this.shippingAddress,this.paymentDetails);
+            // console.log(this.productVariant,this.user,this.billingAddress,this.shippingAddress,this.paymentDetails);
+            //After Validation, emit to parent for processing Checkout
+            let _formData = {
+                billing: this.billingAddress,
+                shipping: this.shippingAddress,
+                payment: this.paymentDetails
+            }
+            this.$emit('checkoutFormSubmit',_formData)
         }
     }
 });

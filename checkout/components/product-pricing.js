@@ -1,6 +1,13 @@
 app.component('product-pricing', {
   props: {
-    productVariant: Object,
+    productVariant: {
+      type: Object,
+      default: {
+        id: 0,
+        name: 'Default Product',
+        price: 1
+      }
+    },
     billingAddress: Object
   },
   template: `<h3>Product Information</h3>

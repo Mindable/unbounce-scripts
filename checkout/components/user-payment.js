@@ -13,11 +13,11 @@ app.component('user-payment', {
     </select>
   </div>
   <div>
-    <label>Card Number: *</label>
+    <label>Card Number: *</label><br>
     <input type="text" maxlength="16" v-model="paymentDetails.cardNumber">
   </div>
   <div>
-    <label>Expiration Month: *</label>
+    <label>Expiration Month: *</label><br>
     <select v-model="paymentDetails.expMonth">
       <option value="" selected>Select a Month</option>
       <option v-for="(item,key) in expMonths" :value="key">
@@ -26,7 +26,7 @@ app.component('user-payment', {
     </select>
   </div>
   <div>
-    <label>Expiration Year: *</label>
+    <label>Expiration Year: *</label><br>
     <select v-model="paymentDetails.expYear">
       <option value="" selected>Select a Year</option>
       <option v-for="year in expYears" :value="year">
@@ -35,8 +35,9 @@ app.component('user-payment', {
     </select>
   </div>
   <div>
-    <label>CVV Code: *</label>
-    <input type="text" maxlength="4" v-model="paymentDetails.cardCvv">
+    <label>CVV Code: *</label><br>
+    <input type="text" maxlength="4" v-model="paymentDetails.cardCvv"><br>
+    <small><a target="_blank" href="https://legacy.astrologyanswers.com/info/cvv.html">What's This?</a></small>
   </div>
   `,
   data() {
