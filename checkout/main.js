@@ -1,6 +1,13 @@
 const app = Vue.createApp({
     template: `<checkout-form :productVariant="productVariant" :user="user" :physicalCheckout="physicalCheckout" :submitButtonText="submitButtonText" @checkout-form-submit="processCheckout"></checkout-form>
-    <p>EXTRA INFORMATION ON CHECKOUT PAGE LIKE BADGES ETC.</p>`,
+    <p>
+      <img src="https://mindable.github.io/unbounce-scripts/assets/lock_icon.jpg" alt="Italian Trulli">&nbsp;<b>Privacy & Security</b> - All your information is safe and secure.<br>The entire transaction will take place on a<br>secure server using SSL technology.
+    </p>
+    <div>
+      <img src="https://mindable.github.io/unbounce-scripts/assets/mcafee_badge.png" alt="McAfee">&nbsp;
+      <img src="https://mindable.github.io/unbounce-scripts/assets/truste_badge.png" alt="TRUSTe">
+    </div>
+    <p><b>Questions?</b> Call Toll Free: 1-866-329-7640</p>`,
     data() {
         return {
             checkoutFormType: 'digital',

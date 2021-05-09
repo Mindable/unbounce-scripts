@@ -11,6 +11,7 @@ app.component('checkout-form',{
     <user-address v-if="physicalCheckout" addressType="Shipping" :address="shippingAddress"></user-address>
     <user-payment :paymentDetails="paymentDetails"></user-payment>
     <product-pricing :productVariant="productVariant" :billingAddress="billingAddress"></product-pricing>
+    <p>By submitting your request, you agree to the <a href="https://astrologyanswers.com/info/terms-of-service/">Terms of Service.</a></p>
     <button @click="processCheckout">{{submitButtonText}}</button>`,
     data() {
         return {
