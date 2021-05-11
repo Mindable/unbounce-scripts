@@ -24,57 +24,9 @@
     <script src="components/product-pricing.js"></script>
     <!--    Mount App-->
     <script>
-        const _urlParams = new URLSearchParams(window.location.search);
-        if(document.querySelector(`#checkout-div`)) {
-            const _checkoutElement = document.querySelector(`#checkout-div`);
-            const _checkoutConfig = getCheckoutConfig(_checkoutElement);
-
-            createCheckoutForm(_checkoutConfig);
-        }
-
-        function getCheckoutConfig(_checkoutElem) {
-            let config = {};
-
-            config.productVariantId = _checkoutElem.dataset.offerId ?? 0;
-            config.submitButtonText = _checkoutElem.dataset.checkoutButtonText ?? 'Buy Me';
-            config.checkoutFormType = _checkoutElem.dataset.checkoutFormType ?? 'digital';
-            config.paymentSuccessRedirect = _checkoutElem.dataset.successfulCheckoutUrl ?? 'https://astrologyanswers.com';
-
-            config.token = _urlParams.get('token') ?? '';
-            config.userHash = _urlParams.get('hash') ?? '';
-
-            config.utm_params = {
-                utm_source: _urlParams.get('utm_source') ?? '',
-                utm_campaign: _urlParams.get('utm_campaign') ?? '',
-                utm_content: _urlParams.get('utm_content') ?? '',
-                utm_term: _urlParams.get('utm_term') ?? '',
-                utm_medium: _urlParams.get('utm_medium') ?? '',
-            } ;
-
-            config.device_id = _urlParams.get('device_id') ?? 1;
-
-            config.tag = _urlParams.get('tag') ?? '';
-            config.tag2 = _urlParams.get('tag2') ?? '';
-
-            config.order_page_url = `${window.location.protocol}//${window.location.host}/${window.location.pathname}`;
-
-            return config;
-        }
-
-        function createCheckoutForm(_checkoutConfig) {
-            const checkoutApp = app.mount('#checkout-div');
-            checkoutApp.productVariantId = _checkoutConfig.productVariantId;
-            checkoutApp.submitButtonText = _checkoutConfig.submitButtonText;
-            checkoutApp.checkoutFormType = _checkoutConfig.checkoutFormType;
-            checkoutApp.paymentSuccessRedirect = _checkoutConfig.checkoutFormType;
-            checkoutApp.hash = _checkoutConfig.userHash;
-            checkoutApp.token = _checkoutConfig.token;
-            checkoutApp.utm_params = _checkoutConfig.utm_params;
-            checkoutApp.device_id = _checkoutConfig.device_id;
-            checkoutApp.tag = _checkoutConfig.tag;
-            checkoutApp.tag2 = _checkoutConfig.tag2;
-            checkoutApp.order_page_url = _checkoutConfig.order_page_url;
-            checkoutApp.updateCheckoutForm();
+        let _checkoutElementId = 'checkout-div';
+        if(document.querySelector(`#${_checkoutElementId}`)) {
+            renderCheckoutForm(_checkoutElementId);
         }
     </script>
 </body>
