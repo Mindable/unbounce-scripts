@@ -6,11 +6,47 @@
 ## Usage
 We use GitHub Pages to act as a "CDN" to host files in `master`
 
-### Checkout Form
+### Old Checkout Form Implementation
 Put in `<head>`:
 ```
 <script src="https://mindable.github.io/unbounce-scripts/checkout-form-manager.js"></script>
 ```
+
+### New Checkout Form Implementation
+Put in `<head>`:
+```
+<script src="https://cdn.jsdelivr.net/npm/vue@3.0.2/dist/vue.global.prod.js"></script>
+<script src="https://mindable.github.io/unbounce-scripts/dist/checkout/checkout.js"></script>
+```
+Add div where you want to render Form:
+```
+<div id='checkout-div'></div
+```
+Put in `<body` at the bottom:
+```
+let _checkoutElementId = 'checkout-div';
+if(document.querySelector(`#${_checkoutElementId}`)) {
+    renderCheckoutForm(_checkoutElementId);
+}
+```
+More details on usage [here](https://mindable.github.io/unbounce-scripts/checkout/usage/index.html)
+####Checkout Form Development
+Checkout Form uses VueJs 3 but no CLI tools are used for development in initial phase, all we need is to add development build script to be added to page which is already implemented, child components are in `checkout/components` folder while main checkout App is created in `checkout/main.js`  
+
+After making changes to app, please run `make compile_checkout` to update the distribution file.  
+
+Example pages also use production ready VueJS and compiled Checkout JS, so they can be used for Testing deployment environment 
+
+###Upsell Implementation
+Put in `<head>`:
+```
+<script src="https://mindable.github.io/unbounce-scripts/checkout-form-manager.js"></script>
+```
+Add Link or button with class `upsell-link` and other necessary data-properties.  
+For eg. ```<a class="upsell-link"
+href="#"
+data-action-url="https://flux2.astrologyanswers.com/?flux_action=1&flux_f=1147020355678920015&flux_ffn=1147020973846306320"
+data-offer-id="1360">Buy Upsell</a>```
 
 ### Leads Form
 Put in `<head>`:
