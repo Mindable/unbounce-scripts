@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Render Checkout Form on Event</title>
 </head>
 <body>
 <button id="checkout-btn">Load Checkout Form</button>
 <hr>
-<div id="aa-checkout-div"
-     data-offer-id="1360"
+<div id="checkout-div"
+     data-product-variant-id="1360"
      data-checkout-button-text="Buy Me"
      data-successful-checkout-url="https://flux.astrologyanswers.com/?flux_action=1&flux_f=1061367355000511979&flux_ffn=1095133337314859374"
      data-checkout-form-type="digital"
@@ -16,15 +16,12 @@
 <!--Add VueJS-->
 <script src="https://unpkg.com/vue@next"></script>
 <!--Add Checkout JS-->
-<script src="../dist/checkout.js"></script>
+<script src="../../dist/checkout/checkout.js"></script>
 <!--Mount App-->
 <script>
     document.addEventListener('click', function (event) {
         if(event.target.id==='checkout-btn'){
-            renderCheckoutForm('aa-checkout-div');
-            // let _checkoutConfig = getCheckoutConfig();
-            // _checkoutConfig.productVariantId = 609;
-            // renderCheckoutForm('aa-checkout-div',_checkoutConfig);
+            renderCheckoutForm('checkout-div');
         }
     });
 </script>

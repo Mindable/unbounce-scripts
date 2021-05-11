@@ -2,25 +2,24 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Checkout with Autoload Div</title>
+    <title>Checkout with Autoload Div without using data-properties on div</title>
 </head>
 
 <body>
-<div id="checkout-div"
-     data-offer-id="1360"
-     data-checkout-button-text="Buy Me"
-     data-successful-checkout-url="https://flux.astrologyanswers.com/?flux_action=1&flux_f=1061367355000511979&flux_ffn=1095133337314859374"
-     data-checkout-form-type="digital"
-></div>
+<div id="checkout-div"></div>
 <!--Add VueJS-->
 <script src="https://unpkg.com/vue@next"></script>
 <!--Add Checkout JS-->
-<script src="../dist/checkout.js"></script>
+<script src="../../dist/checkout/checkout.js"></script>
 <!--Mount App-->
 <script>
     let _checkoutElementId = 'checkout-div';
     if(document.querySelector(`#${_checkoutElementId}`)) {
-        renderCheckoutForm(_checkoutElementId);
+        let _checkoutConfig = getCheckoutConfig();
+        _checkoutConfig.productVariantId = 1360;
+        _checkoutConfig.submitButtonText = "Buy My Report Now";
+        _checkoutConfig.paymentSuccessRedirect = "https://flux.astrologyanswers.com/?flux_action=1&flux_f=1061367355000511979&flux_ffn=1095133337314859374";
+        renderCheckoutForm(_checkoutElementId,_checkoutConfig);
     }
 </script>
 </body>

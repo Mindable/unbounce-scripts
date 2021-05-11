@@ -2,9 +2,36 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Render Checkout Form on Event and Product Selection</title>
 </head>
 <body>
+<div id="product-selection">
+    Choose Product <br>
+    <input type="radio" class="product-variant-selection" name="productVariantId" value="608" checked>Experts 97 Credits $97
+    <br>
+    <input type="radio" class="product-variant-selection" name="productVariantId" value="609">Experts 40 Credits $19x12
+    <br>
+    <button id="product-variant-selection">Buy Now</button>
+</div>
+<div id="checkout-div"></div>
+<!--Add VueJS-->
+<script src="https://cdn.jsdelivr.net/npm/vue@3.0.2/dist/vue.global.prod.js"></script>
+<!--Add Checkout JS-->
+<script src="../../dist/checkout/checkout.js"></script>
+<!--Mount App-->
+<script>
+    document.addEventListener('click', function (event) {
+        if(event.target.id === 'product-variant-selection'){
+            let _productVariantId = document.querySelector("input[name=productVariantId]:checked").value ?? 0;
 
+            let _checkoutConfig = getCheckoutConfig('checkout-div');
+            _checkoutConfig.productVariantId = _productVariantId;
+            _checkoutConfig.submitButtonText = "Buy Report Now";
+            _checkoutConfig.paymentSuccessRedirect = "https://flux.astrologyanswers.com/?flux_action=1&flux_f=1061367355000511979&flux_ffn=1095133337314859374";
+            renderCheckoutForm('checkout-div',_checkoutConfig);
+            document.querySelector('#product-selection').style = 'display:none';
+        }
+    });
+</script>
 </body>
 </html>
