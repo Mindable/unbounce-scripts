@@ -3,8 +3,7 @@ app.component('user-address',{
     addressType: String,
     address: Object
   },
-  template: `<h3>{{ addressType }} Address Information</h3>
-  <div>
+  template: `<div>
   <label>Street Address: *</label><br>
   <input type="text" v-model="address.streetAddress">
   </div>

@@ -10,7 +10,7 @@
          data-offer-id="1360"
          data-checkout-button-text="Buy Me"
          data-successful-checkout-url="https://flux.astrologyanswers.com/?flux_action=1&flux_f=1061367355000511979&flux_ffn=1095133337314859374"
-         data-checkout-form-type="digital"
+         data-checkout-form-type="physical"
     ></div>
     <!--    Add VueJS-->
     <script src="https://unpkg.com/vue@next"></script>
@@ -29,5 +29,15 @@
             renderCheckoutForm(_checkoutElementId);
         }
     </script>
+<style>
+    .physicalCheckoutDiv {
+        border-radius: 5px;
+        background: #F7F2E1;
+        border: 1px solid #ded2a1;
+    }
+    .checkoutErrors {
+        color: red
+    }
+</style>
 </body>
 </html>

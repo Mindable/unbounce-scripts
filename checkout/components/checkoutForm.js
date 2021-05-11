@@ -7,18 +7,26 @@ app.component('checkout-form',{
         submitButtonText: String,
         validationErrors: Array
     },
-    template: `<user-contact :user="user"></user-contact>
-    <user-address addressType="Billing" :address="billingAddress"></user-address>
-    <user-address v-if="physicalCheckout" addressType="Shipping" :address="shippingAddress"></user-address>
-    <user-payment :paymentDetails="paymentDetails"></user-payment>
-    <p style="color: red" v-if="validationErrors">
-      <span v-for="validationError in validationErrors">
-        {{validationError}}<br>
-      </span>
-    </p>
-    <product-pricing :productVariant="productVariant" :billingAddress="billingAddress"></product-pricing>
-    <p>By submitting your request, you agree to the <a href="https://astrologyanswers.com/info/terms-of-service/">Terms of Service.</a></p>
-    <button @click="processCheckout">{{submitButtonText}}</button>`,
+    template: `
+      <h3>Contact Information</h3>
+      <user-contact :user="user"></user-contact>
+      <h3>Current Billing Address</h3>
+      <user-address addressType="Billing" :address="billingAddress"></user-address>
+      <div v-if="physicalCheckout" class="physicalCheckoutDiv">
+        <h3>Shipping Address:</h3>
+        <input type="checkbox" v-model="shippingToggle">Check this box if your shipping address is different from your billing address
+        <user-address v-if="shippingToggle" addressType="Shipping" :address="shippingAddress"></user-address>
+      </div>
+      <h3>Credit Card Information</h3>
+      <user-payment :paymentDetails="paymentDetails"></user-payment>
+      <p class="checkoutErrors" v-if="validationErrors">
+        <span v-for="validationError in validationErrors">
+          {{validationError}}<br>
+        </span>
+      </p>
+      <product-pricing :productVariant="productVariant" :billingAddress="billingAddress"></product-pricing>
+      <p>By submitting your request, you agree to the <a href="https://astrologyanswers.com/info/terms-of-service/">Terms of Service.</a></p>
+      <button @click="processCheckout">{{submitButtonText}}</button>`,
     data() {
         return {
             billingAddress: {
@@ -28,6 +36,7 @@ app.component('checkout-form',{
                 country: '',
                 state: ''
             },
+            shippingToggle: false,
             shippingAddress: {
                 streetAddress: '',
                 city: '',
@@ -47,16 +56,19 @@ app.component('checkout-form',{
     methods: {
         processCheckout() {
             this.validationErrors.splice(0,this.validationErrors.length);
-            // if(this.validateUserInformation() && this.validateBillingInformation() && this.validateShippingInformation() && this.validatePaymentInformation()) {
+            if(this.validateUserInformation() && this.validateBillingInformation() && this.validateShippingInformation() && this.validatePaymentInformation()) {
+                if(!this.shippingToggle) {
+                    this.shippingAddress = this.billingAddress;
+                }
                 let _formData = {
                     billing: this.billingAddress,
                     shipping: this.shippingAddress,
                     payment: this.paymentDetails
                 }
                 this.$emit('checkoutFormSubmit',_formData);
-            // }else{
-            //     console.log('There is validation Error');
-            // }
+            }else{
+                console.log('There is validation Error');
+            }
         },
         validateUserInformation() {
             let _validate = true;
@@ -100,7 +112,7 @@ app.component('checkout-form',{
         },
         validateShippingInformation() {
             let _validate = true;
-            if(this.physicalCheckout) {
+            if(this.physicalCheckout && this.shippingToggle) {
                 if(this.shippingAddress.streetAddress.trim() === '') {
                     this.validationErrors.push('Please enter Shipping Address');
                     _validate = false;

@@ -2,7 +2,7 @@ app.component('user-payment', {
   props: {
     paymentDetails: Object
   },
-  template: `<h3>Credit Card Information</h3>
+  template: `
   <div>
     <label>Card Type: *</label><br>
     <select v-model="paymentDetails.cardType">
