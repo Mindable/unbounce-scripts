@@ -20,14 +20,11 @@ Put in `<head>`:
 ```
 Add div where you want to render Form:
 ```
-<div id='checkout-div'></div
+<div id='aa-checkout-div'></div
 ```
-Put in `<body` at the bottom:
+In case, you use any other id than `aa-checkout-div` say `checkout-div` for example, we will need this code in `<body>` at the bottom:
 ```
-let _checkoutElementId = 'checkout-div';
-if(document.querySelector(`#${_checkoutElementId}`)) {
-    renderCheckoutForm(_checkoutElementId);
-}
+renderCheckoutForm('checkout-div');
 ```
 More details on usage [here](https://mindable.github.io/unbounce-scripts/checkout/usage/index.html)
 ####Checkout Form Development
