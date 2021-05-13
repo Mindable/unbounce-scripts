@@ -7,11 +7,11 @@
 <body>
 <div id="product-selection">
     <u>Using Buttons</u>:<br>
-    <button class="product-variant-selection" data-product-variant-id="608">Experts 97 Credits $97</button>&nbsp;
-    <button class="product-variant-selection" data-product-variant-id="609">Experts 40 Credits $19x12</button>
+    <button class="product-variant-selection" data-product-variant-id="608" data-checkout-type="digital">Experts 97 Credits $97</button>&nbsp;
+    <button class="product-variant-selection" data-product-variant-id="609" data-checkout-type="physical">Experts 40 Credits $19x12</button>
     <br><u>Using Radio Buttons</u>:<br>
-    <input type="radio" class="product-variant-selection" name="offer-id" data-product-variant-id="608" checked>Experts 97 Credits $97
-    <input type="radio" class="product-variant-selection" name="offer-id" data-product-variant-id="609">Experts 40 Credits $19x12
+    <input type="radio" class="product-variant-selection" name="offer-id" data-product-variant-id="608" data-checkout-type="digital" checked>Experts 97 Credits $97
+    <input type="radio" class="product-variant-selection" name="offer-id" data-product-variant-id="609" data-checkout-type="physical">Experts 40 Credits $19x12
 </div>
 <br>
 <hr>
@@ -30,6 +30,7 @@
         if(event.target.classList.contains('product-variant-selection')){
             let _newOfferId = event.target.dataset.productVariantId ?? 0;
             checkoutApp.changeProductVariantId(_newOfferId);
+            checkoutApp.checkoutFormType = event.target.dataset.checkoutType ?? 'digital';
         }
     });
 </script>

@@ -4,34 +4,34 @@ app.component('user-address',{
     address: Object
   },
   template: `<div>
-  <label>Street Address: *</label><br>
-  <input type="text" v-model="address.streetAddress">
+    <label>Street Address: *</label><br>
+    <input type="text" v-model="address.streetAddress">
   </div>
   <div>
-  <label>City: *</label><br>
-  <input type="text" v-model="address.city">
+    <label>City: *</label><br>
+    <input type="text" v-model="address.city">
   </div>
   <div>
-  <label>Zip/Postal Code: *</label><br>
-  <input type="text" v-model="address.zip">
+    <label>Zip/Postal Code: *</label><br>
+    <input type="text" v-model="address.zip">
   </div>
   <div>
-  <label>Country: *</label><br>
-  <select v-model="address.country" @change="fetchState">
-    <option value="" selected>Select your option</option>
-    <option v-for="(item,key) in countries" :value="key">
-      {{item}}
-    </option>
-  </select>
+    <label>Country: *</label><br>
+    <select v-model="address.country" @change="fetchState">
+      <option value="" selected>Select your option</option>
+      <option v-for="(item,key) in countries" :value="key">
+        {{item}}
+      </option>
+    </select>
   </div>
   <div v-if="states">
-  <label>State/Province: *</label><br>
-  <select v-model="address.state">
-    <option value="" disabled selected>Select your Country</option>
-    <option v-for="(item,key) in states" :value="key">
-      {{item}}
-    </option>
-  </select>
+    <label>State/Province: *</label><br>
+    <select v-model="address.state">
+      <option value="" disabled selected>Select your Country</option>
+      <option v-for="(item,key) in states" :value="key">
+        {{item}}
+      </option>
+    </select>
   </div>`,
   data() {
     return {
@@ -41,7 +41,7 @@ app.component('user-address',{
   },
   methods: {
     fetchState(){
-      fetch(`https://aaproxyapis.astrologyanswerstest.com/countries/${this.address.country}/states`).then(response => {
+      fetch(`https://aaproxyapis.astrologyanswers.com/countries/${this.address.country}/states`).then(response => {
         if (response.status === 200) {
           response.json().then(data => {
             this.states = data;

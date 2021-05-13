@@ -6,7 +6,7 @@
 </head>
 
 <body>
-<div id="checkout-div"
+<div id="aa-checkout-div"
      data-product-variant-id="1360"
      data-checkout-button-text="Buy Me"
      data-successful-checkout-url="https://flux.astrologyanswers.com/?flux_action=1&flux_f=1061367355000511979&flux_ffn=1095133337314859374"
@@ -16,12 +16,5 @@
 <script src="https://unpkg.com/vue@next"></script>
 <!--Add Checkout JS-->
 <script src="../../dist/checkout/checkout.js"></script>
-<!--Mount App-->
-<script>
-    let _checkoutElementId = 'checkout-div';
-    if(document.querySelector(`#${_checkoutElementId}`)) {
-        renderCheckoutForm(_checkoutElementId);
-    }
-</script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 const app = Vue.createApp({
-    template: `<checkout-form :productVariant="productVariant" :user="user" :physicalCheckout="physicalCheckout" :submitButtonText="submitButtonText" @checkout-form-submit="processCheckout"></checkout-form>
+    template: `<checkout-form :productVariant="productVariant" :user="user" :physicalCheckout="physicalCheckout" :submitButtonText="submitButtonText" :validationErrors="checkoutErrors" @checkout-form-submit="processCheckout"></checkout-form>
     <p>
       <img src="https://mindable.github.io/unbounce-scripts/assets/lock_icon.jpg" alt="Italian Trulli">&nbsp;<b>Privacy & Security</b> - All your information is safe and secure.<br>The entire transaction will take place on a<br>secure server using SSL technology.
     </p>
@@ -24,15 +24,17 @@ const app = Vue.createApp({
             productVariant: {
                 'id': 0,
                 'name': '',
-                'price': 0
+                'price': 0,
             },
-            utm_params: null,
+            shippingTag: 0,
+            utmParams: null,
             submitButtonText: 'Buy Me',
             paymentSuccessRedirect: '',
-            device_id: '1',
+            deviceId: '1',
             tag: '',
             tag2: '',
-            order_page_url: ''
+            orderPageUrl: '',
+            checkoutErrors: []
         }
     },
     computed: {
@@ -51,13 +53,13 @@ const app = Vue.createApp({
             this.updateCheckoutForm(true,false);
         },
         updateCheckoutForm(updateUser=true,updateProductVariant=true) {
-            fetch(`https://aaproxyapis.astrologyanswerstest.com/checkout/params?hash=${this.hash}&token=${this.token}&offer_id=${this.productVariantId}`)
+            fetch(`https://aaproxyapis.astrologyanswers.com/checkout/params?hash=${this.userHash}&token=${this.token}&offer_id=${this.productVariantId}`)
                 .then(response => {
                     if (response.status !== 200) {
                         this.productVariant =  {
-                            'id': 0,
-                            'name': '',
-                            'price': 0
+                            id: 0,
+                            name: '',
+                            price: 0
                         };
                         this.user = {
                             firstname: '',
@@ -68,23 +70,41 @@ const app = Vue.createApp({
                         }
                     } else {
                         response.json().then(data => {
+                            console.log(data);
                             if(updateProductVariant) {
                                 if(data['offerData'] === null) {
                                     this.productVariant = {
-                                        'id': 0,
-                                        'name': '',
-                                        'price': 0
+                                        id: 0,
+                                        name: '',
+                                        price: 0
                                     }
                                 }else{
                                     this.productVariant = {
-                                        'id': data['offerData']['offer_id'],
-                                        'name': data['offerData']['offer_name'],
-                                        'price': data['offerData']['offer_price']
+                                        id: data['offerData']['offer_id'],
+                                        name: data['offerData']['offer_name'],
+                                        price: data['offerData']['offer_price']
                                     }
                                 }
                             }
 
                             if(updateUser) {
+                                if(data['user'] === null) {
+                                    this.user = {
+                                        firstname: '',
+                                        lastname: '',
+                                        email: '',
+                                        hash: '',
+                                        phone: ''
+                                    }
+                                }else{
+                                    this.user = {
+                                        firstname: data['user']['firstname'],
+                                        lastname: data['user']['lastname'],
+                                        email: data['user']['email'],
+                                        hash: data['user']['hash'],
+                                        phone: ''
+                                    }
+                                }
                             }
 
                         })
@@ -92,9 +112,68 @@ const app = Vue.createApp({
                 });
         },
         processCheckout(formData) {
-            console.log('Process Checkout');
-            console.log(formData);
-            console.log('If successful, redirect to ' + this.paymentSuccessRedirect);
+            let _checkoutPayload = {
+                firstname: this.user.firstname,
+                lastname: this.user.lastname,
+                email: this.user.email,
+                hash: this.userHash,
+                token: this.token,
+
+                adr: formData.billing.streetAddress,
+                city: formData.billing.city,
+                zip: formData.billing.city,
+                country: formData.billing.country,
+                state: formData.billing.state,
+
+                shipping_address: formData.shipping.streetAddress,
+                shipping_city: formData.shipping.city,
+                shipping_zip: formData.shipping.city,
+                shipping_country: formData.shipping.country,
+                shipping_state: formData.shipping.state,
+                shipping_tag: this.shippingTag,
+
+                offer_id: this.productVariant.id,
+                cc_type: formData.payment.cardType,
+                cc_number: formData.payment.cardNumber,
+                cc_month: formData.payment.expMonth,
+                cc_year: formData.payment.expYear,
+                cc_cvv: formData.payment.cardCvv,
+
+                utm_source: this.utmParams.utm_source,
+                utm_campaign: this.utmParams.utm_campaign,
+                utm_content: this.utmParams.utm_content,
+                utm_term: this.utmParams.utm_term,
+
+                device_id: this.deviceId,
+
+                tag: this.tag,
+                tag2: this.tag2,
+
+                order_page_url: this.orderPageUrl,
+            }
+            console.log(JSON.stringify(_checkoutPayload));
+
+            let data = new FormData();
+            data.append( "json", JSON.stringify( _checkoutPayload ) );
+
+            fetch("https://aaproxyapis.astrologyanswers.com/checkout",
+                {
+                    method: "POST",
+                    body: data
+                })
+                .then(resp => {
+                    if (resp.status !== 200) {
+                        console.log(`Error on checkout API: ${resp.status}`);
+                        return;
+                    }
+                    resp.json().then(data => {
+                        if (data['status'] !== 'success') {
+                            this.checkoutErrors.push(`unsuccessful: ${data['message']}`);
+                            return;
+                        }
+                        window.location.href = `${this.paymentSuccessRedirect}&token=${data['token']}`;
+                    });
+                });
         }
     },
 });
@@ -107,12 +186,14 @@ function getCheckoutConfig(_checkoutElementId='checkout-div-not-defined') {
     let _checkoutElement = document.querySelector(`#${_checkoutElementId}`);
 
     if(_checkoutElement) {
-        config.productVariantId = _checkoutElement.dataset.offerId ?? 0;
+        config.productVariantId = _checkoutElement.dataset.productVariantId ?? 0;
+        config.shippingTag = _checkoutElement.dataset.shippingTag ?? 0;
         config.submitButtonText = _checkoutElement.dataset.checkoutButtonText ?? 'Buy Me';
         config.checkoutFormType = _checkoutElement.dataset.checkoutFormType ?? 'digital';
         config.paymentSuccessRedirect = _checkoutElement.dataset.successfulCheckoutUrl ?? 'https://astrologyanswers.com';
     }else{
         config.productVariantId = 0;
+        config.shippingTag = 0;
         config.submitButtonText = 'Buy Me';
         config.checkoutFormType = 'digital';
         config.paymentSuccessRedirect = 'https://astrologyanswers.com';
@@ -121,7 +202,7 @@ function getCheckoutConfig(_checkoutElementId='checkout-div-not-defined') {
     config.token = _urlParams.get('token') ?? '';
     config.userHash = _urlParams.get('hash') ?? '';
 
-    config.utm_params = {
+    config.utmParams = {
         utm_source: _urlParams.get('utm_source') ?? '',
         utm_campaign: _urlParams.get('utm_campaign') ?? '',
         utm_content: _urlParams.get('utm_content') ?? '',
@@ -129,12 +210,12 @@ function getCheckoutConfig(_checkoutElementId='checkout-div-not-defined') {
         utm_medium: _urlParams.get('utm_medium') ?? '',
     } ;
 
-    config.device_id = _urlParams.get('device_id') ?? 1;
+    config.deviceId = _urlParams.get('device_id') ?? 1;
 
     config.tag = _urlParams.get('tag') ?? '';
     config.tag2 = _urlParams.get('tag2') ?? '';
 
-    config.order_page_url = `${window.location.protocol}//${window.location.host}/${window.location.pathname}`;
+    config.orderPageUrl = `${window.location.protocol}//${window.location.host}/${window.location.pathname}`;
 
     return config;
 }
@@ -148,16 +229,17 @@ function renderCheckoutForm(_checkoutElementId,_checkoutConfig=null) {
     checkoutApp = app.mount(`#${_checkoutElementId}`);
 
     checkoutApp.productVariantId = _checkoutConfig.productVariantId;
+    checkoutApp.shippingTag = _checkoutConfig.shippingTag;
     checkoutApp.submitButtonText = _checkoutConfig.submitButtonText;
     checkoutApp.checkoutFormType = _checkoutConfig.checkoutFormType;
     checkoutApp.paymentSuccessRedirect = _checkoutConfig.paymentSuccessRedirect;
     checkoutApp.userHash = _checkoutConfig.userHash;
     checkoutApp.token = _checkoutConfig.token;
-    checkoutApp.utm_params = _checkoutConfig.utm_params;
-    checkoutApp.device_id = _checkoutConfig.device_id;
+    checkoutApp.utmParams = _checkoutConfig.utmParams;
+    checkoutApp.deviceId = _checkoutConfig.deviceId;
     checkoutApp.tag = _checkoutConfig.tag;
     checkoutApp.tag2 = _checkoutConfig.tag2;
-    checkoutApp.order_page_url = _checkoutConfig.order_page_url;
+    checkoutApp.orderPageUrl = _checkoutConfig.orderPageUrl;
 
     checkoutApp.updateCheckoutForm();
 }
@@ -168,29 +250,29 @@ app.component('user-contact',{
       required: true,
     }
   },
-  template: `<h3>Contact Information</h3>
+  template: `
     <div>
-        <label>First Name: *</label><br>
-        <input type="text" v-model="user.firstname">
+      <label>First Name: *</label><br>
+      <input type="text" v-model="user.firstname">
     </div>
     <div>
-        <label>Last Name: *</label><br>
-        <input type="text" v-model="user.lastname">
+      <label>Last Name: *</label><br>
+      <input type="text" v-model="user.lastname">
     </div>
     <div>
-        <label>Email ID: *</label><br>
-        <input type="email" disabled v-model="user.email">
+      <label>Email ID: *</label><br>
+      <input type="email" disabled v-model="user.email">
     </div>
     <div>
-        <label>Phone Number:</label><br>
-        <input type="text" v-model="user.phone">
+      <label>Phone Number:</label><br>
+      <input type="text" v-model="user.phone">
     </div>`
 });
 app.component('user-payment', {
   props: {
     paymentDetails: Object
   },
-  template: `<h3>Credit Card Information</h3>
+  template: `
   <div>
     <label>Card Type: *</label><br>
     <select v-model="paymentDetails.cardType">
@@ -307,15 +389,29 @@ app.component('checkout-form',{
         productVariant: Object,
         user: Object,
         physicalCheckout: Boolean,
-        submitButtonText: String
+        submitButtonText: String,
+        validationErrors: Array
     },
-    template: `<user-contact :user="user"></user-contact>
-    <user-address addressType="Billing" :address="billingAddress"></user-address>
-    <user-address v-if="physicalCheckout" addressType="Shipping" :address="shippingAddress"></user-address>
-    <user-payment :paymentDetails="paymentDetails"></user-payment>
-    <product-pricing :productVariant="productVariant" :billingAddress="billingAddress"></product-pricing>
-    <p>By submitting your request, you agree to the <a href="https://astrologyanswers.com/info/terms-of-service/">Terms of Service.</a></p>
-    <button @click="processCheckout">{{submitButtonText}}</button>`,
+    template: `
+      <h3>Contact Information</h3>
+      <user-contact :user="user"></user-contact>
+      <h3>Current Billing Address</h3>
+      <user-address addressType="Billing" :address="billingAddress"></user-address>
+      <div v-if="physicalCheckout" class="physicalCheckoutDiv">
+        <h3>Shipping Address:</h3>
+        <input type="checkbox" v-model="shippingToggle">Check this box if your shipping address is different from your billing address
+        <user-address v-if="shippingToggle" addressType="Shipping" :address="shippingAddress"></user-address>
+      </div>
+      <h3>Credit Card Information</h3>
+      <user-payment :paymentDetails="paymentDetails"></user-payment>
+      <p class="checkoutErrors" v-if="validationErrors">
+        <span v-for="validationError in validationErrors">
+          {{validationError}}<br>
+        </span>
+      </p>
+      <product-pricing :productVariant="productVariant" :billingAddress="billingAddress"></product-pricing>
+      <p>By submitting your request, you agree to the <a href="https://astrologyanswers.com/info/terms-of-service/">Terms of Service.</a></p>
+      <button @click="processCheckout">{{submitButtonText}}</button>`,
     data() {
         return {
             billingAddress: {
@@ -325,6 +421,7 @@ app.component('checkout-form',{
                 country: '',
                 state: ''
             },
+            shippingToggle: false,
             shippingAddress: {
                 streetAddress: '',
                 city: '',
@@ -343,15 +440,111 @@ app.component('checkout-form',{
     },
     methods: {
         processCheckout() {
-            // console.log(this.productVariant,this.user,this.billingAddress,this.shippingAddress,this.paymentDetails);
-            //After Validation, emit to parent for processing Checkout
-            let _formData = {
-                billing: this.billingAddress,
-                shipping: this.shippingAddress,
-                payment: this.paymentDetails
+            this.validationErrors.splice(0,this.validationErrors.length);
+            if(this.validateUserInformation() && this.validateBillingInformation() && this.validateShippingInformation() && this.validatePaymentInformation()) {
+                if(!this.shippingToggle) {
+                    this.shippingAddress = this.billingAddress;
+                }
+                let _formData = {
+                    billing: this.billingAddress,
+                    shipping: this.shippingAddress,
+                    payment: this.paymentDetails
+                }
+                this.$emit('checkoutFormSubmit',_formData);
+            }else{
+                console.log('There is validation Error');
             }
-            this.$emit('checkoutFormSubmit',_formData)
-        }
+        },
+        validateUserInformation() {
+            let _validate = true;
+            if(this.user.firstname.trim() === '') {
+                this.validationErrors.push('Please enter First Name');
+                _validate = false;
+            }
+            if(this.user.lastname.trim() === '') {
+                this.validationErrors.push('Please enter Last Name');
+                _validate = false;
+            }
+            if(this.user.email.trim() === '') {
+                this.validationErrors.push('Error with retrieving Email ID, please contact Customer Service');
+                _validate = false;
+            }
+            return _validate;
+        },
+        validateBillingInformation() {
+            let _validate = true;
+            if(this.billingAddress.streetAddress.trim() === '') {
+                this.validationErrors.push('Please enter Billing Address');
+                _validate = false;
+            }
+            if(this.billingAddress.city.trim() === '') {
+                this.validationErrors.push('Please enter Billing City');
+                _validate = false;
+            }
+            if(this.billingAddress.city.trim() === '') {
+                this.validationErrors.push('Please enter Billing Zip/Postal Code');
+                _validate = false;
+            }
+            if(this.billingAddress.country.trim() === '') {
+                this.validationErrors.push('Please choose Billing Country');
+                _validate = false;
+            }
+            if(this.billingAddress.state.trim() === '') {
+                this.validationErrors.push('Please choose Billing State/Province');
+                _validate = false;
+            }
+            return _validate;
+        },
+        validateShippingInformation() {
+            let _validate = true;
+            if(this.physicalCheckout && this.shippingToggle) {
+                if(this.shippingAddress.streetAddress.trim() === '') {
+                    this.validationErrors.push('Please enter Shipping Address');
+                    _validate = false;
+                }
+                if(this.shippingAddress.city.trim() === '') {
+                    this.validationErrors.push('Please enter Shipping City');
+                    _validate = false;
+                }
+                if(this.shippingAddress.city.trim() === '') {
+                    this.validationErrors.push('Please enter Shipping Zip/Postal Code');
+                    _validate = false;
+                }
+                if(this.shippingAddress.country.trim() === '') {
+                    this.validationErrors.push('Please choose Shipping Country');
+                    _validate = false;
+                }
+                if(this.shippingAddress.state.trim() === '') {
+                    this.validationErrors.push('Please choose Shipping State/Province');
+                    _validate = false;
+                }
+            }
+            return _validate;
+        },
+        validatePaymentInformation() {
+            let _validate = true;
+            if(this.paymentDetails.cardType.trim() === '') {
+                this.validationErrors.push('Please choose Credit Card Type');
+                _validate = false;
+            }
+            if(this.paymentDetails.cardNumber.trim() === '') {
+                this.validationErrors.push('Please enter Credit Card Number');
+                _validate = false;
+            }
+            if(this.paymentDetails.expMonth.trim() === '') {
+                this.validationErrors.push('Please choose Credit Card Expiration Month');
+                _validate = false;
+            }
+            if(this.paymentDetails.expYear.trim() === '') {
+                this.validationErrors.push('Please choose Credit Card Expiration Year');
+                _validate = false;
+            }
+            if(this.paymentDetails.cardCvv.trim() === '') {
+                this.validationErrors.push('Please enter Credit Card CVV Code');
+                _validate = false;
+            }
+            return _validate;
+        },
     }
 });
 app.component('user-address',{
@@ -359,36 +552,35 @@ app.component('user-address',{
     addressType: String,
     address: Object
   },
-  template: `<h3>{{ addressType }} Address Information</h3>
-  <div>
-  <label>Street Address: *</label><br>
-  <input type="text" v-model="address.streetAddress">
+  template: `<div>
+    <label>Street Address: *</label><br>
+    <input type="text" v-model="address.streetAddress">
   </div>
   <div>
-  <label>City: *</label><br>
-  <input type="text" v-model="address.city">
+    <label>City: *</label><br>
+    <input type="text" v-model="address.city">
   </div>
   <div>
-  <label>Zip/Postal Code: *</label><br>
-  <input type="text" v-model="address.zip">
+    <label>Zip/Postal Code: *</label><br>
+    <input type="text" v-model="address.zip">
   </div>
   <div>
-  <label>Country: *</label><br>
-  <select v-model="address.country" @change="fetchState">
-    <option value="" selected>Select your option</option>
-    <option v-for="(item,key) in countries" :value="key">
-      {{item}}
-    </option>
-  </select>
+    <label>Country: *</label><br>
+    <select v-model="address.country" @change="fetchState">
+      <option value="" selected>Select your option</option>
+      <option v-for="(item,key) in countries" :value="key">
+        {{item}}
+      </option>
+    </select>
   </div>
   <div v-if="states">
-  <label>State/Province: *</label><br>
-  <select v-model="address.state">
-    <option value="" disabled selected>Select your Country</option>
-    <option v-for="(item,key) in states" :value="key">
-      {{item}}
-    </option>
-  </select>
+    <label>State/Province: *</label><br>
+    <select v-model="address.state">
+      <option value="" disabled selected>Select your Country</option>
+      <option v-for="(item,key) in states" :value="key">
+        {{item}}
+      </option>
+    </select>
   </div>`,
   data() {
     return {
@@ -398,7 +590,7 @@ app.component('user-address',{
   },
   methods: {
     fetchState(){
-      fetch(`https://aaproxyapis.astrologyanswerstest.com/countries/${this.address.country}/states`).then(response => {
+      fetch(`https://aaproxyapis.astrologyanswers.com/countries/${this.address.country}/states`).then(response => {
         if (response.status === 200) {
           response.json().then(data => {
             this.states = data;
@@ -411,4 +603,10 @@ app.component('user-address',{
       });
     }
   }
+});
+window.addEventListener('DOMContentLoaded', (event) => {
+    let _checkoutElementId = 'aa-checkout-div';
+    if (document.querySelector(`#${_checkoutElementId}`)) {
+        renderCheckoutForm(_checkoutElementId);
+    }
 });

@@ -25,15 +25,15 @@ const app = Vue.createApp({
                 'id': 0,
                 'name': '',
                 'price': 0,
-                'shipping_tag' : ''
             },
-            utm_params: null,
+            shippingTag: 0,
+            utmParams: null,
             submitButtonText: 'Buy Me',
             paymentSuccessRedirect: '',
-            device_id: '1',
+            deviceId: '1',
             tag: '',
             tag2: '',
-            order_page_url: '',
+            orderPageUrl: '',
             checkoutErrors: []
         }
     },
@@ -53,13 +53,13 @@ const app = Vue.createApp({
             this.updateCheckoutForm(true,false);
         },
         updateCheckoutForm(updateUser=true,updateProductVariant=true) {
-            fetch(`https://aaproxyapis.astrologyanswers.com/checkout/params?hash=${this.hash}&token=${this.token}&offer_id=${this.productVariantId}`)
+            fetch(`https://aaproxyapis.astrologyanswers.com/checkout/params?hash=${this.userHash}&token=${this.token}&offer_id=${this.productVariantId}`)
                 .then(response => {
                     if (response.status !== 200) {
                         this.productVariant =  {
-                            'id': 0,
-                            'name': '',
-                            'price': 0
+                            id: 0,
+                            name: '',
+                            price: 0
                         };
                         this.user = {
                             firstname: '',
@@ -70,23 +70,41 @@ const app = Vue.createApp({
                         }
                     } else {
                         response.json().then(data => {
+                            console.log(data);
                             if(updateProductVariant) {
                                 if(data['offerData'] === null) {
                                     this.productVariant = {
-                                        'id': 0,
-                                        'name': '',
-                                        'price': 0
+                                        id: 0,
+                                        name: '',
+                                        price: 0
                                     }
                                 }else{
                                     this.productVariant = {
-                                        'id': data['offerData']['offer_id'],
-                                        'name': data['offerData']['offer_name'],
-                                        'price': data['offerData']['offer_price']
+                                        id: data['offerData']['offer_id'],
+                                        name: data['offerData']['offer_name'],
+                                        price: data['offerData']['offer_price']
                                     }
                                 }
                             }
 
                             if(updateUser) {
+                                if(data['user'] === null) {
+                                    this.user = {
+                                        firstname: '',
+                                        lastname: '',
+                                        email: '',
+                                        hash: '',
+                                        phone: ''
+                                    }
+                                }else{
+                                    this.user = {
+                                        firstname: data['user']['firstname'],
+                                        lastname: data['user']['lastname'],
+                                        email: data['user']['email'],
+                                        hash: data['user']['hash'],
+                                        phone: ''
+                                    }
+                                }
                             }
 
                         })
@@ -112,7 +130,7 @@ const app = Vue.createApp({
                 shipping_zip: formData.shipping.city,
                 shipping_country: formData.shipping.country,
                 shipping_state: formData.shipping.state,
-                shipping_tag: this.productVariant.shipping_tag,
+                shipping_tag: this.shippingTag,
 
                 offer_id: this.productVariant.id,
                 cc_type: formData.payment.cardType,
@@ -121,17 +139,17 @@ const app = Vue.createApp({
                 cc_year: formData.payment.expYear,
                 cc_cvv: formData.payment.cardCvv,
 
-                utm_source: this.utm_source,
-                utm_campaign: this.utm_campaign,
-                utm_content: this.utm_content,
-                utm_term: this.utm_term,
+                utm_source: this.utmParams.utm_source,
+                utm_campaign: this.utmParams.utm_campaign,
+                utm_content: this.utmParams.utm_content,
+                utm_term: this.utmParams.utm_term,
 
-                device_id: this.device_id,
+                device_id: this.deviceId,
 
                 tag: this.tag,
                 tag2: this.tag2,
 
-                order_page_url: this.order_page_url,
+                order_page_url: this.orderPageUrl,
             }
             console.log(JSON.stringify(_checkoutPayload));
 
@@ -169,11 +187,13 @@ function getCheckoutConfig(_checkoutElementId='checkout-div-not-defined') {
 
     if(_checkoutElement) {
         config.productVariantId = _checkoutElement.dataset.productVariantId ?? 0;
+        config.shippingTag = _checkoutElement.dataset.shippingTag ?? 0;
         config.submitButtonText = _checkoutElement.dataset.checkoutButtonText ?? 'Buy Me';
         config.checkoutFormType = _checkoutElement.dataset.checkoutFormType ?? 'digital';
         config.paymentSuccessRedirect = _checkoutElement.dataset.successfulCheckoutUrl ?? 'https://astrologyanswers.com';
     }else{
         config.productVariantId = 0;
+        config.shippingTag = 0;
         config.submitButtonText = 'Buy Me';
         config.checkoutFormType = 'digital';
         config.paymentSuccessRedirect = 'https://astrologyanswers.com';
@@ -182,7 +202,7 @@ function getCheckoutConfig(_checkoutElementId='checkout-div-not-defined') {
     config.token = _urlParams.get('token') ?? '';
     config.userHash = _urlParams.get('hash') ?? '';
 
-    config.utm_params = {
+    config.utmParams = {
         utm_source: _urlParams.get('utm_source') ?? '',
         utm_campaign: _urlParams.get('utm_campaign') ?? '',
         utm_content: _urlParams.get('utm_content') ?? '',
@@ -190,12 +210,12 @@ function getCheckoutConfig(_checkoutElementId='checkout-div-not-defined') {
         utm_medium: _urlParams.get('utm_medium') ?? '',
     } ;
 
-    config.device_id = _urlParams.get('device_id') ?? 1;
+    config.deviceId = _urlParams.get('device_id') ?? 1;
 
     config.tag = _urlParams.get('tag') ?? '';
     config.tag2 = _urlParams.get('tag2') ?? '';
 
-    config.order_page_url = `${window.location.protocol}//${window.location.host}/${window.location.pathname}`;
+    config.orderPageUrl = `${window.location.protocol}//${window.location.host}/${window.location.pathname}`;
 
     return config;
 }
@@ -209,16 +229,17 @@ function renderCheckoutForm(_checkoutElementId,_checkoutConfig=null) {
     checkoutApp = app.mount(`#${_checkoutElementId}`);
 
     checkoutApp.productVariantId = _checkoutConfig.productVariantId;
+    checkoutApp.shippingTag = _checkoutConfig.shippingTag;
     checkoutApp.submitButtonText = _checkoutConfig.submitButtonText;
     checkoutApp.checkoutFormType = _checkoutConfig.checkoutFormType;
     checkoutApp.paymentSuccessRedirect = _checkoutConfig.paymentSuccessRedirect;
     checkoutApp.userHash = _checkoutConfig.userHash;
     checkoutApp.token = _checkoutConfig.token;
-    checkoutApp.utm_params = _checkoutConfig.utm_params;
-    checkoutApp.device_id = _checkoutConfig.device_id;
+    checkoutApp.utmParams = _checkoutConfig.utmParams;
+    checkoutApp.deviceId = _checkoutConfig.deviceId;
     checkoutApp.tag = _checkoutConfig.tag;
     checkoutApp.tag2 = _checkoutConfig.tag2;
-    checkoutApp.order_page_url = _checkoutConfig.order_page_url;
+    checkoutApp.orderPageUrl = _checkoutConfig.orderPageUrl;
 
     checkoutApp.updateCheckoutForm();
 }

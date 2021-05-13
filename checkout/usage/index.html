@@ -22,20 +22,18 @@
 <h4>Declaration</h4>
 <code>
     <b>&lt;div id="checkout-div" data-product-variant-id="1360" data-checkout-button-text="Buy Me" data-successful-checkout-url="https://flux.astrologyanswers.com/?flux_action=1&flux_f=1061367355000511979&flux_ffn=1095133337314859374" data-checkout-form-type="digital"&gt;&lt;/div&gt;</b>
-    <br>In this example, we can actually get rid off <b>data-checkout-button-text="Buy Me"</b>, and <b>data-checkout-form-type="digital"</b> since these are default values. There is more information about setting up configuration later.
+    <br>In this example, we can actually get rid off <b>data-checkout-button-text="Buy Me"</b>, and <b>data-checkout-form-type="digital"</b> since these are default values. There is more information about setting up configuration later
 </code>
 <h4>Javascript</h4>
 <p>Then, at the bottom of the page, we need to add custom JS which will auto load Checkout form<br>
 <code>
     <b>
         &lt;script&gt;<br>
-        &nbsp;&nbsp;let _checkoutElementId = 'checkout-div';<br>
-        &nbsp;&nbsp;if(document.querySelector(`#${_checkoutElementId}`)) {<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;renderCheckoutForm(_checkoutElementId);<br>
-        &nbsp;&nbsp;}<br>
+        &nbsp;&nbsp;renderCheckoutForm('checkout-div');<br>
         &lt;\script&gt;
     </b>
 </code>
+<p>Note: If you name div as `aa-checkout-div`, you won't need to add Javascript at bottom of page</p>
 <p><u>Without any data-property:</u></p>
 <h4>Declaration</h4>
 <code><b>&lt;div id="checkout-div"&gt;&lt;/div&gt;</b></code>
@@ -79,12 +77,20 @@
         <br>This page will autoload Checkout Form on page load and pick configuration from data properties from div with id 'checkout-div'
     </li>
     <li>
+        <a href="autoload_div_physical checkout.html">Autoload Checkout Form using Data Properties</a>
+        <br>This page will autoload Checkout Form on page load and pick configuration from data properties from div with id 'checkout-div'
+    </li>
+    <li>
         <a href="autoload_div_without_data_properties.html">Autoload Checkout Form without using Data Properties</a>
         <br>This page will autoload Checkout Form on page load and pick configuration from JS code added to the page
     </li>
     <li>
         <a href="autoload_div_product_selection.html">Autoload Checkout Form with Product Selection option</a>
         <br>This page will autoload Checkout Form on page load with default Product, It also feature Product Selection to change Product if user intends to. Example page shows use of Buttons and Radio buttons for Product Selection, but any other option can also be used for product selection
+    </li>
+    <li>
+        <a href="autoload_div_product_selection_toggle_digital_physical.html">Autoload Checkout Form with Product Selection option</a>
+        <br>This page will autoload Checkout Form on page load with default Product, It also feature Product Selection to change Product if user intends to, and checkout type also changes to match that of product delivery if needed. Example page shows use of Buttons and Radio buttons for Product Selection, but any other option can also be used for product selection.
     </li>
     <li>
         <a href="form_render_event.html">Checkout Form is rendered on event and use Data Properties</a>

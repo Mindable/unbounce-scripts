@@ -143,19 +143,19 @@ app.component('checkout-form',{
                 _validate = false;
             }
             if(this.paymentDetails.cardNumber.trim() === '') {
-                this.validationErrors.push('Please enter Credit card Number');
+                this.validationErrors.push('Please enter Credit Card Number');
                 _validate = false;
             }
             if(this.paymentDetails.expMonth.trim() === '') {
-                this.validationErrors.push('Please choose Credit card Expiration Month');
+                this.validationErrors.push('Please choose Credit Card Expiration Month');
                 _validate = false;
             }
             if(this.paymentDetails.expYear.trim() === '') {
-                this.validationErrors.push('Please choose Credit card Expiration Year');
+                this.validationErrors.push('Please choose Credit Card Expiration Year');
                 _validate = false;
             }
             if(this.paymentDetails.cardCvv.trim() === '') {
-                this.validationErrors.push('Please enter Credit card CVV Code');
+                this.validationErrors.push('Please enter Credit Card CVV Code');
                 _validate = false;
             }
             return _validate;

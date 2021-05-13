@@ -13,14 +13,12 @@
 <script src="../../dist/checkout/checkout.js"></script>
 <!--Mount App-->
 <script>
-    let _checkoutElementId = 'checkout-div';
-    if(document.querySelector(`#${_checkoutElementId}`)) {
-        let _checkoutConfig = getCheckoutConfig();
-        _checkoutConfig.productVariantId = 1360;
-        _checkoutConfig.submitButtonText = "Buy My Report Now";
-        _checkoutConfig.paymentSuccessRedirect = "https://flux.astrologyanswers.com/?flux_action=1&flux_f=1061367355000511979&flux_ffn=1095133337314859374";
-        renderCheckoutForm(_checkoutElementId,_checkoutConfig);
-    }
+    let _checkoutConfig = getCheckoutConfig('checkout-div');
+    _checkoutConfig.productVariantId = 1360;
+    _checkoutConfig.submitButtonText = "Buy My Report Now";
+    _checkoutConfig.paymentSuccessRedirect = "https://flux.astrologyanswers.com/?flux_action=1&flux_f=1061367355000511979&flux_ffn=1095133337314859374";
+    console.log(_checkoutConfig);
+    renderCheckoutForm('checkout-div',_checkoutConfig);
 </script>
 </body>
 </html>

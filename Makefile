@@ -10,5 +10,5 @@ default:
 	@echo "Hi, please read README.md before using Make utility"
 
 compile_checkout:
-	cat $(CHECKOUT_DIR)/main.js $(COMPONENT_FILES) > $(CHECKOUT_DIST_FILE)
+	cat $(CHECKOUT_DIR)/main.js $(COMPONENT_FILES) $(CHECKOUT_DIR)/autoload-checkout.js > $(CHECKOUT_DIST_FILE)
 	@echo "Compilation complete, Please review file at $(CHECKOUT_DIST_FILE)"
