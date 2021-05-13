@@ -53,7 +53,7 @@ const app = Vue.createApp({
             this.updateCheckoutForm(true,false);
         },
         updateCheckoutForm(updateUser=true,updateProductVariant=true) {
-            fetch(`https://aaproxyapis.astrologyanswerstest.com/checkout/params?hash=${this.hash}&token=${this.token}&offer_id=${this.productVariantId}`)
+            fetch(`https://aaproxyapis.astrologyanswers.com/checkout/params?hash=${this.hash}&token=${this.token}&offer_id=${this.productVariantId}`)
                 .then(response => {
                     if (response.status !== 200) {
                         this.productVariant =  {
@@ -138,7 +138,7 @@ const app = Vue.createApp({
             let data = new FormData();
             data.append( "json", JSON.stringify( _checkoutPayload ) );
 
-            fetch("https://aaproxyapis.astrologyanswerstest.com/checkout",
+            fetch("https://aaproxyapis.astrologyanswers.com/checkout",
                 {
                     method: "POST",
                     body: data
