@@ -113,9 +113,12 @@ const app = Vue.createApp({
         },
         processCheckout(formData) {
             let _checkoutPayload = {
+                checkoutFormType: this.physicalCheckout ? 'physical' : 'digital',
+
                 firstname: this.user.firstname,
                 lastname: this.user.lastname,
                 email: this.user.email,
+                phone: this.user.phone,
                 hash: this.userHash,
                 token: this.token,
 
@@ -125,7 +128,7 @@ const app = Vue.createApp({
                 country: formData.billing.country,
                 state: formData.billing.state,
 
-                shipping_address: formData.shipping.streetAddress,
+                shipping_adr: formData.shipping.streetAddress,
                 shipping_city: formData.shipping.city,
                 shipping_zip: formData.shipping.city,
                 shipping_country: formData.shipping.country,
