@@ -1,5 +1,5 @@
 const app = Vue.createApp({
-    template: `<checkout-form :productVariant="productVariant" :user="user" :physicalCheckout="physicalCheckout" :submitButtonText="submitButtonText" :validationErrors="checkoutErrors" @checkout-form-submit="processCheckout"></checkout-form>
+    template: `<checkout-form :productVariant="productVariant" :user="user" :countriesList="countriesList" :physicalCheckout="physicalCheckout" :submitButtonText="submitButtonText" :validationErrors="checkoutErrors" @checkout-form-submit="processCheckout"></checkout-form>
     <p>
       <img src="https://mindable.github.io/unbounce-scripts/assets/lock_icon.jpg" alt="Italian Trulli">&nbsp;<b>Privacy & Security</b> - All your information is safe and secure.<br>The entire transaction will take place on a<br>secure server using SSL technology.
     </p>
@@ -34,7 +34,8 @@ const app = Vue.createApp({
             tag: '',
             tag2: '',
             orderPageUrl: '',
-            checkoutErrors: []
+            checkoutErrors: [],
+            countriesList: null
         }
     },
     computed: {
@@ -70,7 +71,6 @@ const app = Vue.createApp({
                         }
                     } else {
                         response.json().then(data => {
-                            console.log(data);
                             if(updateProductVariant) {
                                 if(data['offerData'] === null) {
                                     this.productVariant = {
@@ -107,6 +107,7 @@ const app = Vue.createApp({
                                 }
                             }
 
+                            this.countriesList = data["address"]["countries"];
                         })
                     }
                 });
