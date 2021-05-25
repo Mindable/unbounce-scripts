@@ -113,9 +113,12 @@ const app = Vue.createApp({
         },
         processCheckout(formData) {
             let _checkoutPayload = {
+                checkoutFormType: this.physicalCheckout ? 'physical' : 'digital',
+
                 firstname: this.user.firstname,
                 lastname: this.user.lastname,
                 email: this.user.email,
+                phone: this.user.phone,
                 hash: this.userHash,
                 token: this.token,
 
@@ -125,7 +128,7 @@ const app = Vue.createApp({
                 country: formData.billing.country,
                 state: formData.billing.state,
 
-                shipping_address: formData.shipping.streetAddress,
+                shipping_adr: formData.shipping.streetAddress,
                 shipping_city: formData.shipping.city,
                 shipping_zip: formData.shipping.city,
                 shipping_country: formData.shipping.country,
@@ -253,19 +256,19 @@ app.component('user-contact',{
   template: `
     <div>
       <label>First Name: *</label><br>
-      <input type="text" v-model="user.firstname">
+      <input type="text" v-model.trim="user.firstname">
     </div>
     <div>
       <label>Last Name: *</label><br>
-      <input type="text" v-model="user.lastname">
+      <input type="text" v-model.trim="user.lastname">
     </div>
     <div>
       <label>Email ID: *</label><br>
-      <input type="email" disabled v-model="user.email">
+      <input type="email" disabled v-model.trim="user.email">
     </div>
     <div>
       <label>Phone Number:</label><br>
-      <input type="text" v-model="user.phone">
+      <input type="text" v-model.trim="user.phone">
     </div>`
 });
 app.component('user-payment', {
@@ -275,7 +278,7 @@ app.component('user-payment', {
   template: `
   <div>
     <label>Card Type: *</label><br>
-    <select v-model="paymentDetails.cardType">
+    <select v-model.trim="paymentDetails.cardType">
       <option value="" selected>Select a Card Type</option>
       <option v-for="(item,key) in cardTypes" :value="key">
         {{item}}
@@ -284,11 +287,11 @@ app.component('user-payment', {
   </div>
   <div>
     <label>Card Number: *</label><br>
-    <input type="text" maxlength="16" v-model="paymentDetails.cardNumber">
+    <input type="text" maxlength="16" v-model.trim="paymentDetails.cardNumber">
   </div>
   <div>
     <label>Expiration Month: *</label><br>
-    <select v-model="paymentDetails.expMonth">
+    <select v-model.trim="paymentDetails.expMonth">
       <option value="" selected>Select a Month</option>
       <option v-for="(item,key) in expMonths" :value="key">
         {{item}}
@@ -297,7 +300,7 @@ app.component('user-payment', {
   </div>
   <div>
     <label>Expiration Year: *</label><br>
-    <select v-model="paymentDetails.expYear">
+    <select v-model.trim="paymentDetails.expYear">
       <option value="" selected>Select a Year</option>
       <option v-for="year in expYears" :value="year">
         {{year}}
@@ -306,7 +309,7 @@ app.component('user-payment', {
   </div>
   <div>
     <label>CVV Code: *</label><br>
-    <input type="text" maxlength="4" v-model="paymentDetails.cardCvv"><br>
+    <input type="text" maxlength="4" v-model.trim="paymentDetails.cardCvv"><br>
     <small><a target="_blank" href="https://legacy.astrologyanswers.com/info/cvv.html">What's This?</a></small>
   </div>
   `,
@@ -457,15 +460,15 @@ app.component('checkout-form',{
         },
         validateUserInformation() {
             let _validate = true;
-            if(this.user.firstname.trim() === '') {
+            if(this.user.firstname === '') {
                 this.validationErrors.push('Please enter First Name');
                 _validate = false;
             }
-            if(this.user.lastname.trim() === '') {
+            if(this.user.lastname === '') {
                 this.validationErrors.push('Please enter Last Name');
                 _validate = false;
             }
-            if(this.user.email.trim() === '') {
+            if(this.user.email === '') {
                 this.validationErrors.push('Error with retrieving Email ID, please contact Customer Service');
                 _validate = false;
             }
@@ -473,23 +476,23 @@ app.component('checkout-form',{
         },
         validateBillingInformation() {
             let _validate = true;
-            if(this.billingAddress.streetAddress.trim() === '') {
+            if(this.billingAddress.streetAddress === '') {
                 this.validationErrors.push('Please enter Billing Address');
                 _validate = false;
             }
-            if(this.billingAddress.city.trim() === '') {
+            if(this.billingAddress.city === '') {
                 this.validationErrors.push('Please enter Billing City');
                 _validate = false;
             }
-            if(this.billingAddress.city.trim() === '') {
+            if(this.billingAddress.city === '') {
                 this.validationErrors.push('Please enter Billing Zip/Postal Code');
                 _validate = false;
             }
-            if(this.billingAddress.country.trim() === '') {
+            if(this.billingAddress.country === '') {
                 this.validationErrors.push('Please choose Billing Country');
                 _validate = false;
             }
-            if(this.billingAddress.state.trim() === '') {
+            if(this.billingAddress.state === '') {
                 this.validationErrors.push('Please choose Billing State/Province');
                 _validate = false;
             }
@@ -498,23 +501,23 @@ app.component('checkout-form',{
         validateShippingInformation() {
             let _validate = true;
             if(this.physicalCheckout && this.shippingToggle) {
-                if(this.shippingAddress.streetAddress.trim() === '') {
+                if(this.shippingAddress.streetAddress === '') {
                     this.validationErrors.push('Please enter Shipping Address');
                     _validate = false;
                 }
-                if(this.shippingAddress.city.trim() === '') {
+                if(this.shippingAddress.city === '') {
                     this.validationErrors.push('Please enter Shipping City');
                     _validate = false;
                 }
-                if(this.shippingAddress.city.trim() === '') {
+                if(this.shippingAddress.city === '') {
                     this.validationErrors.push('Please enter Shipping Zip/Postal Code');
                     _validate = false;
                 }
-                if(this.shippingAddress.country.trim() === '') {
+                if(this.shippingAddress.country === '') {
                     this.validationErrors.push('Please choose Shipping Country');
                     _validate = false;
                 }
-                if(this.shippingAddress.state.trim() === '') {
+                if(this.shippingAddress.state === '') {
                     this.validationErrors.push('Please choose Shipping State/Province');
                     _validate = false;
                 }
@@ -523,23 +526,23 @@ app.component('checkout-form',{
         },
         validatePaymentInformation() {
             let _validate = true;
-            if(this.paymentDetails.cardType.trim() === '') {
+            if(this.paymentDetails.cardType === '') {
                 this.validationErrors.push('Please choose Credit Card Type');
                 _validate = false;
             }
-            if(this.paymentDetails.cardNumber.trim() === '') {
+            if(this.paymentDetails.cardNumber === '') {
                 this.validationErrors.push('Please enter Credit Card Number');
                 _validate = false;
             }
-            if(this.paymentDetails.expMonth.trim() === '') {
+            if(this.paymentDetails.expMonth === '') {
                 this.validationErrors.push('Please choose Credit Card Expiration Month');
                 _validate = false;
             }
-            if(this.paymentDetails.expYear.trim() === '') {
+            if(this.paymentDetails.expYear === '') {
                 this.validationErrors.push('Please choose Credit Card Expiration Year');
                 _validate = false;
             }
-            if(this.paymentDetails.cardCvv.trim() === '') {
+            if(this.paymentDetails.cardCvv === '') {
                 this.validationErrors.push('Please enter Credit Card CVV Code');
                 _validate = false;
             }
@@ -554,19 +557,19 @@ app.component('user-address',{
   },
   template: `<div>
     <label>Street Address: *</label><br>
-    <input type="text" v-model="address.streetAddress">
+    <input type="text" v-model.trim="address.streetAddress">
   </div>
   <div>
     <label>City: *</label><br>
-    <input type="text" v-model="address.city">
+    <input type="text" v-model.trim="address.city">
   </div>
   <div>
     <label>Zip/Postal Code: *</label><br>
-    <input type="text" v-model="address.zip">
+    <input type="text" v-model.trim="address.zip">
   </div>
   <div>
     <label>Country: *</label><br>
-    <select v-model="address.country" @change="fetchState">
+    <select v-model.trim="address.country" @change="fetchState">
       <option value="" selected>Select your option</option>
       <option v-for="(item,key) in countries" :value="key">
         {{item}}
@@ -575,7 +578,7 @@ app.component('user-address',{
   </div>
   <div v-if="states">
     <label>State/Province: *</label><br>
-    <select v-model="address.state">
+    <select v-model.trim="address.state">
       <option value="" disabled selected>Select your Country</option>
       <option v-for="(item,key) in states" :value="key">
         {{item}}

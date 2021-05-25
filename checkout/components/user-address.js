@@ -5,19 +5,19 @@ app.component('user-address',{
   },
   template: `<div>
     <label>Street Address: *</label><br>
-    <input type="text" v-model="address.streetAddress">
+    <input type="text" v-model.trim="address.streetAddress">
   </div>
   <div>
     <label>City: *</label><br>
-    <input type="text" v-model="address.city">
+    <input type="text" v-model.trim="address.city">
   </div>
   <div>
     <label>Zip/Postal Code: *</label><br>
-    <input type="text" v-model="address.zip">
+    <input type="text" v-model.trim="address.zip">
   </div>
   <div>
     <label>Country: *</label><br>
-    <select v-model="address.country" @change="fetchState">
+    <select v-model.trim="address.country" @change="fetchState">
       <option value="" selected>Select your option</option>
       <option v-for="(item,key) in countries" :value="key">
         {{item}}
@@ -26,7 +26,7 @@ app.component('user-address',{
   </div>
   <div v-if="states">
     <label>State/Province: *</label><br>
-    <select v-model="address.state">
+    <select v-model.trim="address.state">
       <option value="" disabled selected>Select your Country</option>
       <option v-for="(item,key) in states" :value="key">
         {{item}}

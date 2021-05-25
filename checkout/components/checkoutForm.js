@@ -72,15 +72,15 @@ app.component('checkout-form',{
         },
         validateUserInformation() {
             let _validate = true;
-            if(this.user.firstname.trim() === '') {
+            if(this.user.firstname === '') {
                 this.validationErrors.push('Please enter First Name');
                 _validate = false;
             }
-            if(this.user.lastname.trim() === '') {
+            if(this.user.lastname === '') {
                 this.validationErrors.push('Please enter Last Name');
                 _validate = false;
             }
-            if(this.user.email.trim() === '') {
+            if(this.user.email === '') {
                 this.validationErrors.push('Error with retrieving Email ID, please contact Customer Service');
                 _validate = false;
             }
@@ -88,23 +88,23 @@ app.component('checkout-form',{
         },
         validateBillingInformation() {
             let _validate = true;
-            if(this.billingAddress.streetAddress.trim() === '') {
+            if(this.billingAddress.streetAddress === '') {
                 this.validationErrors.push('Please enter Billing Address');
                 _validate = false;
             }
-            if(this.billingAddress.city.trim() === '') {
+            if(this.billingAddress.city === '') {
                 this.validationErrors.push('Please enter Billing City');
                 _validate = false;
             }
-            if(this.billingAddress.city.trim() === '') {
+            if(this.billingAddress.city === '') {
                 this.validationErrors.push('Please enter Billing Zip/Postal Code');
                 _validate = false;
             }
-            if(this.billingAddress.country.trim() === '') {
+            if(this.billingAddress.country === '') {
                 this.validationErrors.push('Please choose Billing Country');
                 _validate = false;
             }
-            if(this.billingAddress.state.trim() === '') {
+            if(this.billingAddress.state === '') {
                 this.validationErrors.push('Please choose Billing State/Province');
                 _validate = false;
             }
@@ -113,23 +113,23 @@ app.component('checkout-form',{
         validateShippingInformation() {
             let _validate = true;
             if(this.physicalCheckout && this.shippingToggle) {
-                if(this.shippingAddress.streetAddress.trim() === '') {
+                if(this.shippingAddress.streetAddress === '') {
                     this.validationErrors.push('Please enter Shipping Address');
                     _validate = false;
                 }
-                if(this.shippingAddress.city.trim() === '') {
+                if(this.shippingAddress.city === '') {
                     this.validationErrors.push('Please enter Shipping City');
                     _validate = false;
                 }
-                if(this.shippingAddress.city.trim() === '') {
+                if(this.shippingAddress.city === '') {
                     this.validationErrors.push('Please enter Shipping Zip/Postal Code');
                     _validate = false;
                 }
-                if(this.shippingAddress.country.trim() === '') {
+                if(this.shippingAddress.country === '') {
                     this.validationErrors.push('Please choose Shipping Country');
                     _validate = false;
                 }
-                if(this.shippingAddress.state.trim() === '') {
+                if(this.shippingAddress.state === '') {
                     this.validationErrors.push('Please choose Shipping State/Province');
                     _validate = false;
                 }
@@ -138,23 +138,23 @@ app.component('checkout-form',{
         },
         validatePaymentInformation() {
             let _validate = true;
-            if(this.paymentDetails.cardType.trim() === '') {
+            if(this.paymentDetails.cardType === '') {
                 this.validationErrors.push('Please choose Credit Card Type');
                 _validate = false;
             }
-            if(this.paymentDetails.cardNumber.trim() === '') {
+            if(this.paymentDetails.cardNumber === '') {
                 this.validationErrors.push('Please enter Credit Card Number');
                 _validate = false;
             }
-            if(this.paymentDetails.expMonth.trim() === '') {
+            if(this.paymentDetails.expMonth === '') {
                 this.validationErrors.push('Please choose Credit Card Expiration Month');
                 _validate = false;
             }
-            if(this.paymentDetails.expYear.trim() === '') {
+            if(this.paymentDetails.expYear === '') {
                 this.validationErrors.push('Please choose Credit Card Expiration Year');
                 _validate = false;
             }
-            if(this.paymentDetails.cardCvv.trim() === '') {
+            if(this.paymentDetails.cardCvv === '') {
                 this.validationErrors.push('Please enter Credit Card CVV Code');
                 _validate = false;
             }
