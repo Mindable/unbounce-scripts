@@ -1,16 +1,34 @@
+<!DOCTYPE html>
+<html>
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Checkout Test Page</title>
 </head>
 <body>
-  <a href="//funnel/upsell?offer_id=1360&callbackUrl=https://flux2.astrologyanswers.com/?flux_action=1&flux_f=1147020355678920015&flux_ffn=1147020973846306320">Upsell 1</a>
-  <div id="aa-checkout-div"
-    data-offer-id="1360"
-    data-checkout-button-text="Buy me now!"
-    data-successful-checkout-url="https://flux.astrologyanswers.com/?flux_action=1&flux_f=1061367355000511979&flux_ffn=1095133337314859374"
-    data-checkout-form-type="digital"
-    data-disable-default-css="false"
-    >
-  </div>
-  <script src="checkout-form-manager.js"></script>
+    <!--Todo: Remove Old Upsell Logic once all upsell pages are updated to use new pattern-->
+    <h2>Upsell Link Old</h2>
+    <a href="//funnel/upsell?offer_id=1360&callbackUrl=https://flux2.astrologyanswers.com/?flux_action=1&flux_f=1147020355678920015&flux_ffn=1147020973846306320">Upsell 1</a>
+    <h2>Upsell Links New</h2>
+    <a class="upsell-link"
+       href="#"
+       data-action-url="https://flux2.astrologyanswers.com/?flux_action=1&flux_f=1147020355678920015&flux_ffn=1147020973846306320"
+       data-offer-id="1360">Upsell 2</a>
+    <a class="upsell-link"
+       href="#"
+       data-offer-id="1361">Upsell 3</a>
+    <a class="upsell-link"
+       href="#"
+       data-action-url="https://flux2.astrologyanswers.com/?flux_action=1&flux_f=1147020355678920015&flux_ffn=1147020973846306320">Upsell 4</a>
+    <br><code>Open Console and type `checkout.upsell.verify()` to verify if everything is fine for Upsell page, or you can manually run `checkout.upsell.verifyLinks()` to check if upsell links are fine. For checking if URL has necessary values (currently Hash and Token are required), you can use `checkout.upsell.verifyURLParameters()`</code>
+
+    <h2>Checkout Form</h2>
+    <div id="aa-checkout-div"
+         data-offer-id="1360"
+         data-checkout-button-text="Buy me now!"
+         data-successful-checkout-url="https://flux.astrologyanswers.com/?flux_action=1&flux_f=1061367355000511979&flux_ffn=1095133337314859374"
+         data-checkout-form-type="digital"
+         data-disable-default-css="false"
+    ></div>
+
+    <script src="checkout-form-manager.js"></script>
 </body>
