@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout App Usage & Examples</title>
+</head>
+<body>
+<h3>Checkout App Usage & Example</h3>
+<p>Checkout App will render Checkout Form on any div on HTML page with minimal code injection. It is built on VueJs 3, so global production Js for VueJS 3 is needed in addition to compiled version of Checkout App. Since this App calls existing Astrology Answers Checkout API, only VISA and Mastercard are currently supported, and checkout processes payment for only single Product Variant</p>
+<p>Checkout App allows to create checkout Form for following scenarios:</p>
+<ul>
+    <li>Digital Product Checkout</li>
+    <li>Physical Product Checkout</li>
+    <li>Product Selection for Checkout</li>
+</ul>
+<h3>How to Use:</h3>
+<p>App need to know where to render Form, this is achieved by creating a div and using JS to render Checkout Form, whether it is needed on Page Load or a particular event like Product Selection or button click.</p>
+<p>
+    Div can be created either with or without data-properties. Here are examples:<br><br>
+    <u>With data-properties:</u>
+</p>
+<h4>Declaration</h4>
+<code>
+    <b>&lt;div id="checkout-div" data-product-variant-id="1360" data-shipping-tag="1" data-checkout-button-text="Buy Me" data-successful-checkout-url="https://flux.astrologyanswers.com/?flux_action=1&flux_f=1061367355000511979&flux_ffn=1095133337314859374" data-checkout-form-type="digital"&gt;&lt;/div&gt;</b>
+    <br>In this example, we can actually get rid off <b>data-checkout-button-text="Buy Me"</b>, and <b>data-checkout-form-type="digital"</b> since these are default values. There is more information about setting up configuration later
+</code>
+<h4>Javascript</h4>
+<p>Then, at the bottom of the page, we need to add custom JS which will auto load Checkout form<br>
+<code>
+    <b>
+        &lt;script&gt;<br>
+        &nbsp;&nbsp;renderCheckoutForm('checkout-div');<br>
+        &lt;\script&gt;
+    </b>
+</code>
+<p>Note: If you name div as `aa-checkout-div`, you won't need to add Javascript at bottom of page</p>
+<p><u>Without any data-property:</u></p>
+<h4>Declaration</h4>
+<code><b>&lt;div id="checkout-div"&gt;&lt;/div&gt;</b></code>
+<h4>Javascript</h4>
+<p>At the bottom of the page, we need to add custom JS to add configuration before rendering form since there are no data-properties defined on Div<br>
+<code>
+    <b>
+        &lt;script&gt;<br>
+        &nbsp;&nbsp;let _checkoutElementId = 'checkout-div';<br>
+        &nbsp;&nbsp;if(document.querySelector(`#${_checkoutElementId}`)) {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;let _checkoutConfig = getCheckoutConfig();<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;_checkoutConfig.productVariantId = 1360;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;_checkoutConfig.submitButtonText = "Buy My Report Now";<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;_checkoutConfig.paymentSuccessRedirect = "https://flux.astrologyanswers.com/?flux_action=1&flux_f=1061367355000511979&flux_ffn=1095133337314859374";<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;renderCheckoutForm(_checkoutElementId,_checkoutConfig);<br>
+        &nbsp;&nbsp;}<br>
+        &lt;/script&gt;
+    </b>
+</code>
+<h3>Configurations:</h3>
+<p>For configuration, Checkout App pulls some data from URL while for the rest of data is fetched from data-properties on div element for rendering Checkout Form. Javascript can also be used for setting these configurations. Here is a list of all configurations with information on how certain configuration is fetched:</p>
+<ul>
+    <li><b>productVariantId</b>: For product variant being sold on checkout page, it can be set either by data-property of checkout div or set using Javascript before or after Form render</li>
+    <li><b>checkoutFormType</b>: This property tells whether Form is rendered for Digital or Physical checkout (in case of Physical Product checkout, user is asked to fill Shipping Information), it can be set using either data-property of checkout div or JS, default is set as Digital checkout</li>
+    <li><b>shippingTag</b>: This configuration is required by Astrology Answers checkout API for processing physical checkout form, default is set to 0</li>
+    <li><b>userHash</b>: To identify a user, It is pulled from URL</li>
+    <li><b>token</b>: To authorize a user's identity to use in PII API, It is also pulled from URL</li>
+    <li><b>utm_params</b>: This property is used for utm attribution and is fetched from URL</li>
+    <li><b>device_id</b>: This property is used for custom Astrology Answers Device attribution in Checkout API, Its value is pulled from URL, default is set as 1 for Desktop, other values being 2 for Mobiles and 3 for Tablets</li>
+    <li><b>tag</b>: This property is used for custom Astrology Answers Checkout Attribution in Checkout API. Its value is pulled from URL or can be set using JS.</li>
+    <li><b>tag2</b>: This property is used for custom Astrology Answers Checkout Attribution in Checkout API, and is extension of tag property. Its value is pulled from URL or can be set using JS.</li>
+    <li><b>order_page_url</b>: This property is also used for custom Astrology Answers Checkout Attribution in Checkout API. Its value is derived from base URL itself</li>
+    <li><b>checkoutButtonText</b>: Text of Submit Button, It can be set using either data-property of checkout div or JS, default is set as `Buy Me`</li>
+    <li><b>paymentSuccessRedirect</b>: URL of page where it should be redirected in case of Successful Checkout, it can be set using either data-property of checkout div or JS</li>
+</ul>
+<p>Please note that <a href="https://cdn.jsdelivr.net/npm/vue@3.0.2/dist/vue.global.prod.js">VueJS</a> and <a href="../../dist/checkout/checkout.js">Checkout JS</a> are required to be added to the page before adding JS code, else App will not load.</p>
+<h3>Examples:</h3>
+<p>Here are some Examples to use checkout App:</p>
+<ol>
+    <li>
+        <a href="autoload_div.html">Autoload Checkout Form using Data Properties</a>
+        <br>This page will autoload Checkout Form on page load and pick configuration from data properties from div with id 'checkout-div'
+    </li>
+    <li>
+        <a href="autoload_div_physical_checkout.html">Autoload Checkout Form using Data Properties</a>
+        <br>This page will autoload Checkout Form on page load and pick configuration from data properties from div with id 'checkout-div'
+    </li>
+    <li>
+        <a href="autoload_div_without_data_properties.html">Autoload Checkout Form without using Data Properties</a>
+        <br>This page will autoload Checkout Form on page load and pick configuration from JS code added to the page
+    </li>
+    <li>
+        <a href="autoload_div_product_selection.html">Autoload Checkout Form with Product Selection option</a>
+        <br>This page will autoload Checkout Form on page load with default Product, It also feature Product Selection to change Product if user intends to. Example page shows use of Buttons and Radio buttons for Product Selection, but any other option can also be used for product selection
+    </li>
+    <li>
+        <a href="autoload_div_product_selection_toggle_digital_physical.html">Autoload Checkout Form with Product Selection option</a>
+        <br>This page will autoload Checkout Form on page load with default Product, It also feature Product Selection to change Product if user intends to, and checkout type also changes to match that of product delivery if needed. Example page shows use of Buttons and Radio buttons for Product Selection, but any other option can also be used for product selection.
+    </li>
+    <li>
+        <a href="form_render_event.html">Checkout Form is rendered on event and use Data Properties</a>
+        <br>This page loads Checkout Form on particular event (example page uses button click but other options can also be implemented). The configurations are retrieved from data properties set on div</li>
+    <li>
+        <a href="form_render_event_without_data_properties.html">Checkout Form is rendered on event and Configuration are set using JS instead of Data Properties</a>
+        <br>This page loads Checkout Form on particular event (example page uses button click but other options can also be implemented) and pick configuration from JS code added to the page
+    </li>
+    <li>
+        <a href="form_render_event_product_selection.html">Checkout Form render on Product Selection event</a>
+        <br>This page loads Checkout Form on selection of Product and pick configuration from JS code added to the page. Once Product is selected, Product Selection is hidden
+    </li>
+</ol>
+</body>
+</html>

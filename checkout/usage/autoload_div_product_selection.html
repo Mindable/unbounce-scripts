@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout with Autoload Div and Product Selection</title>
+</head>
+<body>
+<div id="product-selection">
+    <u>Using Buttons</u>:<br>
+    <button class="product-variant-selection" data-product-variant-id="608">Experts 97 Credits $97</button>&nbsp;
+    <button class="product-variant-selection" data-product-variant-id="609">Experts 40 Credits $19x12</button>
+    <br><u>Using Radio Buttons</u>:<br>
+    <input type="radio" class="product-variant-selection" name="offer-id" data-product-variant-id="608" checked>Experts 97 Credits $97
+    <input type="radio" class="product-variant-selection" name="offer-id" data-product-variant-id="609">Experts 40 Credits $19x12
+</div>
+<br>
+<hr>
+<div id="aa-checkout-div"
+     data-product-variant-id="608"
+     data-checkout-button-text="Buy Me"
+     data-successful-checkout-url="https://flux.astrologyanswers.com/?flux_action=1&flux_f=1061367355000511979&flux_ffn=1095133337314859374"
+     data-checkout-form-type="digital"
+></div>
+<!--Add VueJS-->
+<script src="https://unpkg.com/vue@next"></script>
+<!--Add Checkout JS-->
+<script src="../../dist/checkout/checkout.js"></script>
+<script>
+    document.addEventListener('click', function (event) {
+        if(event.target.classList.contains('product-variant-selection')){
+            let _newOfferId = event.target.dataset.productVariantId ?? 0;
+            checkoutApp.changeProductVariantId(_newOfferId);
+        }
+    });
+</script>
+</body>
+</html>

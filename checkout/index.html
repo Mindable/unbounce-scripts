@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Checkout Test Page</title>
+</head>
+<body>
+    <h2>New Checkout Form</h2>
+    <div id="aa-checkout-div"
+         data-product-variant-id="1360"
+         data-checkout-button-text="Buy Me"
+         data-successful-checkout-url="https://flux.astrologyanswers.com/?flux_action=1&flux_f=1061367355000511979&flux_ffn=1095133337314859374"
+         data-checkout-form-type="physical"
+    ></div>
+    <!--    Add VueJS-->
+    <script src="https://unpkg.com/vue@next"></script>
+    <!--    Add Main App-->
+    <script src="main.js"></script>
+    <!--    Add Components-->
+    <script src="components/checkoutForm.js"></script>
+    <script src="components/user-contact.js"></script>
+    <script src="components/user-address.js"></script>
+    <script src="components/user-payment.js"></script>
+    <script src="components/product-pricing.js"></script>
+    <!--    Mount App-->
+    <script src="autoload-checkout.js"></script>
+<style>
+    .physicalCheckoutDiv {
+        border-radius: 5px;
+        background: #F7F2E1;
+        border: 1px solid #ded2a1;
+    }
+    .checkoutErrors {
+        color: red
+    }
+</style>
+</body>
+</html>
