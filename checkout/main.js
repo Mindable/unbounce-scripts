@@ -155,15 +155,11 @@ const app = Vue.createApp({
 
                 order_page_url: this.orderPageUrl,
             }
-            console.log(JSON.stringify(_checkoutPayload));
-
-            let data = new FormData();
-            data.append( "json", JSON.stringify( _checkoutPayload ) );
 
             fetch("https://aaproxyapis.astrologyanswers.com/checkout",
                 {
                     method: "POST",
-                    body: data
+                    body: JSON.stringify( _checkoutPayload )
                 })
                 .then(resp => {
                     if (resp.status !== 200) {
