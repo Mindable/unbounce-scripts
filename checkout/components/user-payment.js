@@ -16,7 +16,7 @@ app.component('user-payment', {
     <label>Card Number: *</label><br>
     <input type="number" maxlength="16" v-model.trim="paymentDetails.cardNumber">
   </div>
-  <div>
+  <div class="split split-first">
     <label>Expiration Month: *</label><br>
     <select v-model.trim="paymentDetails.expMonth">
       <option value="" selected>Select a Month</option>
@@ -25,7 +25,7 @@ app.component('user-payment', {
       </option>
     </select>
   </div>
-  <div>
+  <div class="split">
     <label>Expiration Year: *</label><br>
     <select v-model.trim="paymentDetails.expYear">
       <option value="" selected>Select a Year</option>

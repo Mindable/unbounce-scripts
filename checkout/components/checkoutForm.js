@@ -20,14 +20,27 @@ app.component('checkout-form',{
       </div>
       <h3>Credit Card Information</h3>
       <user-payment :paymentDetails="paymentDetails"></user-payment>
-      <p class="checkoutErrors" v-if="validationErrors">
+      <p class="checkoutErrors" v-if="validationErrors.length>0">
         <span v-for="validationError in validationErrors">
           {{validationError}}<br>
         </span>
       </p>
-      <product-pricing :productVariant="productVariant" :billingAddress="billingAddress"></product-pricing>
-      <p>By submitting your request, you agree to the <a href="https://astrologyanswers.com/info/terms-of-service/">Terms of Service.</a></p>
-      <button @click="processCheckout">{{submitButtonText}}</button>`,
+      <div class="summary">
+        <product-pricing :productVariant="productVariant" :billingAddress="billingAddress"></product-pricing>
+        <p class="terms">By submitting your request, you agree to the <a href="https://astrologyanswers.com/info/terms-of-service/">Terms of Service.</a></p>
+        <button @click="processCheckout">{{submitButtonText}}</button>
+        <p class="privacy">
+          <img src="https://mindable.github.io/unbounce-scripts/assets/lock_icon.jpg" alt="Italian Trulli">&nbsp;<b>Privacy &amp; Security</b> - All your information is safe and secure.
+          The entire transaction will take place on a
+          secure server using SSL technology.
+        </p>
+        <div>
+          <img src="https://mindable.github.io/unbounce-scripts/assets/mcafee_badge.png" alt="McAfee">&nbsp; <img src="https://mindable.github.io/unbounce-scripts/assets/truste_badge.png" alt="TRUSTe">
+        </div>
+        <p class="questions">
+          <strong>Questions?</strong> Call Toll Free: 1-866-329-7640
+        </p>
+      </div>`,
     data() {
         return {
             billingAddress: {
