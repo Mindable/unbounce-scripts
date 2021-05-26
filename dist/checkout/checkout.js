@@ -161,16 +161,16 @@ const app = Vue.createApp({
 
                 order_page_url: this.orderPageUrl,
             }
-            // console.log(JSON.stringify(_checkoutPayload));
             this.checkoutErrors.push('Processing Payment');
-
-            let data = new FormData();
-            data.append( "json", JSON.stringify( _checkoutPayload ) );
 
             fetch("https://aaproxyapis.astrologyanswers.com/checkout",
                 {
                     method: "POST",
-                    body: data
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'text/plain'
+                    },
+                    body: JSON.stringify(_checkoutPayload)
                 })
                 .then(resp => {
                     this.checkoutProcessing = false;
@@ -279,7 +279,7 @@ app.component('user-contact',{
     </div>
     <div>
       <label>Phone Number:</label><br>
-      <input type="text" v-model.trim="user.phone">
+      <input type="number" v-model.trim="user.phone">
     </div>`
 });
 app.component('user-payment', {
@@ -298,7 +298,7 @@ app.component('user-payment', {
   </div>
   <div>
     <label>Card Number: *</label><br>
-    <input type="text" maxlength="16" v-model.trim="paymentDetails.cardNumber">
+    <input type="number" maxlength="16" v-model.trim="paymentDetails.cardNumber">
   </div>
   <div>
     <label>Expiration Month: *</label><br>
@@ -320,7 +320,7 @@ app.component('user-payment', {
   </div>
   <div>
     <label>CVV Code: *</label><br>
-    <input type="text" maxlength="4" v-model.trim="paymentDetails.cardCvv"><br>
+    <input type="number" maxlength="4" v-model.trim="paymentDetails.cardCvv"><br>
     <small><a target="_blank" href="https://legacy.astrologyanswers.com/info/cvv.html">What's This?</a></small>
   </div>
   `,
