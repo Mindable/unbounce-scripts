@@ -1,5 +1,5 @@
 const app = Vue.createApp({
-    template: `<checkout-form :productVariant="productVariant" :user="user" :physicalCheckout="physicalCheckout" :submitButtonText="submitButtonText" :validationErrors="checkoutErrors" @checkout-form-submit="processCheckout"></checkout-form>
+    template: `<checkout-form :productVariant="productVariant" :user="user" :countriesList="countriesList" :physicalCheckout="physicalCheckout" :submitButtonText="submitButtonText" :validationErrors="checkoutErrors" @checkout-form-submit="processCheckout"></checkout-form>
     <p>
       <img src="https://mindable.github.io/unbounce-scripts/assets/lock_icon.jpg" alt="Italian Trulli">&nbsp;<b>Privacy & Security</b> - All your information is safe and secure.<br>The entire transaction will take place on a<br>secure server using SSL technology.
     </p>
@@ -34,7 +34,9 @@ const app = Vue.createApp({
             tag: '',
             tag2: '',
             orderPageUrl: '',
-            checkoutErrors: []
+            checkoutErrors: [],
+            countriesList: null,
+            checkoutProcessing: false,
         }
     },
     computed: {
@@ -70,7 +72,6 @@ const app = Vue.createApp({
                         }
                     } else {
                         response.json().then(data => {
-                            console.log(data);
                             if(updateProductVariant) {
                                 if(data['offerData'] === null) {
                                     this.productVariant = {
@@ -107,11 +108,17 @@ const app = Vue.createApp({
                                 }
                             }
 
+                            this.countriesList = data["address"]["countries"];
                         })
                     }
                 });
         },
         processCheckout(formData) {
+            if(this.checkoutProcessing) {
+                console.log('Cannot submit since Checkout is already under Processing');
+                return;
+            }
+            this.checkoutProcessing = true;
             let _checkoutPayload = {
                 checkoutFormType: this.physicalCheckout ? 'physical' : 'digital',
 
@@ -154,7 +161,8 @@ const app = Vue.createApp({
 
                 order_page_url: this.orderPageUrl,
             }
-            console.log(JSON.stringify(_checkoutPayload));
+            // console.log(JSON.stringify(_checkoutPayload));
+            this.checkoutErrors.push('Processing Payment');
 
             let data = new FormData();
             data.append( "json", JSON.stringify( _checkoutPayload ) );
@@ -165,8 +173,11 @@ const app = Vue.createApp({
                     body: data
                 })
                 .then(resp => {
+                    this.checkoutProcessing = false;
+                    this.checkoutErrors.splice(0,this.checkoutErrors.length);
                     if (resp.status !== 200) {
                         console.log(`Error on checkout API: ${resp.status}`);
+                        this.checkoutErrors.push('Error in processing Payment. Try again, if you are unsuccessful 3 times, Please contact Customer Service');
                         return;
                     }
                     resp.json().then(data => {
@@ -393,17 +404,18 @@ app.component('checkout-form',{
         user: Object,
         physicalCheckout: Boolean,
         submitButtonText: String,
-        validationErrors: Array
+        validationErrors: Array,
+        countriesList: Object,
     },
     template: `
       <h3>Contact Information</h3>
       <user-contact :user="user"></user-contact>
       <h3>Current Billing Address</h3>
-      <user-address addressType="Billing" :address="billingAddress"></user-address>
+      <user-address addressType="Billing" :address="billingAddress" :countriesList="countriesList"></user-address>
       <div v-if="physicalCheckout" class="physicalCheckoutDiv">
         <h3>Shipping Address:</h3>
         <input type="checkbox" v-model="shippingToggle">Check this box if your shipping address is different from your billing address
-        <user-address v-if="shippingToggle" addressType="Shipping" :address="shippingAddress"></user-address>
+        <user-address v-if="shippingToggle" addressType="Shipping" :address="shippingAddress" :countriesList="countriesList"></user-address>
       </div>
       <h3>Credit Card Information</h3>
       <user-payment :paymentDetails="paymentDetails"></user-payment>
@@ -459,101 +471,80 @@ app.component('checkout-form',{
             }
         },
         validateUserInformation() {
-            let _validate = true;
             if(this.user.firstname === '') {
                 this.validationErrors.push('Please enter First Name');
-                _validate = false;
             }
             if(this.user.lastname === '') {
                 this.validationErrors.push('Please enter Last Name');
-                _validate = false;
             }
             if(this.user.email === '') {
                 this.validationErrors.push('Error with retrieving Email ID, please contact Customer Service');
-                _validate = false;
             }
-            return _validate;
+            return this.validationErrors.length === 0;
         },
         validateBillingInformation() {
-            let _validate = true;
             if(this.billingAddress.streetAddress === '') {
                 this.validationErrors.push('Please enter Billing Address');
-                _validate = false;
             }
             if(this.billingAddress.city === '') {
                 this.validationErrors.push('Please enter Billing City');
-                _validate = false;
             }
             if(this.billingAddress.city === '') {
                 this.validationErrors.push('Please enter Billing Zip/Postal Code');
-                _validate = false;
             }
             if(this.billingAddress.country === '') {
                 this.validationErrors.push('Please choose Billing Country');
-                _validate = false;
             }
             if(this.billingAddress.state === '') {
                 this.validationErrors.push('Please choose Billing State/Province');
-                _validate = false;
             }
-            return _validate;
+            return this.validationErrors.length === 0;
         },
         validateShippingInformation() {
-            let _validate = true;
             if(this.physicalCheckout && this.shippingToggle) {
                 if(this.shippingAddress.streetAddress === '') {
                     this.validationErrors.push('Please enter Shipping Address');
-                    _validate = false;
                 }
                 if(this.shippingAddress.city === '') {
                     this.validationErrors.push('Please enter Shipping City');
-                    _validate = false;
                 }
                 if(this.shippingAddress.city === '') {
                     this.validationErrors.push('Please enter Shipping Zip/Postal Code');
-                    _validate = false;
                 }
                 if(this.shippingAddress.country === '') {
                     this.validationErrors.push('Please choose Shipping Country');
-                    _validate = false;
                 }
                 if(this.shippingAddress.state === '') {
                     this.validationErrors.push('Please choose Shipping State/Province');
-                    _validate = false;
                 }
             }
-            return _validate;
+            return this.validationErrors.length === 0;
         },
         validatePaymentInformation() {
-            let _validate = true;
             if(this.paymentDetails.cardType === '') {
                 this.validationErrors.push('Please choose Credit Card Type');
-                _validate = false;
             }
             if(this.paymentDetails.cardNumber === '') {
                 this.validationErrors.push('Please enter Credit Card Number');
-                _validate = false;
             }
             if(this.paymentDetails.expMonth === '') {
                 this.validationErrors.push('Please choose Credit Card Expiration Month');
-                _validate = false;
             }
             if(this.paymentDetails.expYear === '') {
                 this.validationErrors.push('Please choose Credit Card Expiration Year');
-                _validate = false;
             }
             if(this.paymentDetails.cardCvv === '') {
                 this.validationErrors.push('Please enter Credit Card CVV Code');
-                _validate = false;
             }
-            return _validate;
+            return this.validationErrors.length === 0;
         },
     }
 });
 app.component('user-address',{
   props: {
     addressType: String,
-    address: Object
+    address: Object,
+    countriesList: Object
   },
   template: `<div>
     <label>Street Address: *</label><br>
@@ -571,7 +562,7 @@ app.component('user-address',{
     <label>Country: *</label><br>
     <select v-model.trim="address.country" @change="fetchState">
       <option value="" selected>Select your option</option>
-      <option v-for="(item,key) in countries" :value="key">
+      <option v-for="(item,key) in countriesList" :value="key">
         {{item}}
       </option>
     </select>
@@ -587,8 +578,7 @@ app.component('user-address',{
   </div>`,
   data() {
     return {
-      states: null,
-      countries: {"US":"United States","CA":"Canada","AU":"Australia","DZ":"Algeria","AS":"American Samoa","AD":"Andorra","AO":"Angola","AI":"Anguilla","AQ":"Antarctica","AG":"Antigua and Barbuda","AR":"Argentina","AW":"Aruba","AT":"Austria","BS":"Bahamas","BH":"Bahrain","BD":"Bangladesh","BB":"Barbados","BE":"Belgium","BZ":"Belize","BJ":"Benin","BM":"Bermuda","BT":"Bhutan","BO":"Bolivia","BA":"Bosnia and Herzegovina","BW":"Botswana","BV":"Bouvet Island","BR":"Brazil","BQ":"British Antarctic Territory","IO":"British Indian Ocean Territory","VG":"British Virgin Islands","BN":"Brunei","BF":"Burkina Faso","BI":"Burundi","KH":"Cambodia","CM":"Cameroon","CT":"Canton and Enderbury Islands","CV":"Cape Verde","KY":"Cayman Islands","CF":"Central African Republic","TD":"Chad","CL":"Chile","CN":"China","CX":"Christmas Island","CC":"Cocos [Keeling] Islands","CO":"Colombia","KM":"Comoros","CK":"Cook Islands","CR":"Costa Rica","HR":"Croatia","CY":"Cyprus","DK":"Denmark","DJ":"Djibouti","DM":"Dominica","DO":"Dominican Republic","NQ":"Dronning Maud Land","DD":"East Germany","EC":"Ecuador","EG":"Egypt","SV":"El Salvador","GQ":"Equatorial Guinea","ER":"Eritrea","EE":"Estonia","ET":"Ethiopia","FK":"Falkland Islands","FO":"Faroe Islands","FJ":"Fiji","FI":"Finland","FR":"France","GF":"French Guiana","PF":"French Polynesia","TF":"French Southern Territories","FQ":"French Southern and Antarctic Territories","GA":"Gabon","GM":"Gambia","GE":"Georgia","DE":"Germany","GH":"Ghana","GI":"Gibraltar","GR":"Greece","GL":"Greenland","GD":"Grenada","GP":"Guadeloupe","GU":"Guam","GT":"Guatemala","GG":"Guernsey","GN":"Guinea","GW":"Guinea-Bissau","GY":"Guyana","HT":"Haiti","HM":"Heard Island and McDonald Islands","HN":"Honduras","HK":"Hong Kong SAR China","HU":"Hungary","IS":"Iceland","IE":"Ireland","IM":"Isle of Man","IL":"Israel","IT":"Italy","JM":"Jamaica","JP":"Japan","JE":"Jersey","JT":"Johnston Island","JO":"Jordan","KE":"Kenya","KI":"Kiribati","KG":"Kyrgyzstan","LA":"Laos","LV":"Latvia","LS":"Lesotho","LI":"Liechtenstein","LU":"Luxembourg","MO":"Macau SAR China","MG":"Madagascar","MW":"Malawi","MV":"Maldives","ML":"Mali","MT":"Malta","MH":"Marshall Islands","MQ":"Martinique","MR":"Mauritania","MU":"Mauritius","YT":"Mayotte","FX":"Metropolitan France","MX":"Mexico","FM":"Micronesia","MI":"Midway Islands","MD":"Moldova","MC":"Monaco","MN":"Mongolia","ME":"Montenegro","MS":"Montserrat","MA":"Morocco","MZ":"Mozambique","NA":"Namibia","NR":"Nauru","NP":"Nepal","NL":"Netherlands","AN":"Netherlands Antilles","NT":"Neutral Zone","NC":"New Caledonia","NZ":"New Zealand","NI":"Nicaragua","NE":"Niger","NG":"Nigeria","NU":"Niue","NF":"Norfolk Island","VD":"North Vietnam","MP":"Northern Mariana Islands","NO":"Norway","OM":"Oman","PC":"Pacific Islands Trust Territory","PW":"Palau","PS":"Palestinian Territories","PA":"Panama","PZ":"Panama Canal Zone","PG":"Papua New Guinea","PY":"Paraguay","PE":"Peru","PH":"Philippines","PN":"Pitcairn Islands","PL":"Poland","PT":"Portugal","PR":"Puerto Rico","QA":"Qatar","RW":"Rwanda","RE":"Reunion","BL":"Saint Barthelemy","SH":"Saint Helena","KN":"Saint Kitts and Nevis","LC":"Saint Lucia","MF":"Saint Martin","PM":"Saint Pierre and Miquelon","VC":"Saint Vincent and the Grenadines","WS":"Samoa","SM":"San Marino","SA":"Saudi Arabia","SN":"Senegal","RS":"Serbia","CS":"Serbia and Montenegro","SC":"Seychelles","SL":"Sierra Leone","SG":"Singapore","SK":"Slovakia","SI":"Slovenia","SB":"Solomon Islands","ZA":"South Africa","GS":"South Georgia and the South Sandwich Islands","KR":"South Korea","ES":"Spain","LK":"Sri Lanka","SR":"Suriname","SJ":"Svalbard and Jan Mayen","SZ":"Swaziland","SE":"Sweden","CH":"Switzerland","ST":"Sao Tome and Principe","TW":"Taiwan","TJ":"Tajikistan","TZ":"Tanzania","TH":"Thailand","TL":"Timor-Leste","TG":"Togo","TK":"Tokelau","TO":"Tonga","TT":"Trinidad and Tobago","TN":"Tunisia","TM":"Turkmenistan","TC":"Turks and Caicos Islands","TV":"Tuvalu","UM":"U.S. Minor Outlying Islands","PU":"U.S. Miscellaneous Pacific Islands","VI":"U.S. Virgin Islands","UG":"Uganda","SU":"Union of Soviet Socialist Republics","AE":"United Arab Emirates","GB":"United Kingdom","ZZ":"Unknown or Invalid Region","UY":"Uruguay","UZ":"Uzbekistan","VU":"Vanuatu","VA":"Vatican City","VE":"Venezuela","WK":"Wake Island","WF":"Wallis and Futuna","EH":"Western Sahara","YE":"Yemen","ZM":"Zambia","AX":"Aland Islands"}
+      states: null
     };
   },
   methods: {
