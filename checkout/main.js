@@ -35,7 +35,8 @@ const app = Vue.createApp({
             tag2: '',
             orderPageUrl: '',
             checkoutErrors: [],
-            countriesList: null
+            countriesList: null,
+            checkoutProcessing: false,
         }
     },
     computed: {
@@ -113,6 +114,11 @@ const app = Vue.createApp({
                 });
         },
         processCheckout(formData) {
+            if(this.checkoutProcessing) {
+                console.log('Cannot submit since Checkout is already under Processing');
+                return;
+            }
+            this.checkoutProcessing = true;
             let _checkoutPayload = {
                 checkoutFormType: this.physicalCheckout ? 'physical' : 'digital',
 
@@ -155,6 +161,7 @@ const app = Vue.createApp({
 
                 order_page_url: this.orderPageUrl,
             }
+            this.checkoutErrors.push('Processing Payment');
 
             fetch("https://aaproxyapis.astrologyanswers.com/checkout",
                 {
@@ -163,11 +170,14 @@ const app = Vue.createApp({
                         'Accept': 'application/json',
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify( _checkoutPayload )
+                    body: JSON.stringify(_checkoutPayload)
                 })
                 .then(resp => {
+                    this.checkoutProcessing = false;
+                    this.checkoutErrors.splice(0,this.checkoutErrors.length);
                     if (resp.status !== 200) {
                         console.log(`Error on checkout API: ${resp.status}`);
+                        this.checkoutErrors.push('Error in processing Payment. Try again, if you are unsuccessful 3 times, Please contact Customer Service');
                         return;
                     }
                     resp.json().then(data => {
