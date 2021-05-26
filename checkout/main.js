@@ -159,6 +159,10 @@ const app = Vue.createApp({
             fetch("https://aaproxyapis.astrologyanswers.com/checkout",
                 {
                     method: "POST",
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
                     body: JSON.stringify( _checkoutPayload )
                 })
                 .then(resp => {
