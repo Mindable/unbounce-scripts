@@ -161,16 +161,16 @@ const app = Vue.createApp({
 
                 order_page_url: this.orderPageUrl,
             }
-            // console.log(JSON.stringify(_checkoutPayload));
             this.checkoutErrors.push('Processing Payment');
-
-            let data = new FormData();
-            data.append( "json", JSON.stringify( _checkoutPayload ) );
 
             fetch("https://aaproxyapis.astrologyanswers.com/checkout",
                 {
                     method: "POST",
-                    body: data
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(_checkoutPayload)
                 })
                 .then(resp => {
                     this.checkoutProcessing = false;
