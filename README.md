@@ -17,6 +17,7 @@ Put in `<head>`:
 ```
 <script src="https://cdn.jsdelivr.net/npm/vue@3.0.2/dist/vue.global.prod.js"></script>
 <script src="https://mindable.github.io/unbounce-scripts/dist/checkout/checkout.js"></script>
+<link rel="stylesheet" href="https://mindable.github.io/unbounce-scripts/dist/checkout/default.css" />
 ```
 Add div where you want to render Form:
 ```
