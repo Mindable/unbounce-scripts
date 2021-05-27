@@ -362,6 +362,8 @@
         color:#333;
         box-sizing: border-box;
         text-align:left;
+        width:800px;
+        max-width:100%;
     }
     #aa-checkout-div div{
         position:relative;
@@ -441,6 +443,10 @@
     #aa-checkout-div input[type=checkbox]{ 
         width: auto;
         display:inline;
+    }
+    #aa-checkout-div input:disabled{
+        background:#ccc;
+        cursor:not-allowed;
     }
     #aa-checkout-div .split{
         width:50%;
