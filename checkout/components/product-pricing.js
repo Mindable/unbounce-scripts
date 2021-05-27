@@ -12,10 +12,10 @@ app.component('product-pricing', {
   },
   template: `<h3>Product Information</h3>
   <div>
-  <p>Product : {{ productVariant.name }}</p>
-  <p v-if="taxPrc > 0">Price : $ {{productVariant.price}}</p>
-  <p v-if="taxPrc > 0">Tax ({{taxPrc}}%) : $ {{tax}}</p>
-  <p>Total : $ {{amount}}</p>
+  <p><strong>{{ productVariant.name }}</strong></p>
+  <p v-if="taxPrc > 0"><strong>Price : $ {{productVariant.price}}</strong></p>
+  <p v-if="taxPrc > 0"><strong>Tax ({{taxPrc}}%) : $ {{tax}}</strong></p>
+  <p><strong>Total : $ {{amount}}</strong></p>
   </div>`,
   data() {
     return {
