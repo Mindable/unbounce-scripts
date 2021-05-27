@@ -177,7 +177,8 @@ const app = Vue.createApp({
                             this.checkoutErrors.push(`unsuccessful: ${data['message']}`);
                             return;
                         }
-                        window.location.href = `${this.paymentSuccessRedirect}&token=${data['token']}`;
+                        let _orderAmount = this.productVariant.price ?? 0;
+                        window.location.href = `${this.paymentSuccessRedirect}&token=${data['token']}&orderAmount=${_orderAmount}`;
                     });
                 });
         }
