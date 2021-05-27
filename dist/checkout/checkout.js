@@ -259,19 +259,19 @@ app.component('user-contact',{
   },
   template: `
     <div>
-      <label>First Name: *</label><br>
+      <label>First Name: *</label>
       <input type="text" v-model.trim="user.firstname">
     </div>
     <div>
-      <label>Last Name: *</label><br>
+      <label>Last Name: *</label>
       <input type="text" v-model.trim="user.lastname">
     </div>
     <div>
-      <label>Email ID: *</label><br>
+      <label>Email: *</label>
       <input type="email" disabled v-model.trim="user.email">
     </div>
     <div>
-      <label>Phone Number:</label><br>
+      <label>Phone Number:</label>
       <input type="text" v-model.trim="user.phone">
     </div>`
 });
@@ -281,7 +281,7 @@ app.component('user-payment', {
   },
   template: `
   <div>
-    <label>Card Type: *</label><br>
+    <label>Card Type: *</label>
     <select v-model.trim="paymentDetails.cardType">
       <option value="" selected>Select a Card Type</option>
       <option v-for="(item,key) in cardTypes" :value="key">
@@ -290,11 +290,11 @@ app.component('user-payment', {
     </select>
   </div>
   <div>
-    <label>Card Number: *</label><br>
+    <label>Card Number: *</label>
     <input type="text" maxlength="16" v-model.trim="paymentDetails.cardNumber">
   </div>
   <div class="split split-first">
-    <label>Expiration Month: *</label><br>
+    <label>Expiration Month: *</label>
     <select v-model.trim="paymentDetails.expMonth">
       <option value="" selected>Select a Month</option>
       <option v-for="(item,key) in expMonths" :value="key">
@@ -303,7 +303,7 @@ app.component('user-payment', {
     </select>
   </div>
   <div class="split">
-    <label>Expiration Year: *</label><br>
+    <label>Expiration Year: *</label>
     <select v-model.trim="paymentDetails.expYear">
       <option value="" selected>Select a Year</option>
       <option v-for="year in expYears" :value="year">
@@ -312,8 +312,8 @@ app.component('user-payment', {
     </select>
   </div>
   <div>
-    <label>CVV Code: *</label><br>
-    <input type="text" maxlength="4" v-model.trim="paymentDetails.cardCvv"><br>
+    <label>CVV Code: *</label>
+    <input type="text" maxlength="4" v-model.trim="paymentDetails.cardCvv">
     <small><a target="_blank" href="https://legacy.astrologyanswers.com/info/cvv.html">What's This?</a></small>
   </div>
   `,
@@ -553,19 +553,19 @@ app.component('user-address',{
     countriesList: Object
   },
   template: `<div>
-    <label>Street Address: *</label><br>
+    <label>Street Address: *</label>
     <input type="text" v-model.trim="address.streetAddress">
   </div>
   <div>
-    <label>City: *</label><br>
+    <label>City: *</label>
     <input type="text" v-model.trim="address.city">
   </div>
   <div>
-    <label>Zip/Postal Code: *</label><br>
+    <label>Zip/Postal Code: *</label>
     <input type="text" v-model.trim="address.zip">
   </div>
   <div>
-    <label>Country: *</label><br>
+    <label>Country: *</label>
     <select v-model.trim="address.country" @change="fetchState">
       <option value="" selected>Select your option</option>
       <option v-for="(item,key) in countriesList" :value="key">
@@ -574,7 +574,7 @@ app.component('user-address',{
     </select>
   </div>
   <div v-if="states">
-    <label>State/Province: *</label><br>
+    <label>State/Province: *</label>
     <select v-model.trim="address.state">
       <option value="" disabled selected>Select your Country</option>
       <option v-for="(item,key) in states" :value="key">
