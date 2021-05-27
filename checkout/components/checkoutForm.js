@@ -92,7 +92,7 @@ app.component('checkout-form',{
                 this.validationErrors.push('Please enter Last Name');
             }
             if(this.user.email === '') {
-                this.validationErrors.push('Error with retrieving Email ID, please contact Customer Service');
+                this.validationErrors.push('Error with retrieving Email, please contact Customer Service');
             }
             return this.validationErrors.length === 0;
         },
