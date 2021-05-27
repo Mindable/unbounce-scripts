@@ -178,7 +178,8 @@ const app = Vue.createApp({
                             return;
                         }
                         let _orderAmount = this.productVariant.price ?? 0;
-                        window.location.href = `${this.paymentSuccessRedirect}&token=${data['token']}&orderAmount=${_orderAmount}`;
+                        let _productId = this.productVariant.id ?? 0;
+                        window.location.href = `${this.paymentSuccessRedirect}&token=${data['token']}&orderAmount=${_orderAmount}&offerId=${_productId}`;
                     });
                 });
         }
