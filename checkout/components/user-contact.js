@@ -7,19 +7,19 @@ app.component('user-contact',{
   },
   template: `
     <div>
-      <label>First Name: *</label><br>
+      <label>First Name: *</label>
       <input type="text" v-model.trim="user.firstname">
     </div>
     <div>
-      <label>Last Name: *</label><br>
+      <label>Last Name: *</label>
       <input type="text" v-model.trim="user.lastname">
     </div>
     <div>
-      <label>Email ID: *</label><br>
+      <label>Email: *</label>
       <input type="email" disabled v-model.trim="user.email">
     </div>
     <div>
-      <label>Phone Number:</label><br>
+      <label>Phone Number:</label>
       <input type="text" v-model.trim="user.phone">
     </div>`
 });

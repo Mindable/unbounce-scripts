@@ -4,7 +4,7 @@ app.component('user-payment', {
   },
   template: `
   <div>
-    <label>Card Type: *</label><br>
+    <label>Card Type: *</label>
     <select v-model.trim="paymentDetails.cardType">
       <option value="" selected>Select a Card Type</option>
       <option v-for="(item,key) in cardTypes" :value="key">
@@ -13,11 +13,11 @@ app.component('user-payment', {
     </select>
   </div>
   <div>
-    <label>Card Number: *</label><br>
+    <label>Card Number: *</label>
     <input type="text" maxlength="16" v-model.trim="paymentDetails.cardNumber">
   </div>
   <div class="split split-first">
-    <label>Expiration Month: *</label><br>
+    <label>Expiration Month: *</label>
     <select v-model.trim="paymentDetails.expMonth">
       <option value="" selected>Select a Month</option>
       <option v-for="(item,key) in expMonths" :value="key">
@@ -26,7 +26,7 @@ app.component('user-payment', {
     </select>
   </div>
   <div class="split">
-    <label>Expiration Year: *</label><br>
+    <label>Expiration Year: *</label>
     <select v-model.trim="paymentDetails.expYear">
       <option value="" selected>Select a Year</option>
       <option v-for="year in expYears" :value="year">
@@ -35,7 +35,7 @@ app.component('user-payment', {
     </select>
   </div>
   <div>
-    <label>CVV Code: *</label><br>
+    <label>CVV Code: *</label>
     <input type="text" maxlength="4" v-model.trim="paymentDetails.cardCvv"><br>
     <small><a target="_blank" href="https://legacy.astrologyanswers.com/info/cvv.html">What's This?</a></small>
   </div>
