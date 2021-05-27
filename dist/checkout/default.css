@@ -7,6 +7,8 @@
     color:#333;
     box-sizing: border-box;
     text-align:left;
+    width:800px;
+    max-width:100%;
 }
 #aa-checkout-div div{
     position:relative;
@@ -40,7 +42,6 @@
     padding-left:0.65rem;
     -webkit-appearance:none;
     -moz-appearance:none;
-    -ms-appearance:none;
     appearance:none;
     position:relative;
     background-image: linear-gradient( 45deg, transparent 50%, gray 50%), linear-gradient(135deg, gray 50%, transparent 50%), linear-gradient(to right, #ccc, #ccc);
@@ -85,6 +86,10 @@
 #aa-checkout-div input[type=checkbox]{
     width: auto;
     display:inline;
+}
+#aa-checkout-div input:disabled{
+    background:#ccc;
+    cursor:not-allowed;
 }
 #aa-checkout-div .split{
     width:50%;

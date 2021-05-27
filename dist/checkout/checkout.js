@@ -271,7 +271,7 @@ app.component('user-contact',{
     </div>
     <div>
       <label>Phone Number:</label><br>
-      <input type="number" v-model.trim="user.phone">
+      <input type="text" v-model.trim="user.phone">
     </div>`
 });
 app.component('user-payment', {
@@ -290,7 +290,7 @@ app.component('user-payment', {
   </div>
   <div>
     <label>Card Number: *</label><br>
-    <input type="number" maxlength="16" v-model.trim="paymentDetails.cardNumber">
+    <input type="text" maxlength="16" v-model.trim="paymentDetails.cardNumber">
   </div>
   <div class="split split-first">
     <label>Expiration Month: *</label><br>
@@ -312,7 +312,7 @@ app.component('user-payment', {
   </div>
   <div>
     <label>CVV Code: *</label><br>
-    <input type="number" maxlength="4" v-model.trim="paymentDetails.cardCvv"><br>
+    <input type="text" maxlength="4" v-model.trim="paymentDetails.cardCvv"><br>
     <small><a target="_blank" href="https://legacy.astrologyanswers.com/info/cvv.html">What's This?</a></small>
   </div>
   `,
