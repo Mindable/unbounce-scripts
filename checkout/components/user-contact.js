@@ -20,6 +20,6 @@ app.component('user-contact',{
     </div>
     <div>
       <label>Phone Number:</label><br>
-      <input type="number" v-model.trim="user.phone">
+      <input type="text" v-model.trim="user.phone">
     </div>`
 });
