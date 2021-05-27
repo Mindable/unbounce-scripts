@@ -1,13 +1,5 @@
 const app = Vue.createApp({
-    template: `<checkout-form :productVariant="productVariant" :user="user" :countriesList="countriesList" :physicalCheckout="physicalCheckout" :submitButtonText="submitButtonText" :validationErrors="checkoutErrors" @checkout-form-submit="processCheckout"></checkout-form>
-    <p>
-      <img src="https://mindable.github.io/unbounce-scripts/assets/lock_icon.jpg" alt="Italian Trulli">&nbsp;<b>Privacy & Security</b> - All your information is safe and secure.<br>The entire transaction will take place on a<br>secure server using SSL technology.
-    </p>
-    <div>
-      <img src="https://mindable.github.io/unbounce-scripts/assets/mcafee_badge.png" alt="McAfee">&nbsp;
-      <img src="https://mindable.github.io/unbounce-scripts/assets/truste_badge.png" alt="TRUSTe">
-    </div>
-    <p><b>Questions?</b> Call Toll Free: 1-866-329-7640</p>`,
+    template: `<checkout-form :productVariant="productVariant" :user="user" :countriesList="countriesList" :physicalCheckout="physicalCheckout" :submitButtonText="submitButtonText" :validationErrors="checkoutErrors" @checkout-form-submit="processCheckout"></checkout-form>`,
     data() {
         return {
             checkoutFormType: 'digital',
@@ -279,7 +271,7 @@ app.component('user-contact',{
     </div>
     <div>
       <label>Phone Number:</label><br>
-      <input type="number" v-model.trim="user.phone">
+      <input type="text" v-model.trim="user.phone">
     </div>`
 });
 app.component('user-payment', {
@@ -298,9 +290,9 @@ app.component('user-payment', {
   </div>
   <div>
     <label>Card Number: *</label><br>
-    <input type="number" maxlength="16" v-model.trim="paymentDetails.cardNumber">
+    <input type="text" maxlength="16" v-model.trim="paymentDetails.cardNumber">
   </div>
-  <div>
+  <div class="split split-first">
     <label>Expiration Month: *</label><br>
     <select v-model.trim="paymentDetails.expMonth">
       <option value="" selected>Select a Month</option>
@@ -309,7 +301,7 @@ app.component('user-payment', {
       </option>
     </select>
   </div>
-  <div>
+  <div class="split">
     <label>Expiration Year: *</label><br>
     <select v-model.trim="paymentDetails.expYear">
       <option value="" selected>Select a Year</option>
@@ -320,7 +312,7 @@ app.component('user-payment', {
   </div>
   <div>
     <label>CVV Code: *</label><br>
-    <input type="number" maxlength="4" v-model.trim="paymentDetails.cardCvv"><br>
+    <input type="text" maxlength="4" v-model.trim="paymentDetails.cardCvv"><br>
     <small><a target="_blank" href="https://legacy.astrologyanswers.com/info/cvv.html">What's This?</a></small>
   </div>
   `,
@@ -419,14 +411,27 @@ app.component('checkout-form',{
       </div>
       <h3>Credit Card Information</h3>
       <user-payment :paymentDetails="paymentDetails"></user-payment>
-      <p class="checkoutErrors" v-if="validationErrors">
+      <p class="checkoutErrors" v-if="validationErrors.length>0">
         <span v-for="validationError in validationErrors">
           {{validationError}}<br>
         </span>
       </p>
-      <product-pricing :productVariant="productVariant" :billingAddress="billingAddress"></product-pricing>
-      <p>By submitting your request, you agree to the <a href="https://astrologyanswers.com/info/terms-of-service/">Terms of Service.</a></p>
-      <button @click="processCheckout">{{submitButtonText}}</button>`,
+      <div class="summary">
+        <product-pricing :productVariant="productVariant" :billingAddress="billingAddress"></product-pricing>
+        <p class="terms">By submitting your request, you agree to the <a href="https://astrologyanswers.com/info/terms-of-service/">Terms of Service.</a></p>
+        <button @click="processCheckout">{{submitButtonText}}</button>
+        <p class="privacy">
+          <img src="https://mindable.github.io/unbounce-scripts/assets/lock_icon.jpg" alt="Italian Trulli">&nbsp;<b>Privacy &amp; Security</b> - All your information is safe and secure.
+          The entire transaction will take place on a
+          secure server using SSL technology.
+        </p>
+        <div>
+          <img src="https://mindable.github.io/unbounce-scripts/assets/mcafee_badge.png" alt="McAfee">&nbsp; <img src="https://mindable.github.io/unbounce-scripts/assets/truste_badge.png" alt="TRUSTe">
+        </div>
+        <p class="questions">
+          <strong>Questions?</strong> Call Toll Free: 1-866-329-7640
+        </p>
+      </div>`,
     data() {
         return {
             billingAddress: {
@@ -478,7 +483,7 @@ app.component('checkout-form',{
                 this.validationErrors.push('Please enter Last Name');
             }
             if(this.user.email === '') {
-                this.validationErrors.push('Error with retrieving Email ID, please contact Customer Service');
+                this.validationErrors.push('Error with retrieving Email, please contact Customer Service');
             }
             return this.validationErrors.length === 0;
         },

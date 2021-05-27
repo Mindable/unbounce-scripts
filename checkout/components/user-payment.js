@@ -14,9 +14,9 @@ app.component('user-payment', {
   </div>
   <div>
     <label>Card Number: *</label><br>
-    <input type="number" maxlength="16" v-model.trim="paymentDetails.cardNumber">
+    <input type="text" maxlength="16" v-model.trim="paymentDetails.cardNumber">
   </div>
-  <div>
+  <div class="split split-first">
     <label>Expiration Month: *</label><br>
     <select v-model.trim="paymentDetails.expMonth">
       <option value="" selected>Select a Month</option>
@@ -25,7 +25,7 @@ app.component('user-payment', {
       </option>
     </select>
   </div>
-  <div>
+  <div class="split">
     <label>Expiration Year: *</label><br>
     <select v-model.trim="paymentDetails.expYear">
       <option value="" selected>Select a Year</option>
@@ -36,7 +36,7 @@ app.component('user-payment', {
   </div>
   <div>
     <label>CVV Code: *</label><br>
-    <input type="number" maxlength="4" v-model.trim="paymentDetails.cardCvv"><br>
+    <input type="text" maxlength="4" v-model.trim="paymentDetails.cardCvv"><br>
     <small><a target="_blank" href="https://legacy.astrologyanswers.com/info/cvv.html">What's This?</a></small>
   </div>
   `,
