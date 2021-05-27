@@ -313,7 +313,7 @@ app.component('user-payment', {
   </div>
   <div>
     <label>CVV Code: *</label>
-    <input type="text" maxlength="4" v-model.trim="paymentDetails.cardCvv"><br>
+    <input type="text" maxlength="4" v-model.trim="paymentDetails.cardCvv">
     <small><a target="_blank" href="https://legacy.astrologyanswers.com/info/cvv.html">What's This?</a></small>
   </div>
   `,
