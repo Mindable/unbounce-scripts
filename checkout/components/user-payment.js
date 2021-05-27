@@ -14,7 +14,7 @@ app.component('user-payment', {
   </div>
   <div>
     <label>Card Number: *</label><br>
-    <input type="text" maxlength="16" v-model.trim="paymentDetails.cardNumber">
+    <input type="number" maxlength="16" v-model.trim="paymentDetails.cardNumber">
   </div>
   <div class="split split-first">
     <label>Expiration Month: *</label><br>
@@ -36,7 +36,7 @@ app.component('user-payment', {
   </div>
   <div>
     <label>CVV Code: *</label><br>
-    <input type="text" maxlength="4" v-model.trim="paymentDetails.cardCvv"><br>
+    <input type="number" maxlength="4" v-model.trim="paymentDetails.cardCvv"><br>
     <small><a target="_blank" href="https://legacy.astrologyanswers.com/info/cvv.html">What's This?</a></small>
   </div>
   `,
