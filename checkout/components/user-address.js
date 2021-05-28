@@ -19,7 +19,7 @@ app.component('user-address',{
   <div>
     <label>Country: *</label>
     <select v-model.trim="address.country" @change="fetchState">
-      <option value="" selected>Select your option</option>
+      <option value="" selected>Select a Country</option>
       <option v-for="(item,key) in countriesList" :value="key">
         {{item}}
       </option>
@@ -28,7 +28,7 @@ app.component('user-address',{
   <div v-if="states">
     <label>State/Province: *</label>
     <select v-model.trim="address.state">
-      <option value="" disabled selected>Select your Country</option>
+      <option value="" disabled selected>Select a State/Province</option>
       <option v-for="(item,key) in states" :value="key">
         {{item}}
       </option>
