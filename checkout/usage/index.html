@@ -15,13 +15,14 @@
 </ul>
 <h3>How to Use:</h3>
 <p>App need to know where to render Form, this is achieved by creating a div and using JS to render Checkout Form, whether it is needed on Page Load or a particular event like Product Selection or button click.</p>
+<p><b>Note:</b> To make sure, Form is rendered using correct styling, make sure to set class of div to be `aa-checkout-div`</p>
 <p>
     Div can be created either with or without data-properties. Here are examples:<br><br>
     <u>With data-properties:</u>
 </p>
 <h4>Declaration</h4>
 <code>
-    <b>&lt;div id="checkout-div" data-product-variant-id="1360" data-shipping-tag="1" data-checkout-button-text="Buy Me" data-successful-checkout-url="https://flux.astrologyanswers.com/?flux_action=1&flux_f=1061367355000511979&flux_ffn=1095133337314859374" data-checkout-form-type="digital"&gt;&lt;/div&gt;</b>
+    <b>&lt;div id="checkout-div" class="aa-checkout-div" data-product-variant-id="1360" data-shipping-tag="1" data-checkout-button-text="Buy Me" data-successful-checkout-url="https://flux.astrologyanswers.com/?flux_action=1&flux_f=1061367355000511979&flux_ffn=1095133337314859374" data-checkout-form-type="digital"&gt;&lt;/div&gt;</b>
     <br>In this example, we can actually get rid off <b>data-checkout-button-text="Buy Me"</b>, and <b>data-checkout-form-type="digital"</b> since these are default values. There is more information about setting up configuration later
 </code>
 <h4>Javascript</h4>
@@ -33,7 +34,7 @@
         &lt;\script&gt;
     </b>
 </code>
-<p>Note: If you name div as `aa-checkout-div`, you won't need to add Javascript at bottom of page</p>
+<p>Note: If you set id of your div as `aa-checkout-div`, you won't need to add Javascript at bottom of page</p>
 <p><u>Without any data-property:</u></p>
 <h4>Declaration</h4>
 <code><b>&lt;div id="checkout-div"&gt;&lt;/div&gt;</b></code>
