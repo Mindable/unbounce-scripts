@@ -21,7 +21,7 @@ Put in `<head>`:
 ```
 Add div where you want to render Form:
 ```
-<div id='aa-checkout-div'></div
+<div id="aa-checkout-div" class="aa-checkout-div"></div
 ```
 In case, you use any other id than `aa-checkout-div` say `checkout-div` for example, we will need this code in `<body>` at the bottom:
 ```

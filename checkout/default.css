@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
-#aa-checkout-div{
+.aa-checkout-div{
     position:relative;
     display:block;
     font-family: 'Montserrat', sans-serif;
@@ -10,24 +10,24 @@
     width:800px;
     max-width:100%;
 }
-#aa-checkout-div div{
+.aa-checkout-div div{
     position:relative;
     box-sizing: border-box;
 }
-#aa-checkout-div h3{
+.aa-checkout-div h3{
     margin:1rem 0 1rem 0;
     font-family: 'Montserrat', sans-serif;
     font-weight:bold;
 }
-#aa-checkout-div h3,  #aa-checkout-div label{
+.aa-checkout-div h3,  .aa-checkout-div label{
     font-size:1.25rem;
     display:block;
 }
-#aa-checkout-div label{
+.aa-checkout-div label{
     margin-bottom:0.25rem;
     font-size:1rem
 }
-#aa-checkout-div div input, #aa-checkout-div select{
+.aa-checkout-div div input, .aa-checkout-div select{
     width:100%;
     padding:0.65rem;
     border-radius:0.25rem;
@@ -38,7 +38,7 @@
     color:#000;
     box-sizing: border-box;
 }
-#aa-checkout-div select{
+.aa-checkout-div select{
     padding-left:0.65rem;
     -webkit-appearance:none;
     -moz-appearance:none;
@@ -49,10 +49,10 @@
     background-size: 5px 5px, 5px 5px, 1px 1.5em;
     background-repeat: no-repeat;
 }
-#aa-checkout-div ::-ms-expand {
+.aa-checkout-div ::-ms-expand {
     display:none;
 }
-#aa-checkout-div .physicalCheckoutDiv {
+.aa-checkout-div .physicalCheckoutDiv {
     border-radius: 5px;
     background: #F7F2E1;
     border: 1px solid #ded2a1;
@@ -61,16 +61,16 @@
     margin-bottom:1.5rem;
     display:block;
 }
-#aa-checkout-div .physicalCheckoutDiv label{
+.aa-checkout-div .physicalCheckoutDiv label{
     font-size:12px;
     position:relative;
     top:-2px;
 }
-#aa-checkout-div .physicalCheckoutDiv h3{
+.aa-checkout-div .physicalCheckoutDiv h3{
     margin-bottom:0.5rem;
     margin-top:0;
 }
-#aa-checkout-div .checkoutErrors {
+.aa-checkout-div .checkoutErrors {
     color: #b82418;
     background:#fef8f8;
     border:1px solid #e8c6c3;
@@ -80,31 +80,31 @@
     margin-bottom:1rem;
     font-size:1rem;
 }
-#aa-checkout-div .physicalCheckoutDiv label{
+.aa-checkout-div .physicalCheckoutDiv label{
     display:inline;
 }
-#aa-checkout-div input[type=checkbox]{
+.aa-checkout-div input[type=checkbox]{
     width: auto;
     display:inline;
 }
-#aa-checkout-div input:disabled{
+.aa-checkout-div input:disabled{
     background:#ccc;
     cursor:not-allowed;
 }
-#aa-checkout-div .split{
+.aa-checkout-div .split{
     width:50%;
     float:left;
     z-index:8
 }
-#aa-checkout-div .split.split-first select{
+.aa-checkout-div .split.split-first select{
     width:98%;
 }
-#aa-checkout-div .what-is-this{
+.aa-checkout-div .what-is-this{
     color:#333;
     text-decoration: underline;
     margin-bottom:1rem;
 }
-#aa-checkout-div .summary{
+.aa-checkout-div .summary{
     padding: 1rem 1rem 1rem 1rem;
     border-radius: 0.5rem;
     width: 600px;
@@ -114,29 +114,29 @@
     box-sizing: border-box;
     border:1px solid rgba(0,0,0,0.15);
 }
-#aa-checkout-div .summary p{
+.aa-checkout-div .summary p{
     width:400px;
     max-width:100%;
     margin-left:auto;
     margin-right:auto;
     font-size:1rem;
 }
-#aa-checkout-div .summary p:first-of-type, #aa-checkout-div .summary p:nth-of-type(2){
+.aa-checkout-div .summary p:first-of-type, .aa-checkout-div .summary p:nth-of-type(2){
     margin-bottom:0;
     margin-top:0;
 }
-#aa-checkout-div .summary p:first-of-type strong{
+.aa-checkout-div .summary p:first-of-type strong{
     color:#472f85;
 }
-#aa-checkout-div p.terms{
+.aa-checkout-div p.terms{
     margin:1rem auto!important;
     font-size:12px;
 }
-#aa-checkout-div .terms a{
+.aa-checkout-div .terms a{
     color:#656565;
     text-decoration: underline;
 }
-#aa-checkout-div .summary button{
+.aa-checkout-div .summary button{
     background:linear-gradient(#654DA3,#472F85 50%);
     padding: 0.85rem 5rem;
     height: auto;
@@ -153,25 +153,25 @@
     cursor: pointer;
     font-family: 'Montserrat', sans-serif;
 }
-#aa-checkout-div .summary button:hover{
+.aa-checkout-div .summary button:hover{
     background:linear-gradient(#e5b202,#d1a402 50%)
 }
-#aa-checkout-div .summary img{
+.aa-checkout-div .summary img{
     display:inline;
 }
-#aa-checkout-div p.privacy{
+.aa-checkout-div p.privacy{
     margin-bottom:1rem!important;
     font-size:14px;
 }
 @media screen and (max-width:400px){
-    #aa-checkout-div .summary button{
+    .aa-checkout-div .summary button{
         padding:0.85rem 1rem;
         width:100%;
     }
-    #aa-checkout-div .terms a{
+    .aa-checkout-div .terms a{
         display:block;
     }
-    #aa-checkout-div p.privacy, #aa-checkout-div p.questions{
+    .aa-checkout-div p.privacy, .aa-checkout-div p.questions{
         font-size:12px;
     }
 }
