@@ -103,7 +103,7 @@ app.component('checkout-form',{
             if(this.billingAddress.city === '') {
                 this.validationErrors.push('Please enter Billing City');
             }
-            if(this.billingAddress.city === '') {
+            if(this.billingAddress.zip === '') {
                 this.validationErrors.push('Please enter Billing Zip/Postal Code');
             }
             if(this.billingAddress.country === '') {
@@ -122,7 +122,7 @@ app.component('checkout-form',{
                 if(this.shippingAddress.city === '') {
                     this.validationErrors.push('Please enter Shipping City');
                 }
-                if(this.shippingAddress.city === '') {
+                if(this.shippingAddress.zip === '') {
                     this.validationErrors.push('Please enter Shipping Zip/Postal Code');
                 }
                 if(this.shippingAddress.country === '') {
