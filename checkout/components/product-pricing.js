@@ -14,7 +14,7 @@ app.component('product-pricing', {
   <div>
   <p><strong>{{ productVariant.name }}</strong></p>
   <p v-if="taxPrc > 0"><strong>Price : $ {{productVariant.price}}</strong></p>
-  <p v-if="taxPrc > 0"><strong>Tax ({{taxPrc}}%) : $ {{tax}}</strong></p>
+  <p v-if="taxPrc > 0">Tax ({{taxPrc}}%) : $ {{tax}}</p>
   <p><strong>Total : $ {{amount}}</strong></p>
   </div>`,
   data() {

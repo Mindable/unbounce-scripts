@@ -60,9 +60,13 @@
     margin-top:1rem;
     margin-bottom:1.5rem;
     display:block;
+    font-size:14px;
+ }
+ .aa-checkout-div .physicalCheckoutDiv div:first-of-type {
+     margin-top:0.5rem;
 }
 .aa-checkout-div .physicalCheckoutDiv label{
-    font-size:12px;
+    font-size:1rem;
     position:relative;
     top:-2px;
 }
@@ -86,6 +90,7 @@
 .aa-checkout-div input[type=checkbox]{
     width: auto;
     display:inline;
+    margin-bottom:0.5rem;
 }
 .aa-checkout-div input:disabled{
     background:#ccc;
@@ -98,11 +103,6 @@
 }
 .aa-checkout-div .split.split-first select{
     width:98%;
-}
-.aa-checkout-div .what-is-this{
-    color:#333;
-    text-decoration: underline;
-    margin-bottom:1rem;
 }
 .aa-checkout-div .summary{
     padding: 1rem 1rem 1rem 1rem;
@@ -159,10 +159,19 @@
 .aa-checkout-div .summary img{
     display:inline;
 }
-.aa-checkout-div p.privacy{
+.aa-checkout-div p.privacy, .aa-checkout-div p.questions{
     margin-bottom:1rem!important;
     font-size:14px;
 }
+.aa-checkout-div p.questions{
+     margin-top:0.5rem;
+ }
+ .aa-checkout-div small a{
+     color:#333;
+     text-decoration: underline;
+     margin-bottom:1rem;
+     display:block;
+ }
 @media screen and (max-width:400px){
     .aa-checkout-div .summary button{
         padding:0.85rem 1rem;
