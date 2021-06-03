@@ -353,7 +353,7 @@ app.component('product-pricing', {
   <div>
   <p><strong>{{ productVariant.name }}</strong></p>
   <p v-if="taxPrc > 0"><strong>Price : $ {{productVariant.price}}</strong></p>
-  <p v-if="taxPrc > 0"><strong>Tax ({{taxPrc}}%) : $ {{tax}}</strong></p>
+  <p v-if="taxPrc > 0">Tax ({{taxPrc}}%) : $ {{tax}}</p>
   <p><strong>Total : $ {{amount}}</strong></p>
   </div>`,
   data() {
@@ -408,7 +408,7 @@ app.component('checkout-form',{
       <user-address addressType="Billing" :address="billingAddress" :countriesList="countriesList"></user-address>
       <div v-if="physicalCheckout" class="physicalCheckoutDiv">
         <h3>Shipping Address:</h3>
-        <input type="checkbox" v-model="shippingToggle">Check this box if your shipping address is different from your billing address
+        <input type="checkbox" v-model="shippingToggle">&nbsp;Check this box if your shipping address is different from your billing address
         <user-address v-if="shippingToggle" addressType="Shipping" :address="shippingAddress" :countriesList="countriesList"></user-address>
       </div>
       <h3>Credit Card Information</h3>
