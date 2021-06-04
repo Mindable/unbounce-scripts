@@ -298,8 +298,8 @@ app.component('user-payment', {
     <label>Expiration Month: *</label>
     <select v-model.trim="paymentDetails.expMonth">
       <option value="" selected>Select a Month</option>
-      <option v-for="(item,key) in expMonths" :value="key">
-        {{item}}
+      <option v-for="expMonth in expMonths" :value="expMonth">
+        {{expMonth}}
       </option>
     </select>
   </div>
@@ -325,10 +325,14 @@ app.component('user-payment', {
   },
   computed: {
     expMonths() {
+      console.log('Getting Months');
       let start = 1, end = 12;
       if( parseInt(this.paymentDetails.expYear) ===  new Date().getFullYear()) {
         start = new Date().getMonth() + 1;
         end = 12 - start + 1;
+      }
+      if(this.paymentDetails.expMonth < start) {
+        this.paymentDetails.expMonth = "";
       }
       return Array.from({length:end},(v,k)=>k+start)
     },
