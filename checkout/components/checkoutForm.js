@@ -27,7 +27,7 @@ app.component('checkout-form',{
       </p>
       <div class="summary">
         <product-pricing :productVariant="productVariant" :billingAddress="billingAddress"></product-pricing>
-        <p class="terms">By submitting your request, you agree to the <a href="https://astrologyanswers.com/info/terms-of-service/">Terms of Service.</a></p>
+        <p class="terms">By submitting your request, you agree to the <a target="_blank" href="https://astrologyanswers.com/info/terms-of-service/">Terms of Service.</a></p>
         <button @click="processCheckout">{{submitButtonText}}</button>
         <p class="privacy">
           <img src="https://mindable.github.io/unbounce-scripts/assets/lock_icon.jpg" alt="Italian Trulli">&nbsp;<b>Privacy &amp; Security</b> - All your information is safe and secure.
