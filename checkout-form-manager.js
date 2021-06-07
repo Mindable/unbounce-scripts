@@ -199,7 +199,7 @@ function buildForm(config) {
         const result = document.createElement('div');
         form.appendChild(result);
         // TODO Refactor the builder to allow for nested components so we don't have to hardcode html here,
-        // and use leverage how `select` components are built instead 
+        // and use leverage how `select` components are built instead
         result.outerHTML = `<div class='checkout-row'>
                                 <label>Expires*</label>
                                 <div class='checkout-col'>
@@ -711,6 +711,7 @@ function submitUpsell(callbackUrl, additionalParams) {
 //<-----Start New Upsell Parsing and Processing Logic
 const checkout = {
     upsell : {
+        processing: false,
         className: 'upsell-link',
 
         verify: function () {
@@ -753,6 +754,10 @@ const checkout = {
         },
 
         process: function (elm) {
+            if(this.processing) {
+                return;
+            }
+            this.processing = true;
             const tempForm = document.createElement('form');
 
             tempForm.style.display = 'none';
@@ -787,7 +792,6 @@ const checkout = {
 
 document.addEventListener('click', function (event) {
     let _upsell_ClassName = checkout.upsell.className;
-    console.log(_upsell_ClassName);
     if(event.target.classList.contains(_upsell_ClassName)){
         checkout.upsell.process(event.target);
     }
