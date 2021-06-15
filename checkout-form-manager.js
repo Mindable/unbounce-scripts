@@ -714,6 +714,37 @@ const checkout = {
         processing: false,
         className: 'upsell-link',
 
+        registerElements: function (elmIdentityCollection, actionUrl, offerId='0') {
+            let _upsell_registrations = 0;
+            let _upsell_registration_requests = (elmIdentityCollection.match(/,/g) || []).length + 1;
+            document.querySelectorAll(elmIdentityCollection).forEach(elm => {
+                elm.classList.add(this.className);
+                elm.dataset.actionUrl = actionUrl;
+                elm.dataset.offerId = offerId;
+                _upsell_registrations++ ;
+            });
+            if(_upsell_registrations) {
+                console.log(`Successfully registered ${_upsell_registrations} Upsell Links`);
+            }
+            if(_upsell_registrations<_upsell_registration_requests) {
+                console.error(`Unable to process ${_upsell_registration_requests-_upsell_registrations} upsell registrations.`);
+            }
+        },
+
+        registerElement: function (elmIdentity, actionUrl, offerId='0') {
+            let elm = document.querySelector(elmIdentity);
+            if(!elm) {
+                console.error(`Upsell Registration failed. Unable to find element with definition : ${elmIdentity}`);
+                return;
+            }
+            elm.classList.add(this.className);
+            if(elm.tagName === 'a') {
+                elm.href = 'javascript:void(0);';
+            }
+            elm.dataset.actionUrl = actionUrl;
+            elm.dataset.offerId = offerId;
+        },
+
         verify: function () {
             this.verifyLinks();
             this.verifyURLParameters();
@@ -755,6 +786,7 @@ const checkout = {
 
         process: function (elm) {
             if(this.processing) {
+                console.error('Cannot process multiple Upsells');
                 return;
             }
             this.processing = true;
