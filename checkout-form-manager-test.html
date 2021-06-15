@@ -19,7 +19,13 @@
     <a class="upsell-link"
        href="#"
        data-action-url="https://flux2.astrologyanswers.com/?flux_action=1&flux_f=1147020355678920015&flux_ffn=1147020973846306320">Upsell 4</a>
-    <br><code>Open Console and type `checkout.upsell.verify()` to verify if everything is fine for Upsell page, or you can manually run `checkout.upsell.verifyLinks()` to check if upsell links are fine. For checking if URL has necessary values (currently Hash and Token are required), you can use `checkout.upsell.verifyURLParameters()`</code>
+    <br><code>Please use Console and type `checkout.upsell.verify()` to verify if everything is fine for Upsell page, or you can manually run `checkout.upsell.verifyLinks()` to check if upsell links are fine. For checking if URL has necessary values (currently Hash and Token are required), you can use `checkout.upsell.verifyURLParameters()`</code>
+
+    <h2>Upsell Links Registration via JS code</h2>
+    <a href="#" id ="element31">Upsell 5</a>
+    <a href="#" id ="element32">Upsell 6</a>
+    <a href="#" id ="element33">Upsell 7</a>
+    <br><code>Due to Instapage limitations, we have new upsell link registrations method. Use `checkout.upsell.registerElements(elmIdentityCollection,actionUrl, offerId)` on create upsell link programmatically</code>
 
     <h2>Checkout Form</h2>
     <div id="aa-checkout-div"
@@ -31,4 +37,8 @@
     ></div>
 
     <script src="checkout-form-manager.js"></script>
+    <script>
+        checkout.upsell.registerElements('#element31, #element32','https://flux2.astrologyanswers.com/?flux_action=1&flux_f=1147020355678920015&flux_ffn=1147020973846306320','1361');
+        checkout.upsell.registerElements('#element33','https://flux2.astrologyanswers.com/?flux_action=1&flux_f=1147020355678920015&flux_ffn=1147020973846306320');
+    </script>
 </body>
