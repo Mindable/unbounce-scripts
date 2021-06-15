@@ -719,6 +719,9 @@ const checkout = {
             let _upsell_registration_requests = (elmIdentityCollection.match(/,/g) || []).length + 1;
             document.querySelectorAll(elmIdentityCollection).forEach(elm => {
                 elm.classList.add(this.className);
+                if(elm.tagName === 'A') {
+                    elm.href = 'javascript:void(0);';
+                }
                 elm.dataset.actionUrl = actionUrl;
                 elm.dataset.offerId = offerId;
                 _upsell_registrations++ ;
