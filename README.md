@@ -35,7 +35,7 @@ After making changes to app, please run `make compile_checkout` to update the di
 
 Example pages also use production ready VueJS and compiled Checkout JS, so they can be used for Testing deployment environment 
 
-###Upsell Implementation
+### Upsell Implementation
 Put in `<head>`:
 ```
 <script src="https://mindable.github.io/unbounce-scripts/checkout-form-manager.js"></script>
@@ -45,6 +45,15 @@ For eg. ```<a class="upsell-link"
 href="#"
 data-action-url="https://flux2.astrologyanswers.com/?flux_action=1&flux_f=1147020355678920015&flux_ffn=1147020973846306320"
 data-offer-id="1360">Buy Upsell</a>```
+
+#### initialize/register upsell links using Js Method
+```
+initUpsellLinks({
+    'elements': '#element-50 a, #element-244 img',
+    'offer_id': '1',
+    'action_url': 'https://flux2.astrologyanswers.com/link1'
+});
+```
 
 ### Leads Form
 Put in `<head>`:
