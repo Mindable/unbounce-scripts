@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Upsell Test Page</title>
+</head>
+<body>
+   <div id="element-50">
+      <a href="#">#element-50 a</a>
+   </div>
+   <div id="element-190">
+      <a href="#">#element-190 a</a>
+   </div>
+   <div id="element-225">
+      <a href="#">#element-225 a</a>
+   </div>
+   <div id="element-236">
+      <a href="#">#element-236 a</a>
+   </div>
+   <div id="element-244">
+      <a href="#">
+         <img src="https://via.placeholder.com/728x120.png?text=element-244%20img" />
+      </a>
+   </div>
+   
+   <div id="element-246">
+      <a href="#">
+         <img src="https://via.placeholder.com/728x120.png?text=element-246%20img" />
+      </a>
+   </div>
+   <div id="element-247">   
+      <img src="https://via.placeholder.com/728x120.png?text=element-247%20img" />   
+   </div>
+
+   <div id="element-248">
+      <img src="https://via.placeholder.com/728x120.png?text=element-248%20img" />
+   </div>
+    <script src="checkout-form-manager.js"></script>
+
+   <script>
+      initUpsellLinks({
+         'elements': '#element-50 a, #element-190 a, #element-225 a, #element-236 a, #element-244 img',
+         'offer_id': '1',
+         'action_url': 'https://flux2.astrologyanswers.com/link1'
+      });
+
+      initUpsellLinks({
+         'elements': '#element-246 img, #element-247 img',
+         'offer_id': '2',
+         'action_url': 'https://flux2.astrologyanswers.com/link2'
+      });
+
+      initUpsellLinks({
+         'elements': '#element-248 img',
+         'offer_id': '3',
+         'action_url': 'https://flux2.astrologyanswers.com/link3'
+      });
+   </script>
+</body>
+</html>

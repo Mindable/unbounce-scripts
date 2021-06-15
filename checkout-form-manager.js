@@ -790,6 +790,28 @@ const checkout = {
     }
 }
 
+// register/initialize Upsell Links
+function initUpsellLinks(data) {
+    const elements = data.elements || '';
+    const offer_id = data.offer_id || '';
+    const action_url = data.action_url || '';
+
+    if (elements === '' || offer_id === '' || action_url === '') {
+        console.error('Upsell Initialization parameter are missing');
+        return;
+    }
+
+    document.querySelectorAll(elements).forEach(elm => {
+        elm.style.cursor = 'pointer';
+        if (elm.tagName === 'A') {
+            elm.href = "JavaScript:void(0);";
+        }
+        elm.className += " upsell-link";
+        elm.setAttribute("data-offer-id", offer_id);
+        elm.setAttribute("data-action-url", action_url);
+    });
+}
+
 document.addEventListener('click', function (event) {
     let _upsell_ClassName = checkout.upsell.className;
     if(event.target.classList.contains(_upsell_ClassName)){
