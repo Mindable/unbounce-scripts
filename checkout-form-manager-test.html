@@ -2,13 +2,10 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Checkout Test Page</title>
+    <title>Upsell Test Page</title>
 </head>
 <body>
-    <!--Todo: Remove Old Upsell Logic once all upsell pages are updated to use new pattern-->
-    <h2>Upsell Link Old</h2>
-    <a href="//funnel/upsell?offer_id=1360&callbackUrl=https://flux2.astrologyanswers.com/?flux_action=1&flux_f=1147020355678920015&flux_ffn=1147020973846306320">Upsell 1</a>
-    <h2>Upsell Links New</h2>
+    <h2>Upsell Links</h2>
     <a class="upsell-link"
        href="#"
        data-action-url="https://flux2.astrologyanswers.com/?flux_action=1&flux_f=1147020355678920015&flux_ffn=1147020973846306320"
@@ -26,15 +23,6 @@
     <a href="#" id ="element32">Upsell 6</a>
     <a href="#" id ="element33">Upsell 7</a>
     <br><code>Due to Instapage limitations, we have new upsell link registrations method. Use `checkout.upsell.registerElements(elmIdentityCollection,actionUrl, offerId)` on create upsell link programmatically</code>
-
-    <h2>Checkout Form</h2>
-    <div id="aa-checkout-div"
-         data-offer-id="1360"
-         data-checkout-button-text="Buy me now!"
-         data-successful-checkout-url="https://flux.astrologyanswers.com/?flux_action=1&flux_f=1061367355000511979&flux_ffn=1095133337314859374"
-         data-checkout-form-type="digital"
-         data-disable-default-css="false"
-    ></div>
 
     <script src="checkout-form-manager.js"></script>
     <script>
