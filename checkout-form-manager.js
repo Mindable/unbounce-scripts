@@ -734,20 +734,6 @@ const checkout = {
             }
         },
 
-        registerElement: function (elmIdentity, actionUrl, offerId='0') {
-            let elm = document.querySelector(elmIdentity);
-            if(!elm) {
-                console.error(`Upsell Registration failed. Unable to find element with definition : ${elmIdentity}`);
-                return;
-            }
-            elm.classList.add(this.className);
-            if(elm.tagName === 'a') {
-                elm.href = 'javascript:void(0);';
-            }
-            elm.dataset.actionUrl = actionUrl;
-            elm.dataset.offerId = offerId;
-        },
-
         verify: function () {
             this.verifyLinks();
             this.verifyURLParameters();
