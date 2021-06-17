@@ -46,6 +46,15 @@ const app = Vue.createApp({
             this.token = token;
             this.updateCheckoutForm(true,false);
         },
+        moveOrderBumpElement(elementId) {
+            if(document.getElementById(elementId)){
+                document.getElementById('checkoutOrderBumpDiv').appendChild(
+                    document.getElementById(elementId)
+                );
+            }else{
+                console.error(`Unable to find element #${elementId}`);
+            }
+        },
         updateCheckoutForm(updateUser=true,updateProductVariant=true) {
             fetch(`https://aaproxyapis.astrologyanswers.com/checkout/params?hash=${this.userHash}&token=${this.token}&offer_id=${this.productVariantId}`)
                 .then(response => {
@@ -417,6 +426,7 @@ app.component('checkout-form',{
       </div>
       <h3>Credit Card Information</h3>
       <user-payment :paymentDetails="paymentDetails"></user-payment>
+      <div id="checkoutOrderBumpDiv"></div>
       <p class="checkoutErrors" v-if="validationErrors.length>0">
         <span v-for="validationError in validationErrors">
           {{validationError}}<br>
