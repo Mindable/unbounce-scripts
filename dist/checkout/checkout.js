@@ -334,7 +334,6 @@ app.component('user-payment', {
   },
   computed: {
     expMonths() {
-      console.log('Getting Months');
       let start = 1, end = 12;
       if( parseInt(this.paymentDetails.expYear) ===  new Date().getFullYear()) {
         start = new Date().getMonth() + 1;
