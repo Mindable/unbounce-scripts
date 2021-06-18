@@ -46,6 +46,15 @@ const app = Vue.createApp({
             this.token = token;
             this.updateCheckoutForm(true,false);
         },
+        moveOrderBumpElement(elementId) {
+            if(document.getElementById(elementId)){
+                document.getElementById('checkoutProductSelectionDiv').appendChild(
+                    document.getElementById(elementId)
+                );
+            }else{
+                console.error(`Unable to find element #${elementId}`);
+            }
+        },
         updateCheckoutForm(updateUser=true,updateProductVariant=true) {
             fetch(`https://aaproxyapis.astrologyanswers.com/checkout/params?hash=${this.userHash}&token=${this.token}&offer_id=${this.productVariantId}`)
                 .then(response => {

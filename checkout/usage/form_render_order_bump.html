@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout with Order Bump Options</title>
+</head>
+<body>
+
+<div id="product-selection" class="recommended_sec">
+    <h3>Recommended for You</h3>
+    <label class="checkbox_content"> <input type="checkbox" class="select_checkbox" id="Personalized-Abundant-Success" name="Personalized-Abundant-Success" /> Please include the Abundant Success guided audio meditations, a 5-part companion program designed to raise my receptive vibration level throughout my Transit Period for only $11.11</label>
+    <label class="checkbox_content"> <input type="checkbox" class="select_checkbox" id="Mastering-Intuition" name="Mastering-Intuition" /> I also want to add the Mastering Intuition audio program for $9.99 so I can learn how to trust and listen to my inner wisdom. A powerful personal development tool I can learn once and use for a lifetime.</label>
+</div>
+
+<div id="checkout-div" class="aa-checkout-div"></div>
+<!--Add Form Style-->
+<link rel="stylesheet" href="../default.css" />
+<!--Add VueJS-->
+<script src="https://unpkg.com/vue@next"></script>
+<!--Add Checkout JS-->
+<script src="../../dist/checkout/checkout.js"></script>
+<script>
+    let _checkoutConfig = getCheckoutConfig('checkout-div');
+    _checkoutConfig.productVariantId = 1420;
+    _checkoutConfig.submitButtonText = "CLAIM MY PERSONALIZED TRANSIT PERIOD GUIDE";
+    _checkoutConfig.paymentSuccessRedirect = "https://flux.astrologyanswers.com/?flux_action=1&flux_f=1061367355000511979&flux_ffn=1095133337314859374";
+    renderCheckoutForm('checkout-div',_checkoutConfig);
+
+    checkoutApp.moveOrderBumpElement('product-selection');
+
+    //CUSTOM PAGE JAVASCRIPT
+    //This will be different as per implementation so make changes accordingly
+    document.addEventListener('click', function (event) {
+        if(event.target.id === 'Personalized-Abundant-Success' || event.target.id === 'Mastering-Intuition') {
+           let _productId = 1420;
+           let _pas = document.querySelector(`#Personalized-Abundant-Success`).checked;
+           let _mi = document.querySelector(`#Mastering-Intuition`).checked;
+           if(_pas && _mi) {
+               _productId = 1583;
+           }else if(_pas) {
+               _productId = 1585;
+           }else if(_mi) {
+               _productId = 1579;
+           }
+           checkoutApp.changeProductVariantId(_productId);
+        }
+    });
+</script>
+<style>
+    .recommended_sec { position: relative; clear: both; padding-right: 0; margin-bottom: 25px;}
+    .recommended_sec h5 { font-size: 22px; font-family: Arial, "sans-serif"; font-weight: bold; text-align: left; color: #050505; margin: 10px 0; }
+    .recommended_sec h5 i { font-size: 30px; font-style: normal; margin-right: 15px }
+    .recommended_sec .placeholder_div img { width: 100% }
+    .recommended_sec .checkbox_content { position: relative; margin: 10px 0; border: 2px dashed #000000; background: #fff; padding: 10px 15px 10px 40px }
+    .recommended_sec .checkbox_content input.select_checkbox { margin: 0; width: auto !important; height: auto; position: absolute; top: 12px; left: 13px; -webkit-transform: scale(1.2); -moz-transform: scale(1.2); transform: scale(1.2); }
+    .recommended_sec .checkbox_content { position: relative; float: none; font-size: 13px; line-height: 17px; font-family: Verdana, "sans-serif"; color: #000000; text-align: left; font-weight: normal; }
+    .recommended_sec .checkbox_content span { display: block; border-top: 1px solid #cfcabe; text-align: left; font-size: 12px; font-family: Verdana, "sans-serif"; color: #8f908f; font-weight: bold; margin: 10px 0 0 0; padding: 10px 0 0 }
+    .recommended_sec .checkbox_content span i { font-size: 14px; color: #8f908f; font-style: normal; margin-right: 3px }
+    .recommended_sec .checkbox_content .checkbox_txt p { margin: 0; font-size: 13px; line-height: 17px; font-family: Verdana, "sans-serif"; color: #000000; text-align: left; font-weight: normal; }
+    .recommended_sec .checkbox_content .checkbox_txt .instant_access i { font-size: 14px; color: #8f908f; font-style: normal; margin-right: 3px }
+</style>
+</body>
+</html>
