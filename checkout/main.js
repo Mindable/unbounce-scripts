@@ -48,7 +48,7 @@ const app = Vue.createApp({
         },
         moveOrderBumpElement(elementId) {
             if(document.getElementById(elementId)){
-                document.getElementById('checkoutOrderBumpDiv').appendChild(
+                document.getElementById('checkoutProductSelectionDiv').appendChild(
                     document.getElementById(elementId)
                 );
             }else{

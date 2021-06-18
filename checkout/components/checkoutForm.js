@@ -20,7 +20,7 @@ app.component('checkout-form',{
       </div>
       <h3>Credit Card Information</h3>
       <user-payment :paymentDetails="paymentDetails"></user-payment>
-      <div id="checkoutOrderBumpDiv"></div>
+      <div id="checkoutProductSelectionDiv"></div>
       <p class="checkoutErrors" v-if="validationErrors.length>0">
         <span v-for="validationError in validationErrors">
           {{validationError}}<br>
