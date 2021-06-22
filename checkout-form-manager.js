@@ -86,7 +86,10 @@ const checkout = {
                 }, {
                     name: 'token',
                     value: _urlParams.get('token')
-                },
+                }, {
+                    name: 'order_page_url',
+                    value: `${window.location.protocol}//${window.location.host}/${window.location.pathname}`
+                }
             ];
 
             formParams.forEach(p => {
