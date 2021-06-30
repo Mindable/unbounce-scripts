@@ -16,7 +16,7 @@ app.component('checkout-form',{
       <div v-if="physicalCheckout" class="physicalCheckoutDiv">
         <h3>Shipping Address:</h3>
         <input type="checkbox" v-model="shippingToggle">&nbsp;Check this box if your shipping address is different from your billing address
-        <user-address v-if="shippingToggle" addressType="Shipping" :address="shippingAddress" :countriesList="countriesList"></user-address>
+        <user-address addressType="Shipping" :address="shippingAddress" :inputToggle="shippingToggle" :countriesList="countriesList"></user-address>
       </div>
       <h3>Credit Card Information</h3>
       <user-payment :paymentDetails="paymentDetails"></user-payment>

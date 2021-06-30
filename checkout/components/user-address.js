@@ -2,23 +2,27 @@ app.component('user-address',{
   props: {
     addressType: String,
     address: Object,
-    countriesList: Object
+    countriesList: Object,
+    inputToggle: {
+      type: Boolean,
+      default: true
+    }
   },
   template: `<div>
     <label>Street Address: *</label>
-    <input type="text" v-model.trim="address.streetAddress">
+    <input type="text" v-model.trim="address.streetAddress" :disabled="!inputToggle">
   </div>
   <div>
     <label>City: *</label>
-    <input type="text" v-model.trim="address.city">
+    <input type="text" v-model.trim="address.city" :disabled="!inputToggle">
   </div>
   <div>
     <label>Zip/Postal Code: *</label>
-    <input type="text" v-model.trim="address.zip">
+    <input type="text" v-model.trim="address.zip" :disabled="!inputToggle">
   </div>
   <div>
     <label>Country: *</label>
-    <select v-model.trim="address.country" @change="fetchState">
+    <select v-model.trim="address.country" @change="fetchState" :disabled="!inputToggle">
       <option value="" selected>Select a Country</option>
       <option v-for="(item,key) in countriesList" :value="key">
         {{item}}

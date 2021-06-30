@@ -186,9 +186,7 @@ const app = Vue.createApp({
                             this.checkoutErrors.push(`unsuccessful: ${data['message']}`);
                             return;
                         }
-                        let _orderAmount = this.productVariant.price ?? 0;
-                        let _productId = this.productVariant.id ?? 0;
-                        window.location.href = `${this.paymentSuccessRedirect}&token=${data['token']}&orderAmount=${_orderAmount}&offerId=${_productId}`;
+                        window.location.href = `${this.paymentSuccessRedirect}&token=${data['token']}`;
                     });
                 });
         }
@@ -421,7 +419,7 @@ app.component('checkout-form',{
       <div v-if="physicalCheckout" class="physicalCheckoutDiv">
         <h3>Shipping Address:</h3>
         <input type="checkbox" v-model="shippingToggle">&nbsp;Check this box if your shipping address is different from your billing address
-        <user-address v-if="shippingToggle" addressType="Shipping" :address="shippingAddress" :countriesList="countriesList"></user-address>
+        <user-address addressType="Shipping" :address="shippingAddress" :inputToggle="shippingToggle" :countriesList="countriesList"></user-address>
       </div>
       <h3>Credit Card Information</h3>
       <user-payment :paymentDetails="paymentDetails"></user-payment>
@@ -564,23 +562,27 @@ app.component('user-address',{
   props: {
     addressType: String,
     address: Object,
-    countriesList: Object
+    countriesList: Object,
+    inputToggle: {
+      type: Boolean,
+      default: true
+    }
   },
   template: `<div>
     <label>Street Address: *</label>
-    <input type="text" v-model.trim="address.streetAddress">
+    <input type="text" v-model.trim="address.streetAddress" :disabled="!inputToggle">
   </div>
   <div>
     <label>City: *</label>
-    <input type="text" v-model.trim="address.city">
+    <input type="text" v-model.trim="address.city" :disabled="!inputToggle">
   </div>
   <div>
     <label>Zip/Postal Code: *</label>
-    <input type="text" v-model.trim="address.zip">
+    <input type="text" v-model.trim="address.zip" :disabled="!inputToggle">
   </div>
   <div>
     <label>Country: *</label>
-    <select v-model.trim="address.country" @change="fetchState">
+    <select v-model.trim="address.country" @change="fetchState" :disabled="!inputToggle">
       <option value="" selected>Select a Country</option>
       <option v-for="(item,key) in countriesList" :value="key">
         {{item}}
