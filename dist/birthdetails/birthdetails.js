@@ -42,14 +42,14 @@ const app = Vue.createApp({
                     Contact0City3: this.birthData.city,
                     Contact0_birthplaceid:this.birthData.birthPlaceId
                 };
+                let formData = new FormData();
+                for (let birthPayloadKey in _birthPayload){
+                    formData.append(birthPayloadKey,_birthPayload[birthPayloadKey]);
+                }
                 fetch(`https://services.astrologyanswers.com/aa/update_birth_details`,
                     {
                         method: "POST",
-                        headers: {
-                            'Accept': 'application/json',
-                            'Content-Type': 'text/plain'
-                        },
-                        body: JSON.stringify(_birthPayload)
+                        body: formData
                     }).then(response => {
                     if (response.status === 200) {
                         response.json().then(data => {
