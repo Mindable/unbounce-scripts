@@ -4,7 +4,10 @@ app.component('user-contact',{
       type: Object,
       required: true,
     },
-    userIdentified : false
+    userIdentified : {
+      type: Boolean,
+      default: false,
+    }
   },
   template: `
     <div>
