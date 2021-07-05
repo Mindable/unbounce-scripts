@@ -3,6 +3,10 @@ app.component('user-contact',{
     user: {
       type: Object,
       required: true,
+    },
+    userIdentified : {
+      type: Boolean,
+      default: false,
     }
   },
   template: `
@@ -16,7 +20,7 @@ app.component('user-contact',{
     </div>
     <div>
       <label>Email: *</label>
-      <input type="email" disabled v-model.trim="user.email">
+      <input type="email" :disabled="userIdentified" v-model.trim="user.email">
     </div>
     <div>
       <label>Phone Number:</label>

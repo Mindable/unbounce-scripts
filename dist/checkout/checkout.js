@@ -1,5 +1,5 @@
 const app = Vue.createApp({
-    template: `<checkout-form :productVariant="productVariant" :user="user" :countriesList="countriesList" :physicalCheckout="physicalCheckout" :submitButtonText="submitButtonText" :validationErrors="checkoutErrors" @checkout-form-submit="processCheckout"></checkout-form>`,
+    template: `<checkout-form :productVariant="productVariant" :user="user" :countriesList="countriesList" :physicalCheckout="physicalCheckout" :submitButtonText="submitButtonText" :userIdentified="userIdentified" :validationErrors="checkoutErrors" @checkout-form-submit="processCheckout"></checkout-form>`,
     data() {
         return {
             checkoutFormType: 'digital',
@@ -29,6 +29,7 @@ const app = Vue.createApp({
             checkoutErrors: [],
             countriesList: null,
             checkoutProcessing: false,
+            userIdentified: false,
         }
     },
     computed: {
@@ -106,6 +107,7 @@ const app = Vue.createApp({
                                         hash: data['user']['hash'],
                                         phone: ''
                                     }
+                                    this.userIdentified = true;
                                 }
                             }
 
@@ -186,9 +188,9 @@ const app = Vue.createApp({
                             this.checkoutErrors.push(`unsuccessful: ${data['message']}`);
                             return;
                         }
-                        let _orderAmount = this.productVariant.price ?? 0;
-                        let _productId = this.productVariant.id ?? 0;
-                        window.location.href = `${this.paymentSuccessRedirect}&token=${data['token']}&orderAmount=${_orderAmount}&offerId=${_productId}`;
+                        let _token = data['token'];
+                        let _hash = data['hash'];
+                        window.location.href = `${this.paymentSuccessRedirect}&token=${_token}&hash=${_hash}`;
                     });
                 });
         }
@@ -265,6 +267,10 @@ app.component('user-contact',{
     user: {
       type: Object,
       required: true,
+    },
+    userIdentified : {
+      type: Boolean,
+      default: false,
     }
   },
   template: `
@@ -278,7 +284,7 @@ app.component('user-contact',{
     </div>
     <div>
       <label>Email: *</label>
-      <input type="email" disabled v-model.trim="user.email">
+      <input type="email" :disabled="userIdentified" v-model.trim="user.email">
     </div>
     <div>
       <label>Phone Number:</label>
@@ -412,10 +418,11 @@ app.component('checkout-form',{
         submitButtonText: String,
         validationErrors: Array,
         countriesList: Object,
+        userIdentified: Boolean,
     },
     template: `
       <h3>Contact Information</h3>
-      <user-contact :user="user"></user-contact>
+      <user-contact :user="user" :userIdentified="userIdentified"></user-contact>
       <h3>Current Billing Address</h3>
       <user-address addressType="Billing" :address="billingAddress" :countriesList="countriesList"></user-address>
       <div v-if="physicalCheckout" class="physicalCheckoutDiv">

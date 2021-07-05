@@ -1,5 +1,5 @@
 const app = Vue.createApp({
-    template: `<checkout-form :productVariant="productVariant" :user="user" :countriesList="countriesList" :physicalCheckout="physicalCheckout" :submitButtonText="submitButtonText" :validationErrors="checkoutErrors" @checkout-form-submit="processCheckout"></checkout-form>`,
+    template: `<checkout-form :productVariant="productVariant" :user="user" :countriesList="countriesList" :physicalCheckout="physicalCheckout" :submitButtonText="submitButtonText" :userIdentified="userIdentified" :validationErrors="checkoutErrors" @checkout-form-submit="processCheckout"></checkout-form>`,
     data() {
         return {
             checkoutFormType: 'digital',
@@ -29,6 +29,7 @@ const app = Vue.createApp({
             checkoutErrors: [],
             countriesList: null,
             checkoutProcessing: false,
+            userIdentified: false,
         }
     },
     computed: {
@@ -106,6 +107,7 @@ const app = Vue.createApp({
                                         hash: data['user']['hash'],
                                         phone: ''
                                     }
+                                    this.userIdentified = true;
                                 }
                             }
 
@@ -186,7 +188,9 @@ const app = Vue.createApp({
                             this.checkoutErrors.push(`unsuccessful: ${data['message']}`);
                             return;
                         }
-                        window.location.href = `${this.paymentSuccessRedirect}&token=${data['token']}`;
+                        let _token = data['token'];
+                        let _hash = data['hash'];
+                        window.location.href = `${this.paymentSuccessRedirect}&token=${_token}&hash=${_hash}`;
                     });
                 });
         }
