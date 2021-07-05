@@ -80,11 +80,10 @@ countDownApp.component('count-down',{
                 thisTimer.hours   = Math.floor(thisTimer.totalSeconds / 3600); // get hours
                 thisTimer.minutes = Math.floor((thisTimer.totalSeconds - (thisTimer.hours * 3600)) / 60); // get minutes
                 thisTimer.seconds = thisTimer.totalSeconds - (thisTimer.hours * 3600) - (thisTimer.minutes * 60); //  get seconds
-                if(thisTimer.totalSeconds === 0){
+                if(thisTimer.totalSeconds-- <= 0){
                     clearInterval(intervalTimer);
                     thisTimer.$emit('update-seconds-to-app',0);
                 }
-                thisTimer.totalSeconds--;
             }, 1000);
         }
     }
