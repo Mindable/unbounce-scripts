@@ -1,4 +1,4 @@
-const app = Vue.createApp({
+const birthDetailsApp = Vue.createApp({
     template:`<birth-details :user="user" :birthData="birthData" :birthDetailValidationError="birthDetailErrors" @update-birth-details="updateBirthDetails"> </birth-details>`,
     data(){
         return{
@@ -126,7 +126,7 @@ const app = Vue.createApp({
 });
 
 
-app.component('birth-details',{
+birthDetailsApp.component('birth-details',{
     emits:['updateBirthDetails'],
     template:`
         
@@ -338,7 +338,7 @@ app.component('birth-details',{
 
 });
 
-app.component('search-dropdown',{
+birthDetailsApp.component('search-dropdown',{
     template:`
         <div>    
             <input type="text" v-model.trim="birthData.city" @keyUp="fetchCities">
@@ -401,7 +401,7 @@ function renderBirthDetails(_nextUrl){
         console.log('email required');
         return;
     }
-    let birthDetailsApp = app.mount("#birth-details-div");
-    birthDetailsApp.fetchBirthDetails(_nextUrl);
+    let birthDetailsInstance = birthDetailsApp.mount("#birth-details-div");
+    birthDetailsInstance.fetchBirthDetails(_nextUrl);
 }
 
