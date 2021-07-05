@@ -1,5 +1,5 @@
 const app = Vue.createApp({
-    template:`<count-down :timerDuration="timerDuration" @notify-to-app-for-seconds="updateTimerDuration"> </count-down>`,
+    template:`<count-down :timerDuration="timerDuration" @update-seconds-to-app="setTimerDuration"> </count-down>`,
     data() {
         return{
             timerDuration:0
@@ -13,7 +13,7 @@ const app = Vue.createApp({
         }
     },
     methods:{
-        updateTimerDuration(value){
+        setTimerDuration(value){
             this.timerDuration=value;
         }
     }
@@ -53,32 +53,36 @@ app.component('count-down',{
     data() {
         return {
             totalSeconds:0,
-            hr:"",
-            hl:"",
-            mr:"",
-            ml:"",
-            sr:"",
-            sl:""
+            seconds:0,
+            hours:0,
+            minutes:0
         }
     },
-    emits:['notify-to-app-for-seconds'],
+    emits:['update-seconds-to-app'],
+    computed:{
+        hl(){ return this.calculateLeftValue(this.hours) },
+        hr(){ return this.calculateRightValue(this.hours) },
+        ml(){ return this.calculateLeftValue(this.minutes) },
+        mr(){ return this.calculateRightValue(this.minutes) },
+        sl(){ return this.calculateLeftValue(this.seconds) },
+        sr(){ return this.calculateRightValue(this.seconds) },
+    },
     methods:{
+        calculateLeftValue(value){
+            return ((value<10)?0:value).toString().substring(0,1);
+        },
+        calculateRightValue(value){
+            return (value<10)?value.toString():value.toString().substring(1,2);
+        },
         startTimer(){
             const thisTimer = this;
             let intervalTimer = setInterval(function(){
-                let seconds = parseInt(thisTimer.totalSeconds, 10);
-                let hours   = Math.floor(seconds / 3600); // get hours
-                let minutes = Math.floor((seconds - (hours * 3600)) / 60); // get minutes
-                seconds = seconds - (hours * 3600) - (minutes * 60); //  get seconds
-                thisTimer.hl=((hours<10)?0:hours).toString().substring(0,1);
-                thisTimer.hr=(hours<10)?hours.toString():hours.toString().substring(1,2);
-                thisTimer.ml=((minutes<10)?0:minutes).toString().substring(0,1);
-                thisTimer.mr=(minutes<10)?minutes.toString():minutes.toString().substring(1,2);
-                thisTimer.sl=((seconds<10)?0:seconds).toString().substring(0,1);
-                thisTimer.sr=(seconds<10)?seconds.toString():seconds.toString().substring(1,2);
+                thisTimer.hours   = Math.floor(thisTimer.totalSeconds / 3600); // get hours
+                thisTimer.minutes = Math.floor((thisTimer.totalSeconds - (thisTimer.hours * 3600)) / 60); // get minutes
+                thisTimer.seconds = thisTimer.totalSeconds - (thisTimer.hours * 3600) - (thisTimer.minutes * 60); //  get seconds
                 if(thisTimer.totalSeconds === 0){
                     clearInterval(intervalTimer);
-                    thisTimer.$emit('notify-to-app-for-seconds',0);
+                    thisTimer.$emit('update-seconds-to-app',0);
                 }
                 thisTimer.totalSeconds--;
             }, 1000);
