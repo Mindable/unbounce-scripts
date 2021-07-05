@@ -188,7 +188,9 @@ const app = Vue.createApp({
                             this.checkoutErrors.push(`unsuccessful: ${data['message']}`);
                             return;
                         }
-                        window.location.href = `${this.paymentSuccessRedirect}&token=${data['token']}`;
+                        let _token = data['token'];
+                        let _hash = data['hash'];
+                        window.location.href = `${this.paymentSuccessRedirect}&token=${_token}&hash=${_hash}`;
                     });
                 });
         }
