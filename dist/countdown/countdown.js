@@ -1,4 +1,4 @@
-const app = Vue.createApp({
+const countDownApp = Vue.createApp({
     template:`<count-down :timerDuration="timerDuration" @update-seconds-to-app="setTimerDuration"> </count-down>`,
     data() {
         return{
@@ -19,7 +19,7 @@ const app = Vue.createApp({
     }
 });
 
-app.component('count-down',{
+countDownApp.component('count-down',{
     template:`
         <div>
             <span class="h-l">{{hl}}</span>
@@ -90,4 +90,4 @@ app.component('count-down',{
     }
 });
 
-let countdownTimer = app.mount("#count-down-timer-div");
+let countdownTimer = countDownApp.mount("#count-down-timer-div");
