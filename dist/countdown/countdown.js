@@ -1,5 +1,22 @@
 const app = Vue.createApp({
-    template:`<count-down ref="myTimer"> </count-down>`,
+    template:`<count-down :timerDuration="timerDuration" @notify-to-app-for-seconds="updateTimerDuration"> </count-down>`,
+    data() {
+        return{
+            timerDuration:0
+        }
+    },
+    watch:{
+        timerDuration() {
+            if(this.timerDuration === 0){
+                onCountDownTimerComplete();
+            }
+        }
+    },
+    methods:{
+        updateTimerDuration(value){
+            this.timerDuration=value;
+        }
+    }
 });
 
 app.component('count-down',{
@@ -22,8 +39,20 @@ app.component('count-down',{
             <span class="s-r">{{sr}}</span>
         </div>
     `,
+    props:{
+        timerDuration:Number
+    },
+    watch:{
+        timerDuration() {
+            if(this.timerDuration>0){
+                this.totalSeconds = this.timerDuration;
+                this.startTimer();
+            }
+        }
+    },
     data() {
         return {
+            totalSeconds:0,
             hr:"",
             hl:"",
             mr:"",
@@ -32,11 +61,12 @@ app.component('count-down',{
             sl:""
         }
     },
+    emits:['notify-to-app-for-seconds'],
     methods:{
-        startTimer(totalSeconds){
+        startTimer(){
             const thisTimer = this;
             let intervalTimer = setInterval(function(){
-                let seconds = parseInt(totalSeconds, 10);
+                let seconds = parseInt(thisTimer.totalSeconds, 10);
                 let hours   = Math.floor(seconds / 3600); // get hours
                 let minutes = Math.floor((seconds - (hours * 3600)) / 60); // get minutes
                 seconds = seconds - (hours * 3600) - (minutes * 60); //  get seconds
@@ -46,12 +76,11 @@ app.component('count-down',{
                 thisTimer.mr=(minutes<10)?minutes.toString():minutes.toString().substring(1,2);
                 thisTimer.sl=((seconds<10)?0:seconds).toString().substring(0,1);
                 thisTimer.sr=(seconds<10)?seconds.toString():seconds.toString().substring(1,2);
-                if(totalSeconds === 0){
+                if(thisTimer.totalSeconds === 0){
                     clearInterval(intervalTimer);
-                    onCountDownTimerComplete();
-                    return true;
+                    thisTimer.$emit('notify-to-app-for-seconds',0);
                 }
-                totalSeconds--;
+                thisTimer.totalSeconds--;
             }, 1000);
         }
     }
