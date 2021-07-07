@@ -7,10 +7,11 @@ app.component('checkout-form',{
         submitButtonText: String,
         validationErrors: Array,
         countriesList: Object,
+        userIdentified: Boolean,
     },
     template: `
       <h3>Contact Information</h3>
-      <user-contact :user="user"></user-contact>
+      <user-contact :user="user" :userIdentified="userIdentified"></user-contact>
       <h3>Current Billing Address</h3>
       <user-address addressType="Billing" :address="billingAddress" :countriesList="countriesList"></user-address>
       <div v-if="physicalCheckout" class="physicalCheckoutDiv">
