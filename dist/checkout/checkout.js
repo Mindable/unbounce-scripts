@@ -134,13 +134,13 @@ const app = Vue.createApp({
 
                 adr: formData.billing.streetAddress,
                 city: formData.billing.city,
-                zip: formData.billing.city,
+                zip: formData.billing.zip,
                 country: formData.billing.country,
                 state: formData.billing.state,
 
                 shipping_adr: formData.shipping.streetAddress,
                 shipping_city: formData.shipping.city,
-                shipping_zip: formData.shipping.city,
+                shipping_zip: formData.shipping.zip,
                 shipping_country: formData.shipping.country,
                 shipping_state: formData.shipping.state,
                 shipping_tag: this.shippingTag,
