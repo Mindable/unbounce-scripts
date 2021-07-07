@@ -11,7 +11,7 @@ app.component('user-address',{
   template: `<fieldset :disabled="!inputToggle">
   <div>
     <label>Street Address: *</label>
-    <input type="text" v-model.trim="address.streetAddress" >
+    <input type="text" v-model.trim="address.streetAddress">
   </div>
   <div>
     <label>City: *</label>
