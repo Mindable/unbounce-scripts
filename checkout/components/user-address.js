@@ -8,21 +8,22 @@ app.component('user-address',{
       default: true
     }
   },
-  template: `<div>
+  template: `<fieldset :disabled="!inputToggle">
+  <div>
     <label>Street Address: *</label>
-    <input type="text" v-model.trim="address.streetAddress" :disabled="!inputToggle">
+    <input type="text" v-model.trim="address.streetAddress" >
   </div>
   <div>
     <label>City: *</label>
-    <input type="text" v-model.trim="address.city" :disabled="!inputToggle">
+    <input type="text" v-model.trim="address.city">
   </div>
   <div>
     <label>Zip/Postal Code: *</label>
-    <input type="text" v-model.trim="address.zip" :disabled="!inputToggle">
+    <input type="text" v-model.trim="address.zip">
   </div>
   <div>
     <label>Country: *</label>
-    <select v-model.trim="address.country" @change="fetchState" :disabled="!inputToggle">
+    <select v-model.trim="address.country" @change="fetchState">
       <option value="" selected>Select a Country</option>
       <option v-for="(item,key) in countriesList" :value="key">
         {{item}}
@@ -37,7 +38,8 @@ app.component('user-address',{
         {{item}}
       </option>
     </select>
-  </div>`,
+  </div>
+</fieldset>`,
   data() {
     return {
       states: null
