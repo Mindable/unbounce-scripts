@@ -2,9 +2,14 @@ app.component('user-address',{
   props: {
     addressType: String,
     address: Object,
-    countriesList: Object
+    countriesList: Object,
+    inputToggle: {
+      type: Boolean,
+      default: true
+    }
   },
-  template: `<div>
+  template: `<fieldset :disabled="!inputToggle">
+  <div>
     <label>Street Address: *</label>
     <input type="text" v-model.trim="address.streetAddress">
   </div>
@@ -33,7 +38,8 @@ app.component('user-address',{
         {{item}}
       </option>
     </select>
-  </div>`,
+  </div>
+</fieldset>`,
   data() {
     return {
       states: null

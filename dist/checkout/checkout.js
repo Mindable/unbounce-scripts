@@ -427,8 +427,8 @@ app.component('checkout-form',{
       <user-address addressType="Billing" :address="billingAddress" :countriesList="countriesList"></user-address>
       <div v-if="physicalCheckout" class="physicalCheckoutDiv">
         <h3>Shipping Address:</h3>
-        <input type="checkbox" v-model="shippingToggle">&nbsp;Check this box if your shipping address is different from your billing address
-        <user-address v-if="shippingToggle" addressType="Shipping" :address="shippingAddress" :countriesList="countriesList"></user-address>
+        <input type="checkbox" v-model="shippingToggle"><strong>&nbsp;Check this box if your shipping address is different from your billing address</strong>
+        <user-address addressType="Shipping" :address="shippingAddress" :inputToggle="shippingToggle" :countriesList="countriesList"></user-address>
       </div>
       <h3>Credit Card Information</h3>
       <user-payment :paymentDetails="paymentDetails"></user-payment>
@@ -571,9 +571,14 @@ app.component('user-address',{
   props: {
     addressType: String,
     address: Object,
-    countriesList: Object
+    countriesList: Object,
+    inputToggle: {
+      type: Boolean,
+      default: true
+    }
   },
-  template: `<div>
+  template: `<fieldset :disabled="!inputToggle">
+  <div>
     <label>Street Address: *</label>
     <input type="text" v-model.trim="address.streetAddress">
   </div>
@@ -602,7 +607,8 @@ app.component('user-address',{
         {{item}}
       </option>
     </select>
-  </div>`,
+  </div>
+</fieldset>`,
   data() {
     return {
       states: null
